@@ -1,0 +1,4 @@
+text_weight,seed,within_sub01,zero_shot_sub02,moment_match_sub02,procrustes_k25_sub02,procrustes_k50_sub02,procrustes_k100_sub02
+0.0,0,29.0,8.0,12.0,12.0,12.0,16.0
+0.0,1,33.0,8.0,10.0,10.0,9.0,10.0
+0.0,2,32.0,7.0,9.0,7.0,9.0,13.0
