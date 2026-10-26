@@ -1,0 +1,4 @@
+test_subject,best_epoch,val_top5,loso_top1_200,loso_top5_200,loso_top1_100,procrustes_k25_top1_100,procrustes_k50_top1_100,procrustes_k100_top1_100,minutes
+sub-01,16,10.62,10.0,31.0,17.0,18.0,17.0,17.0,19.8
+sub-05,18,10.98,10.5,31.5,16.0,19.0,16.0,17.0,
+sub-08,20,10.12,13.0,35.0,20.0,20.0,20.0,19.0,
