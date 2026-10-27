@@ -1,0 +1,17 @@
+model,test_index,concept,rank,top5,top_caption,true_caption
+within,3,balance beam,1,balance beam; slide; sleeping bag; chaps; sandpaper,there is a trunk sitting on the floor in front of a staircase,there is a wooden bench sitting in the middle of the grass
+within,8,bassoon,9,golf cart; buggy; boat; gondola; sled,there is a large white and orange boat traveling on the water,there is a bassoon sitting on a stand in front of a chair
+within,14,birthday cake,1,birthday cake; popsicle; glove; seaweed; sandal,a close up of a red and gold crown on a blue cloth,there is a pink cake with white frosting and lit candles
+within,52,crab,1,crab; grasshopper; eel; dragonfly; cobra,there is a dragonfly that is sitting on a twig,there is a crab that is sitting on the sand by the water
+within,60,cupcake,6,coffeemaker; golf cart; buggy; vise; hamburger,there are three burgers on a cutting board with lettuce and meat,there is a cupcake with chocolate frosting on a wooden table
+within,99,jeep,1,jeep; station wagon; buggy; aircraft carrier; minivan,there is a red station wagon parked on the side of the road,the jeep is parked on the side of a mountain with a cloudy sky
+within,123,onion,17,brace; egg; face mask; banana; robot,there is a glass bowl with a whisk inside of it,there are two onions and a half of an onion on a white table
+within,164,sled,3,breadbox; crib; sled; music box; slide,there is a red wooden high chair with books on top of it,there is a sled that is sitting on the ground in the snow
+new_subject,3,balance beam,2,sleeping bag; balance beam; slide; hammer; cart,there is a man that is holding a yellow object in his hand,there is a wooden bench sitting in the middle of the grass
+new_subject,8,bassoon,9,music box; pocketknife; candlestick; blowtorch; vise,there is a small blue boat floating on the water with a rope,there is a bassoon sitting on a stand in front of a chair
+new_subject,14,birthday cake,3,glove; tiara; birthday cake; seaweed; headscarf,a close up of a red rug on a wooden floor,there is a pink cake with white frosting and lit candles
+new_subject,52,crab,1,crab; robot; dagger; duffel bag; seagull,yellow and black striped tube top on a mannequin mannequin mannequin mannequin mannequin mannequin mannequin mann,there is a crab that is sitting on the sand by the water
+new_subject,60,cupcake,13,coffeemaker; buggy; treadmill; wheelchair; vise,there are many tools that are sitting on the floor next to a tool bag,there is a cupcake with chocolate frosting on a wooden table
+new_subject,99,jeep,25,station wagon; pheasant; rooster; buggy; goose,there is a red station wagon parked on the side of the road,the jeep is parked on the side of a mountain with a cloudy sky
+new_subject,123,onion,76,laundry basket; face mask; cd player; hoodie; paperweight,there is a glass bowl with a whisk inside of it,there are two onions and a half of an onion on a white table
+new_subject,164,sled,7,music box; chime; metal detector; crib; glove,there is a wooden dreife on a table with a green arrow on it,there is a sled that is sitting on the ground in the snow
