@@ -1,0 +1,31 @@
+{
+  "protocol_version": "phase1-concept-source-only-v1",
+  "subjects": ["sub-01", "sub-02", "sub-03", "sub-04", "sub-05", "sub-06", "sub-07", "sub-08", "sub-09", "sub-10"],
+  "seeds": [0, 1, 2],
+  "split_seed": 0,
+  "candidate_count": 200,
+  "training": {"epochs": 60, "batch": 1024, "lr": 0.0001, "wd": 0.0001, "eval_every": 5},
+  "encoder": "06b_EEGProject_unchanged",
+  "embedding_dim": 1024,
+  "backbone": "OpenGVLab/InternViT-6B-448px-V2_5",
+  "backbone_revision": "REQUIRED_BEFORE_REAL_RUN",
+  "layer_candidates": [[12], [16], [20], [24], [28], [32], [36]],
+  "routing": "five layers centered on source-selected single layer; init minus absolute layer-index distance",
+  "selection": "nested_source_subject_folds_with_concept_disjoint_validation",
+  "eeg_normalization": "pooled_fit_rows_channelwise_frozen",
+  "visual_normalization": "fit_concept_images_only_frozen",
+  "ablations": [
+    {"name": "visual_diagonal", "objective": "diagonal", "text_weight": 0, "status": "implemented"},
+    {"name": "visual_multi_positive", "objective": "multi_positive", "text_weight": 0, "status": "implemented"},
+    {"name": "text_fixed", "objective": "multi_positive", "text_weight_grid": [0, 0.01, 0.05, 0.1], "adaptive": false, "grounding": 0, "status": "component_tested_training_integration_pending"},
+    {"name": "grounded_text_fixed", "objective": "multi_positive", "text_weight_grid": [0, 0.01, 0.05, 0.1], "adaptive": false, "grounding": 0.5, "status": "component_tested_training_integration_pending"},
+    {"name": "grounded_text_adaptive", "objective": "multi_positive", "text_weight_grid": [0, 0.01, 0.05, 0.1], "adaptive": true, "grounding": 0.5, "status": "component_tested_training_integration_pending"}
+  ],
+  "evaluation": [
+    {"setting": "within_subject", "channels": "post17", "score": "cosine", "calibration_k": 0},
+    {"setting": "loso_inductive", "channels": "all63", "score": "cosine", "calibration_k": 0},
+    {"setting": "loso_transductive", "channels": "all63", "score": "csls", "calibration_k": 0, "csls_k_grid": [5, 10, 20], "recovery_landmark_grid": [32, 64, 128], "recovery_status": "planned"},
+    {"setting": "labeled_calibration", "channels": "all63", "score": "cosine", "calibration_k_grid": [1, 5, 10, 20, 50, 100, 200, 500, 1000], "draw_seeds": [100, 101, 102], "status": "planned"},
+    {"setting": "labeled_calibration_transductive", "channels": "all63", "score": "csls", "calibration_k_grid": [1, 5, 10, 20, 50, 100, 200, 500, 1000], "draw_seeds": [100, 101, 102], "status": "planned"}
+  ]
+}

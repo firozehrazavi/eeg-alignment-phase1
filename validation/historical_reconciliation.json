@@ -1,0 +1,43 @@
+{
+  "historical_only": true,
+  "strict_inductive_certified": false,
+  "hashes": {
+    "results_loso_v6b.csv": "7b910423e4c568474a49d40641d6b9a3c7b44ec270564d7e3b1a0401a05b737d",
+    "results_within_v6b.csv": "fd40f3cac7360b7d83463fb9f5cb2e73d1ab2a9490e4ebd32fee680effe723b8",
+    "partA_capacity.csv": "c3a503fbfa645b8a3d6db4bd410a188291fc2d485d31aeba918b6055f1f585a6",
+    "comparison_v6b.csv": "61a438c7d9b150d78ded3a0467957bf7073b73c2d568f88ec0a75c893c05564d",
+    "landmark_rules_summary.csv": "36a37cfca9edf69beb2bb9faf4cd436f45327a4c5305a72bf5bc2220ff213abe",
+    "partC_confidence.csv": "8c26a35939f1b6a02060f7495c2f2edba1b9300739a425b38730436abe17c5dc"
+  },
+  "within_route_c": {
+    "top1": 78.83333146572113,
+    "top5": 97.41666376590729
+  },
+  "loso_route_c": {
+    "plain_top1": 26.249999403953552,
+    "plain_top5": 57.399998009204865,
+    "csls_top1": 37.14999943971634,
+    "csls_top5": 70.6499981880188,
+    "recovery_top1": 44.69999939203262,
+    "recovery_top5": 79.14999783039093
+  },
+  "capacity": {
+    "score n=64": {
+      "top1": 44.69999939203262,
+      "top5": 79.14999783039093
+    },
+    "score n=128": {
+      "top1": 46.44999861717224,
+      "top5": 80.54999828338623
+    },
+    "score n=all": {
+      "top1": 46.44999861717224,
+      "top5": 80.54999828338623
+    }
+  },
+  "resolution": "44.7 = 64 landmarks; 46.45 = 128/all landmarks; selection provenance not certified",
+  "missing_calibration_csvs": [
+    "calibration_v9.csv",
+    "calibration_v9b.csv"
+  ]
+}
