@@ -10,6 +10,9 @@ SCORE remain separate future ablations. No original notebook or CSV is changed.
 ## Start here
 
 Open `notebooks/10_rpa_patch_pilot.ipynb` from PR #2 in Colab Pro+.
+Start its CPU-only section A first. It inventories existing images/pooled caches,
+downloads and verifies only sub-01 EEG, and resumes interrupted preparation on
+Drive. See `CPU_PILOT_INPUTS.md`; section B requires separate GPU approval.
 It retains Colab's driver-compatible torch/torchvision, pins auxiliary dependencies,
 records the full environment, runs tests, checks real inputs, prepares
 one subject/200 training concepts, extracts layer-28 tokens and trains three

@@ -107,6 +107,14 @@ class PatchTests(unittest.TestCase):
             np.testing.assert_array_equal(np.load(root/'new/sub-01_train_prez.npy'),expected)
             self.assertEqual(before,digest(cache/'feat6_internvit6b.pt'))
             with self.assertRaises(FileExistsError):prepare(raw,cache,root/'new',['sub-01'])
+            prepared_hash=digest(root/'new/dataset.json')
+            prepare(raw,cache,root/'new',['sub-01'],concepts=3,resume=True)
+            self.assertEqual(prepared_hash,digest(root/'new/dataset.json'))
+            with mock.patch('phase1.patch_prepare.np.lib.format.open_memmap',side_effect=RuntimeError('simulated interruption')):
+                with self.assertRaises(RuntimeError):prepare(raw,cache,root/'partial',['sub-01'],concepts=3)
+            prepare(raw,cache,root/'partial',['sub-01'],concepts=3,resume=True)
+            self.assertEqual(prepared_hash,digest(root/'partial/dataset.json'))
+            with self.assertRaises(ValueError):prepare(raw,cache,root/'partial',['sub-01'],concepts=4,resume=True)
 
     def test_end_to_end_synthetic_pilot_and_cache_guards(self):
         # This fixture tests execution/identity contracts, NOT EEG performance.
