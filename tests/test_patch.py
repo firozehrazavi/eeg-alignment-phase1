@@ -1,5 +1,6 @@
 import copy
 import json
+import pickle
 import tempfile
 import unittest
 from unittest import mock
@@ -115,6 +116,11 @@ class PatchTests(unittest.TestCase):
             prepare(raw,cache,root/'partial',['sub-01'],concepts=3,resume=True)
             self.assertEqual(prepared_hash,digest(root/'partial/dataset.json'))
             with self.assertRaises(ValueError):prepare(raw,cache,root/'partial',['sub-01'],concepts=4,resume=True)
+            # The real mirror can store a direct pickle under the .npy filename.
+            with open(eegdir/'preprocessed_eeg_training.npy','wb') as f:
+                pickle.dump({'preprocessed_eeg_data':x},f,protocol=4)
+            prepare(raw,cache,root/'direct_dict',['sub-01'],concepts=3)
+            np.testing.assert_array_equal(np.load(root/'direct_dict/sub-01_train_prez.npy'),expected)
 
     def test_end_to_end_synthetic_pilot_and_cache_guards(self):
         # This fixture tests execution/identity contracts, NOT EEG performance.

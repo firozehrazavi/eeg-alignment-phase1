@@ -93,6 +93,16 @@ def verify_bytes(path,expected):
     return dict(bytes=path.stat().st_size,sha256=actual,remote_sha256_verified=bool(expected.get('sha256')))
 
 
+def load_dictionary(path):
+    """Accept trusted direct-pickle dictionaries and scalar NPY object wrappers."""
+    obj=np.load(path,allow_pickle=True)
+    if isinstance(obj,np.ndarray) and obj.shape==() and obj.dtype==object:
+        obj=obj.item()
+    if not isinstance(obj,dict):
+        raise ValueError(f'Expected a dictionary or scalar object array containing a dictionary: {path}')
+    return obj
+
+
 def inspect_eeg(path,shape,check_ram=True):
     """These trusted NPY dictionaries are pickled; load one at a time, never GPU."""
     if check_ram:
@@ -100,9 +110,7 @@ def inspect_eeg(path,shape,check_ram=True):
         required=int(Path(path).stat().st_size*2.2)
         if psutil.virtual_memory().available<required:
             raise MemoryError(f'Use a CPU High-RAM runtime: about {required/2**30:.1f} GiB free RAM required to verify {path}')
-    obj=np.load(path,allow_pickle=True)
-    if obj.shape!=() or obj.dtype!=object:raise ValueError('Expected distributed EEG dictionary')
-    data=obj.item();x=data['preprocessed_eeg_data']
+    data=load_dictionary(path);x=data['preprocessed_eeg_data']
     if tuple(x.shape)!=tuple(shape) or x.dtype.kind!='f':
         raise ValueError(f'Unexpected EEG shape/dtype at {path}: {x.shape}, {x.dtype}; expected {shape}')
     for start in range(0,len(x),8):
@@ -118,11 +126,11 @@ def inspect_eeg(path,shape,check_ram=True):
         if times.shape!=(shape[-1],) or not np.isfinite(times).all() or not np.allclose(np.diff(times),1/250,atol=1e-6):
             raise ValueError('Time metadata does not agree with 250 Hz samples')
         result.update(time_start_seconds=float(times[0]),time_end_seconds=float(times[-1]),time_metadata_verified=True)
-    del x,data,obj;gc.collect()
+    del x,data;gc.collect()
     return result
 
 
-def fetch_files(root,plan,download,inspect=inspect_eeg):
+def fetch_files(root,plan,download,inspect=inspect_eeg,allow_download=True):
     """Injected downloader supports offline tests; only the fixed sub-01 allowlist."""
     root=Path(root)
     if set(plan['files'])!=set(FILES):raise ValueError('Only sub-01 training and test are authorized')
@@ -133,6 +141,8 @@ def fetch_files(root,plan,download,inspect=inspect_eeg):
         if target.exists():
             details=verify_bytes(target,expected)
         else:
+            if not allow_download:
+                raise FileNotFoundError(f'Existing-only verification: missing {target}; no download attempted')
             staging.mkdir(parents=True,exist_ok=True)
             present=(staging/name).stat().st_size if (staging/name).is_file() else max(
                 [p.stat().st_size for p in staging.rglob(target.name+'*.incomplete')],default=0)
@@ -153,7 +163,7 @@ def fetch_files(root,plan,download,inspect=inspect_eeg):
     return reports
 
 
-def prepare_inputs(root,cache,image_roots=(),download=False):
+def prepare_inputs(root,cache,image_roots=(),download=False,verify_existing=False):
     # CPU only, including metadata torch.load below. This never requests a GPU.
     os.environ['CUDA_VISIBLE_DEVICES']=''
     root=Path(root);root.mkdir(parents=True,exist_ok=True)
@@ -165,10 +175,12 @@ def prepare_inputs(root,cache,image_roots=(),download=False):
         write_json(output,{'inventory':report,'status':'inventory_only'})
         print(json.dumps({'inventory_report':str(output),'images_root':report['image_root'],
                           'ready_images_and_features':report['ready_images_and_features'],'missing':report['missing']},indent=2))
-        if not download:return output
+        if not download and not verify_existing:return output
         from huggingface_hub import HfApi,hf_hub_download
         plan_path=root/'pilot_sub01_download_plan.json'
         if plan_path.exists():plan=json.loads(plan_path.read_text())
+        elif verify_existing:
+            raise FileNotFoundError('Existing-only verification needs the saved pilot_sub01_download_plan.json; no download attempted')
         else:
             info=HfApi().dataset_info(REPO,files_metadata=True)
             available={f.rfilename:f for f in info.siblings}
@@ -188,7 +200,7 @@ def prepare_inputs(root,cache,image_roots=(),download=False):
         state={'inventory':report,'provenance':provenance,'status':'verifying','ready_for_preparation':False}
         write_json(output,state)
         try:
-            state['verified_eeg']=fetch_files(root,plan,hf_hub_download)
+            state['verified_eeg']=fetch_files(root,plan,hf_hub_download,allow_download=not verify_existing)
             state.update(status='eeg_verified',ready_for_preparation=report['ready_images_and_features'])
         except Exception as error:
             state.update(status='incomplete',error=str(error));write_json(output,state);raise
@@ -204,5 +216,7 @@ if __name__=='__main__':
     p.add_argument('--root',default='/content/drive/MyDrive/THINGS-EEG2')
     p.add_argument('--cache',default='/content/drive/MyDrive/eeg_results/cache')
     p.add_argument('--image-roots',nargs='*',default=['/content/EEG_Data','/content/drive/MyDrive/eeg_results'])
-    p.add_argument('--download-sub01',action='store_true',help='Download only the two authorized pilot files')
-    a=p.parse_args();prepare_inputs(a.root,a.cache,a.image_roots,a.download_sub01)
+    mode=p.add_mutually_exclusive_group()
+    mode.add_argument('--download-sub01',action='store_true',help='Download only the two authorized pilot files')
+    mode.add_argument('--verify-existing-sub01',action='store_true',help='Verify existing files only; never download missing files')
+    a=p.parse_args();prepare_inputs(a.root,a.cache,a.image_roots,a.download_sub01,a.verify_existing_sub01)

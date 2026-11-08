@@ -1,15 +1,70 @@
 import hashlib
 import json
+import pickle
 from pathlib import Path
 import tempfile
 from types import SimpleNamespace
 import unittest
 from unittest import mock
 import numpy as np
-from phase1.pilot_inputs import FILES,CHANNELS,fetch_files,inspect_eeg,inventory,verify_bytes
+from phase1.pilot_inputs import FILES,CHANNELS,fetch_files,inspect_eeg,inventory,verify_bytes,load_dictionary
 
 
 class PilotInputTests(unittest.TestCase):
+    def write_eeg(self,path,data,format):
+        if format=='direct_dict':
+            with open(path,'wb') as f:pickle.dump(data,f,protocol=4)
+        else:np.save(path,data)
+
+    def test_inspect_eeg_direct_dict_and_scalar_object_array(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            shape=(2,1,63,4)
+            data={'preprocessed_eeg_data':np.ones(shape,dtype=np.float32),
+                  'ch_names':CHANNELS,'times':np.arange(4)/250}
+            reports=[]
+            for format in ['direct_dict','scalar_object_array']:
+                with self.subTest(format=format):
+                    path=Path(tmp)/(format+'.npy');self.write_eeg(path,data,format)
+                    loaded=np.load(path,allow_pickle=True)
+                    self.assertIsInstance(loaded,dict if format=='direct_dict' else np.ndarray)
+                    before=path.read_bytes();reports.append(inspect_eeg(path,shape,check_ram=False))
+                    self.assertEqual(before,path.read_bytes())
+            self.assertEqual(reports[0],reports[1])
+            self.assertTrue(reports[0]['finite'] and reports[0]['channels_metadata_verified'] and reports[0]['time_metadata_verified'])
+
+    def test_both_formats_preserve_all_eeg_validation(self):
+        shape=(2,1,63,4)
+        original={'preprocessed_eeg_data':np.ones(shape,dtype=np.float32),'ch_names':CHANNELS,'times':np.arange(4)/250}
+        with tempfile.TemporaryDirectory() as tmp:
+            for format in ['direct_dict','scalar_object_array']:
+                cases={
+                    'shape':{**original,'preprocessed_eeg_data':np.ones((1,1,63,4),dtype=np.float32)},
+                    'dtype':{**original,'preprocessed_eeg_data':np.ones(shape,dtype=np.int32)},
+                    'finite':{**original,'preprocessed_eeg_data':np.full(shape,np.nan,dtype=np.float32)},
+                    'channels':{**original,'ch_names':list(reversed(CHANNELS))},
+                    'times':{**original,'times':np.arange(4)/100}}
+                for name,data in cases.items():
+                    with self.subTest(format=format,validation=name):
+                        path=Path(tmp)/'bad.npy';self.write_eeg(path,data,format)
+                        with self.assertRaises(ValueError):inspect_eeg(path,shape,check_ram=False)
+
+    def test_dictionary_loader_rejects_other_containers(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            for value in [np.ones(2),np.array([{}],dtype=object),np.array('bad',dtype=object),['not a dictionary']]:
+                path=Path(tmp)/'bad.npy'
+                with open(path,'wb') as f:pickle.dump(value,f)
+                with self.assertRaises(ValueError):load_dictionary(path)
+
+    def test_existing_only_mode_cannot_download(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            root=Path(tmp);download=mock.Mock();data=b'existing';plan=self.plan(data)
+            with self.assertRaises(FileNotFoundError):fetch_files(root,plan,download,allow_download=False)
+            download.assert_not_called();self.assertFalse((root/'.pilot_downloads').exists())
+            for name in FILES:
+                path=root/name;path.parent.mkdir(parents=True,exist_ok=True);path.write_bytes(data)
+            fetch_files(root,plan,download,inspect=lambda p,s:{'shape':list(s)},allow_download=False)
+            download.assert_not_called()
+
     def plan(self,data):
         return {'revision':'a'*40,'files':{n:{'size':len(data),'sha256':hashlib.sha256(data).hexdigest()} for n in FILES}}
 
@@ -77,6 +132,8 @@ class PilotInputTests(unittest.TestCase):
         self.assertLess(cpu,gpu)
         self.assertIn("assert not torch.cuda.is_available()",sources[cpu])
         self.assertIn("CUDA_VISIBLE_DEVICES=''",sources[cpu])
+        self.assertIn('VERIFY_EXISTING_EEG_ONLY = True',sources[cpu])
+        self.assertIn('/content/eeg-patch-pr2-cpu-dictfix',sources[cpu])
         for source in sources:compile(source,'notebook','exec')
 
 

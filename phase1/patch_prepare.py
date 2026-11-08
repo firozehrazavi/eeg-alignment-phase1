@@ -11,6 +11,7 @@ from pathlib import Path
 import numpy as np
 import torch
 from .patch_cache import digest, read_catalog
+from .pilot_inputs import load_dictionary
 
 POST17 = [46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62]
 LAYERS = [20,24,28,32,36]
@@ -104,7 +105,7 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
             name = f'{subject}_{s}_prez.npy'
             manifest['subjects'][subject][s] = name
             if completed(name):continue
-            obj = np.load(source,allow_pickle=True).item()
+            obj = load_dictionary(source)
             x = obj['preprocessed_eeg_data']
             if x.ndim != 4 or x.shape[0] != len(meta[f'{s}_img_files']) or x.shape[2] != 63:
                 raise ValueError(f'Expected image x repetitions x 63 x time: {source}, got {x.shape}')

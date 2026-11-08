@@ -2,6 +2,11 @@
 
 Start section **A** of `notebooks/10_rpa_patch_pilot.ipynb` with Colab's
 hardware accelerator set to **None**. Use CPU High RAM where available.
+For resuming after the dictionary-loader error, keep
+`VERIFY_EXISTING_EEG_ONLY = True` (the updated default). It revalidates existing
+files without downloading anything. Missing files or the saved download plan
+produce a clear stop. For an initial download rather than verification, the
+original `--download-sub01` mode is still available explicitly.
 Do not allocate a GPU for this stage. It downloads only:
 
 ```text
@@ -54,7 +59,10 @@ values and these expected shapes from the
 | Training | `(16540, 4, 63, 250)` |
 | Test | `(200, 80, 63, 250)` |
 
-The NPY files contain pickle-based dictionaries from the selected trusted
+The EEG files may load directly as dictionaries or as scalar NumPy object
+arrays containing dictionaries; both verification and subsequent preparation
+accept these two containers. All validation checks still apply to the contents.
+The files contain pickle-based dictionaries from the selected trusted
 dataset mirror. Verify bytes before loading; do not substitute an untrusted
 pickle. Channel names and 250 Hz time spacing are checked when embedded metadata
 is present; absent metadata is recorded as unverified, not invented. A conflicting
@@ -98,7 +106,8 @@ No ten-subject download or full training command is included.
 
 ## Validation performed locally
 
-39 CPU tests pass, including simulated interrupted transfers, checksum/size
+43 CPU tests pass, including direct-dictionary/scalar-object-array regression
+fixtures, unchanged content validation, no-download verification, interrupted transfers, checksum/size
 failures, non-overwrite behavior, subject allowlisting, shape/channel/time checks,
 RAM refusal, read-only inventory and notebook ordering. The existing preparation
 test now also interrupts processing and verifies exact resumed outputs.
