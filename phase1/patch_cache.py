@@ -9,10 +9,12 @@ import argparse
 import hashlib
 import json
 import os
+import time
 from pathlib import Path
 import numpy as np
 import torch
 from .core import validate_disjoint_catalogs
+from .patch_resources import BudgetMeter, runtime_profile, retry_oom
 
 
 def digest(path):
@@ -71,11 +73,15 @@ def extract(args):
         raise ValueError('Pin an immutable 40-character Hugging Face model revision')
     if not torch.cuda.is_available():
         raise RuntimeError('InternViT extraction requires CUDA; no features were fabricated')
+    profile=runtime_profile();print(json.dumps(profile),flush=True)
+    meter=BudgetMeter();meter.check('extraction_start',force=True)
+    inference_dtype=torch.bfloat16 if profile['precision']=='bf16' else torch.float16
     root = Path(args.output)
     root.mkdir(parents=True, exist_ok=True)
     identity = dict(model='OpenGVLab/InternViT-6B-448px-V2_5', revision=args.revision,
                     layer=args.layer, layer_convention='hidden_states[L] = encoder.layers[L-1] output',
                     catalog_sha256=digest(args.catalog), dtype='float16', cls_removed=True,
+                    inference_dtype=profile['precision'],
                     preprocessing='Pinned CLIPImageProcessor, RGB, no augmentation')
     mp = root/'manifest.json'
     if not mp.exists() and any(root.glob('*.npy')):
@@ -89,19 +95,24 @@ def extract(args):
     try:
         dmu.get_imports = lambda path: [m for m in original_imports(path) if m != 'flash_attn']
         model = AutoModel.from_pretrained(identity['model'], revision=args.revision,
-            trust_remote_code=True, torch_dtype=torch.bfloat16,
+            trust_remote_code=True, torch_dtype=inference_dtype,
             low_cpu_mem_usage=True, use_flash_attn=False).eval()
     finally:
         dmu.get_imports = original_imports
     if not 1 <= args.layer <= len(model.encoder.layers):
         raise ValueError('Layer out of range')
     model.encoder.layers = torch.nn.ModuleList(list(model.encoder.layers)[:args.layer])
-    model.requires_grad_(False).cuda()
+    try:
+        model.requires_grad_(False).cuda()
+    except torch.cuda.OutOfMemoryError:
+        raise RuntimeError('Backbone does not fit assigned GPU. No cache changed; request a higher-VRAM runtime.') from None
     captured = []
     def capture(module, inputs, output):
         captured.append(output[0] if isinstance(output, tuple) else output)
     hook = model.encoder.layers[-1].register_forward_hook(capture)
     processed = 0
+    inference_start=time.time()
+    microbatch=args.batch
     try:
         for split in ('test', 'train'):  # Always complete the 200-image gallery first.
             records = catalog[split]
@@ -110,6 +121,7 @@ def extract(args):
             array = np.load(arrpath, mmap_mode='r+') if arrpath.exists() else None
             todo = np.flatnonzero(~done)
             for start in range(0,len(todo),args.batch):
+                meter.check('extracting_tokens')
                 rows = todo[start:start+args.batch]
                 if args.limit and processed + len(rows) > args.limit:
                     return
@@ -120,13 +132,18 @@ def extract(args):
                         raise ValueError(f'Image hash mismatch: {path}')
                     with Image.open(path) as im:
                         images.append(im.convert('RGB').copy())
-                captured.clear()
-                with torch.inference_mode():
-                    px = processor(images=images,return_tensors='pt')['pixel_values']
-                    model(pixel_values=px.cuda().bfloat16(), output_hidden_states=False)
-                if len(captured) != 1:
-                    raise RuntimeError('Expected one encoder hook output')
-                tokens = captured[0][:,1:].contiguous().float().cpu().numpy().astype('float16')
+                def forward(use_batch):
+                    pieces=[]
+                    for offset in range(0,len(images),use_batch):
+                        captured.clear()
+                        with torch.inference_mode():
+                            px=processor(images=images[offset:offset+use_batch],return_tensors='pt')['pixel_values']
+                            model(pixel_values=px.cuda().to(inference_dtype), output_hidden_states=False)
+                        if len(captured)!=1:raise RuntimeError('Expected one encoder hook output')
+                        pieces.append(captured[0][:,1:].contiguous().float().cpu().numpy().astype('float16'))
+                        captured.clear()
+                    return np.concatenate(pieces)
+                tokens,microbatch=retry_oom(forward,microbatch)
                 grid = int(round(tokens.shape[1]**.5))
                 if grid*grid != tokens.shape[1] or not np.isfinite(tokens).all():
                     raise ValueError('Invalid native patch grid or values')
@@ -146,6 +163,9 @@ def extract(args):
                 tmp.write_text(json.dumps(meta,indent=2))
                 os.replace(tmp,mp)
                 processed += len(rows)
+                elapsed=time.time()-inference_start
+                (root/'throughput.json').write_text(json.dumps(dict(images=processed,seconds=elapsed,
+                    seconds_per_image=elapsed/processed,runtime=profile,microbatch=microbatch),indent=2))
                 print(f'{split}: {done.sum()}/{len(done)}', flush=True)
     finally:
         hook.remove()

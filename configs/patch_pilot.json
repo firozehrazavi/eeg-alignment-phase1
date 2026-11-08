@@ -22,5 +22,6 @@
   "bottleneck": 256,
   "groups": 32,
   "report_csls": false,
-  "hyperparameters": "fixed_a_priori"
+  "hyperparameters": "fixed_a_priori",
+  "precision": "auto"
 }

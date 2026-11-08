@@ -2,6 +2,7 @@ import copy
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 import numpy as np
 import torch
@@ -9,9 +10,24 @@ from phase1.patch_adapter import ResidualPatchAdapter, PatchAligner
 from phase1.patch_cache import TokenCache, digest
 from phase1.patch_experiment import enforce_provenance, fit_eeg_norm, schedule, run
 from phase1.patch_prepare import prepare, POST17
+from phase1.patch_resources import estimate_cu, retry_oom, BudgetMeter, BudgetExceeded
 
 
 class PatchTests(unittest.TestCase):
+    def test_budget_and_oom_safeguards(self):
+        self.assertEqual(estimate_cu(7200,7.5),15.)
+        with self.assertRaises(ValueError):estimate_cu(1,0)
+        attempts=[]
+        def operation(chunk):
+            attempts.append(chunk)
+            if chunk>2:raise torch.cuda.OutOfMemoryError('synthetic OOM')
+            return 123
+        self.assertEqual(retry_oom(operation,8),(123,2))
+        self.assertEqual(attempts,[8,4,2])
+        with mock.patch.dict('os.environ',{'PHASE1_SESSION_START':'0','PHASE1_CU_RATE':'10','PHASE1_CU_LIMIT':'1',
+                                          'PHASE1_RESOURCE_LOG':''}):
+            with self.assertRaises(BudgetExceeded):BudgetMeter().check('synthetic_budget')
+
     def test_residual_formula_and_gradient(self):
         torch.manual_seed(0)
         m=ResidualPatchAdapter(32,(2,2),16,32,8)
@@ -117,7 +133,7 @@ class PatchTests(unittest.TestCase):
             (cache/'manifest.json').write_text(json.dumps(dict(catalog_sha256=digest(cp),shapes=shapes,grid=[2,2],width=32,layer=28)))
             dp=root/'dataset.json';dp.write_text(json.dumps(manifest))
             cfg=dict(setting='loso',targets=['sub-02'],regime='benchmark_preprocessed',seeds=[0],split_seed=0,
-                     arms=['baseline','mean','patch'],objective='diagonal',epochs=1,batch=8,lr=1e-4,
+                     arms=['baseline','mean','patch'],objective='diagonal',epochs=2,batch=8,lr=1e-4,
                      weight_decay=1e-4,adapter_chunk=2,bottleneck=32,groups=8,patch_layer=28,device='cpu',report_csls=True)
             config=root/'config.json';config.write_text(json.dumps(cfg))
             # A held-out subject's training file must never be needed.
@@ -125,6 +141,11 @@ class PatchTests(unittest.TestCase):
             results=run(dp,config,root/'run1')
             repeated=run(dp,config,root/'run2')
             self.assertEqual(results,repeated)
+            # Profile uses the final scheduler, writes epoch state, and never tests.
+            self.assertEqual(run(dp,config,root/'profile',profile_one_epoch=True),[])
+            self.assertFalse((root/'profile/COMPLETE').exists())
+            self.assertFalse((root/'profile/results.json').exists())
+            self.assertEqual(results,run(dp,config,root/'profile',resume=True))
             self.assertEqual(results,run(dp,config,root/'run1',resume=True))
             self.assertEqual(len(results),6)
             self.assertTrue((root/'run1/COMPLETE').is_file())

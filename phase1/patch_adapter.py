@@ -56,8 +56,11 @@ class PatchAligner(nn.Module):
         if self.arm == 'baseline':
             return self.img(pooled)
         if self.arm == 'mean':
-            return self.img(tokens.mean(1))
+            return self.img(tokens.mean(1).to(self.log_scale.device))
         # GroupNorm is sample-local, so chunking preserves the objective/batch.
-        return torch.cat([checkpoint(self.img, t, use_reentrant=False)
-                          if self.training and torch.is_grad_enabled() else self.img(t)
+        # Keep the large input on CPU; each checkpoint transfers its own chunk.
+        def project(t):
+            return self.img(t.to(self.log_scale.device))
+        return torch.cat([checkpoint(project, t, use_reentrant=False)
+                          if self.training and torch.is_grad_enabled() else project(t)
                           for t in tokens.split(chunk)])

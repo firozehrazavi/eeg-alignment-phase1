@@ -1,13 +1,20 @@
 # Patch experiment validation — 2026-11-08
 
-- All 25 unittest tests passed on Python 3.12.5 / torch 2.9.1+cpu / NumPy 2.3.5.
-- Eight new tests include two independent complete three-arm synthetic LOSO
+- All 26 unittest tests passed on Python 3.12.5 / torch 2.9.1+cpu / NumPy 2.3.5.
+- Nine new tests include two independent complete three-arm synthetic LOSO
   runs with equal results, explicit resume, 200-way galleries, deletion of
   held-out training EEG, adapter gradients and checkpoint-chunk equivalence.
 - A synthetic preparation test checks authoritative row selection, repetition
   averaging, posterior-channel selection and preservation of pooled caches.
+- A one-epoch profiling run writes no test results; resuming all three arms
+  from full epoch checkpoints reproduces uninterrupted two-epoch results.
+- Simulated CUDA OOM retries reduce only chunks (8 -> 4 -> 2); CU arithmetic
+  and budget refusal pass. Actual CUDA OOM/AMP behavior remains GPU-untested.
 - All Colab code cells compiled as Python; cells have no stored executions or
   outputs. GPU dependency installation and extraction remain untested here.
+- Pro+ GPU/VRAM detection, user-entered live CU balance/rate, four default-false
+  paid-stage approval gates, Drive telemetry and approximate budget limits are
+  implemented. There is no full-run launch cell and no paid runtime was started.
 - Full configs cover 10 subjects × 3 seeds, with separate diagonal and
   multi-positive objectives and a strict-preprocessing guard.
 - The historical notebooks, recorded CSV results, original baseline module

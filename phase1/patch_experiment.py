@@ -9,6 +9,7 @@ import csv
 import json
 import os
 import platform
+import time
 from pathlib import Path
 import numpy as np
 import torch
@@ -18,6 +19,7 @@ from .core import (Standardizer, concept_split, clip_loss, multi_positive_loss,
 from .experiment import seed_all
 from .patch_cache import TokenCache, digest, read_catalog
 from .patch_adapter import PatchAligner
+from .patch_resources import BudgetMeter, runtime_profile, retry_oom
 
 
 def schedule(config, subjects):
@@ -67,7 +69,7 @@ def fit_eeg_norm(arrays, rows):
                         torch.tensor(std[None,:,None],dtype=torch.float32))
 
 
-def run(dataset_path, config_path, output, resume=False):
+def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False):
     os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
     cfg = json.loads(Path(config_path).read_text())
     root = Path(dataset_path).resolve().parent
@@ -109,6 +111,14 @@ def run(dataset_path, config_path, output, resume=False):
     else:
         out.mkdir(parents=True)
     device = torch.device(cfg.get('device','cuda' if torch.cuda.is_available() else 'cpu'))
+    profile=runtime_profile()
+    precision=cfg.get('precision','auto')
+    if precision=='auto':precision=profile['precision'] if device.type=='cuda' else 'fp32'
+    if precision not in ('fp32','fp16','bf16'):
+        raise ValueError('Unknown mixed precision mode')
+    amp_enabled=device.type=='cuda' and precision!='fp32'
+    amp_dtype=torch.bfloat16 if precision=='bf16' else torch.float16
+    meter=BudgetMeter();meter.check('training_start',force=True)
     if device.type=='cuda':
         torch.backends.cudnn.benchmark=False
         torch.backends.cuda.matmul.allow_tf32=False
@@ -122,14 +132,16 @@ def run(dataset_path, config_path, output, resume=False):
         catalog_sha256=digest(catalog_path),token_manifest=tokens.meta,
         split={'fit':fit,'validation':val},python=platform.python_version(),
         torch=torch.__version__,numpy=np.__version__,device=str(device),
-        gpu=torch.cuda.get_device_name() if device.type=='cuda' else None,
+        gpu=torch.cuda.get_device_name() if device.type=='cuda' else None,precision=precision,runtime=profile,
         input_hashes={p:digest(root/p) for s in manifest['pooled'].values() for p in s})
     if previous:
+        if previous.get('precision') != precision:
+            raise ValueError('Runtime precision changed: choose a new matched run instead of resuming')
         provenance['input_hashes'].update(previous['input_hashes'])
     (out/'provenance.json').write_text(json.dumps(provenance,indent=2))
     ids = {s:[r['id'] for r in cat[s]] for s in cat}
     records=json.loads((out/'results.json').read_text()) if previous and (out/'results.json').exists() else []
-    batch=cfg['batch']; chunk=cfg.get('adapter_chunk',8)
+    batch=cfg['batch']; chunk=min(cfg.get('adapter_chunk',8),profile['adapter_chunk'])
     if batch<2 or chunk<1 or cfg['epochs']<1 or len(fit)<2:
         raise ValueError('Invalid training budget')
 
@@ -142,28 +154,37 @@ def run(dataset_path, config_path, output, resume=False):
         for s in sources:
             p = manifest['subjects'][s]['train']
             provenance['input_hashes'][p] = digest(root/p)
+        (out/'provenance.json').write_text(json.dumps(provenance,indent=2))
         n = len(cat['train'])
         train_rows = np.array([s*n+i for s in range(len(sources)) for i in fit])
         def eeg_batch(rows):
             x = np.stack([arrays[int(r)//n][int(r)%n] for r in rows])
             return en.transform(torch.from_numpy(x)).to(device)
-        def visual(model,split,rows):
-            if model.arm=='baseline':
-                return model.visual(pooled=[norm.transform(torch.from_numpy(np.array(x[rows]))).to(device)
-                                           for norm,x in zip(norms,pooled[split])])
-            t = tokens.get(split,rows)
-            t = (t-visual_norm.mean[:,None,:])/visual_norm.std[:,None,:]
-            return model.visual(tokens=t.to(device),chunk=chunk)
+        def encode_eeg(model,x):
+            with torch.autocast(device_type=device.type,dtype=amp_dtype,enabled=amp_enabled):
+                return model.eeg(x)
+        def visual(model,split,rows,use_chunk):
+            with torch.autocast(device_type=device.type,dtype=amp_dtype,enabled=amp_enabled):
+                if model.arm=='baseline':
+                    return model.visual(pooled=[norm.transform(torch.from_numpy(np.array(x[rows]))).to(device)
+                                               for norm,x in zip(norms,pooled[split])])
+                t = tokens.get(split,rows)
+                t = (t-visual_norm.mean[:,None,:])/visual_norm.std[:,None,:]
+                return model.visual(tokens=t,chunk=use_chunk)
         @torch.no_grad()
         def gallery(model,split,rows):
-            return torch.cat([F.normalize(visual(model,split,rows[k:k+batch]),dim=-1)
-                              for k in range(0,len(rows),batch)])
+            nonlocal chunk
+            outputs=[]
+            for k in range(0,len(rows),batch):
+                value,chunk=retry_oom(lambda c:visual(model,split,rows[k:k+batch],c),chunk)
+                outputs.append(F.normalize(value.float(),dim=-1))
+            return torch.cat(outputs)
         @torch.no_grad()
         def validation(model):
             g = gallery(model,'train',val)
             vals=[]
             for s in range(len(sources)):
-                q = torch.cat([F.normalize(model.eeg(eeg_batch([s*n+i for i in val[k:k+batch]])),dim=-1)
+                q = torch.cat([F.normalize(encode_eeg(model,eeg_batch([s*n+i for i in val[k:k+batch]])).float(),dim=-1)
                                for k in range(0,len(val),batch)])
                 vals.append(retrieval_metrics(q@g.T,[ids['train'][i] for i in val],
                                              [ids['train'][i] for i in val],len(val))['top1'])
@@ -181,31 +202,64 @@ def run(dataset_path, config_path, output, resume=False):
             seed_all(seed+10000)
             optimizer = torch.optim.AdamW(model.parameters(),lr=cfg['lr'],weight_decay=cfg['weight_decay'])
             scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer,T_max=cfg['epochs'])
+            scaler=torch.amp.GradScaler('cuda',enabled=amp_enabled and precision=='fp16')
             rng = np.random.default_rng(seed)
             best=-1.; history=[]; state=None
-            for epoch in range(1,cfg['epochs']+1):
+            name=f'{cfg["setting"]}_{target}_s{seed}_{arm}_{cfg["objective"]}'
+            latest=out/f'{name}_latest.pt'
+            first_epoch=1
+            if resume and latest.exists():
+                saved=torch.load(latest,map_location='cpu',weights_only=False)
+                model.load_state_dict(saved['model']);optimizer.load_state_dict(saved['optimizer'])
+                scheduler.load_state_dict(saved['scheduler']);scaler.load_state_dict(saved['scaler'])
+                rng.bit_generator.state=saved['numpy_rng'];torch.set_rng_state(saved['torch_rng'])
+                if device.type=='cuda':torch.cuda.set_rng_state_all(saved['cuda_rng'])
+                first_epoch=saved['epoch']+1;best=saved['best'];best_epoch=saved['best_epoch']
+                state=saved['best_state'];history=saved['history'];chunk=min(chunk,saved['chunk'])
+            last_epoch=min(first_epoch,cfg['epochs']) if profile_one_epoch else cfg['epochs']
+            for epoch in range(first_epoch,last_epoch+1):
+                epoch_start=time.time()
                 model.train(); losses=[]
                 for rows in np.array_split(rng.permutation(train_rows),int(np.ceil(len(train_rows)/batch))):
                     if len(rows)<2: continue
+                    meter.check(f'{name}:epoch{epoch}')
                     images=(rows%n).tolist()
-                    z=model.eeg(eeg_batch(rows)); v=visual(model,'train',images)
                     identity=[ids['train'][i] for i in images]
-                    loss=(clip_loss(z,v,model.scale()) if cfg['objective']=='diagonal' else
-                          multi_positive_loss(z,v,model.scale(),identity,identity))
-                    if not torch.isfinite(loss):
-                        raise FloatingPointError('Nonfinite training loss; no accuracy result written')
-                    optimizer.zero_grad(set_to_none=True); loss.backward()
+                    cpu_rng=torch.get_rng_state()
+                    cuda_rng=torch.cuda.get_rng_state_all() if device.type=='cuda' else None
+                    def step(use_chunk):
+                        optimizer.zero_grad(set_to_none=True)
+                        torch.set_rng_state(cpu_rng)
+                        if cuda_rng is not None:torch.cuda.set_rng_state_all(cuda_rng)
+                        z=encode_eeg(model,eeg_batch(rows));v=visual(model,'train',images,use_chunk)
+                        loss=(clip_loss(z.float(),v.float(),model.scale()) if cfg['objective']=='diagonal' else
+                              multi_positive_loss(z,v,model.scale(),identity,identity))
+                        if not torch.isfinite(loss):raise FloatingPointError('Nonfinite training loss')
+                        scaler.scale(loss).backward()
+                        return float(loss.detach())
+                    loss,chunk=retry_oom(step,chunk)
+                    scaler.unscale_(optimizer)
                     torch.nn.utils.clip_grad_norm_(model.parameters(),cfg.get('grad_clip',1.))
-                    optimizer.step(); losses.append(float(loss.detach()))
+                    scaler.step(optimizer);scaler.update();losses.append(loss)
                 scheduler.step(); model.eval()
                 score=validation(model)
                 history.append(dict(epoch=epoch,loss=float(np.mean(losses)),source_val_top1=score))
                 if score>best:
                     best=score; best_epoch=epoch
                     state={k:v.detach().cpu().clone() for k,v in model.state_dict().items()}
+                saved=dict(model=model.state_dict(),optimizer=optimizer.state_dict(),scheduler=scheduler.state_dict(),
+                    scaler=scaler.state_dict(),numpy_rng=rng.bit_generator.state,torch_rng=torch.get_rng_state(),
+                    cuda_rng=torch.cuda.get_rng_state_all() if device.type=='cuda' else [],epoch=epoch,
+                    best=best,best_epoch=best_epoch,best_state=state,history=history,chunk=chunk)
+                torch.save(saved,out/f'{name}_latest.tmp');os.replace(out/f'{name}_latest.tmp',latest)
+                with open(out/'epoch_timing.jsonl','a') as f:
+                    f.write(json.dumps(dict(run=name,epoch=epoch,seconds=time.time()-epoch_start,chunk=chunk))+'\n')
                 print(target,seed,arm,epoch,'source validation',score,flush=True)
+                meter.check(f'{name}:epoch{epoch}:saved',force=True)
+            if profile_one_epoch:
+                del model,optimizer,state,saved
+                continue
             model.load_state_dict(state); model.eval()
-            name=f'{cfg["setting"]}_{target}_s{seed}_{arm}_{cfg["objective"]}'
             torch.save(dict(model=state,eeg_norm=en,visual_norms=norms,config=cfg,
                             best_epoch=best_epoch,sources=sources,target=target),out/f'{name}.pt')
             # Only after checkpoint selection is final, open target test EEG.
@@ -214,7 +268,7 @@ def run(dataset_path, config_path, output, resume=False):
             if test.shape!=(200,*arrays[0].shape[1:]) or not np.isfinite(test).all():
                 raise ValueError('Expected finite target EEG aligned with 200 test stimuli')
             with torch.no_grad():
-                q=torch.cat([F.normalize(model.eeg(en.transform(torch.from_numpy(np.array(test[k:k+batch]))).to(device)),dim=-1)
+                q=torch.cat([F.normalize(encode_eeg(model,en.transform(torch.from_numpy(np.array(test[k:k+batch]))).to(device)).float(),dim=-1)
                              for k in range(0,200,batch)])
                 g=gallery(model,'test',list(range(200)))
                 scores=q@g.T
@@ -234,12 +288,14 @@ def run(dataset_path, config_path, output, resume=False):
             os.replace(out/'results.tmp',out/'results.json')
             with open(out/'results.csv','w',newline='') as f:
                 writer=csv.DictWriter(f,fieldnames=list(records[0]));writer.writeheader();writer.writerows(records)
-            del model,optimizer,state
+            del model,optimizer,state,saved
         del arrays
     provenance['peak_gpu_allocated_bytes']=max(torch.cuda.max_memory_allocated() if device.type=='cuda' else 0,
                                               (previous or {}).get('peak_gpu_allocated_bytes',0))
     (out/'provenance.json').write_text(json.dumps(provenance,indent=2))
-    (out/'COMPLETE').write_text('All configured folds, seeds and arms completed.\n')
+    marker='PILOT_PROFILE_COMPLETE' if profile_one_epoch else 'COMPLETE'
+    (out/marker).write_text('Profile only, no test evaluation.\n' if profile_one_epoch else
+                          'All configured folds, seeds and arms completed.\n')
     return records
 
 
@@ -247,4 +303,5 @@ if __name__=='__main__':
     p=argparse.ArgumentParser(description=__doc__)
     p.add_argument('--dataset',required=True);p.add_argument('--config',required=True);p.add_argument('--output',required=True)
     p.add_argument('--resume',action='store_true',help='Skip completed arms only if provenance matches')
-    a=p.parse_args();run(a.dataset,a.config,a.output,a.resume)
+    p.add_argument('--profile-one-epoch',action='store_true',help='Checkpoint one epoch per arm without test evaluation')
+    a=p.parse_args();run(a.dataset,a.config,a.output,a.resume,a.profile_one_epoch)

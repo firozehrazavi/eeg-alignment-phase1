@@ -1,4 +1,4 @@
-# GPU torch/torchvision are installed together by the Colab setup cell.
+# Keep Colab's driver-compatible torch/torchvision; record pip freeze for replay.
 numpy==1.26.4
 transformers==4.45.2
 accelerate==1.0.1
