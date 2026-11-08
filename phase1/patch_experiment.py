@@ -20,6 +20,8 @@ from .experiment import seed_all
 from .patch_cache import TokenCache, digest, read_catalog
 from .patch_adapter import PatchAligner
 from .patch_resources import BudgetMeter, runtime_profile, retry_oom
+from .v7_controls import (ConvEEG, source_training_rows, stratified_rows, augment_eeg,
+                          margin_multi_positive_loss, margin_at_epoch)
 
 
 def schedule(config, subjects):
@@ -46,6 +48,12 @@ def enforce_provenance(manifest, config):
         raise ValueError('Unknown preprocessing regime')
     if config['objective'] not in ('diagonal','multi_positive'):
         raise ValueError('Unknown objective')
+    if config.get('text_weight',0)!=0:
+        raise ValueError('Text supervision is a separate experiment, never automatically enabled')
+    if config.get('encoder','mlp') not in ('mlp','conv'):
+        raise ValueError('Unknown EEG encoder')
+    if config.get('sampler','random') not in ('random','subject_stratified'):
+        raise ValueError('Unknown row sampler')
     if config.get('hyperparameters','fixed_a_priori') != 'fixed_a_priori':
         raise ValueError('This runner accepts pre-fixed settings only; no outer-test tuning')
 
@@ -72,6 +80,7 @@ def fit_eeg_norm(arrays, rows):
 def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False):
     os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
     cfg = json.loads(Path(config_path).read_text())
+    margin_at_epoch(cfg,1)  # Validate explicit stage settings before touching data.
     root = Path(dataset_path).resolve().parent
     manifest = json.loads(Path(dataset_path).read_text())
     enforce_provenance(manifest,cfg)
@@ -130,7 +139,7 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
     # Thus normalization and mean pooling commute for the mean/patch controls.
     provenance = dict(config=cfg,dataset=manifest,dataset_sha256=digest(dataset_path),code_hashes=code_hashes,
         catalog_sha256=digest(catalog_path),token_manifest=tokens.meta,
-        split={'fit':fit,'validation':val},python=platform.python_version(),
+        split={'fit':fit,'validation':val},image_ids={s:[r['id'] for r in cat[s]] for s in cat},python=platform.python_version(),
         torch=torch.__version__,numpy=np.__version__,device=str(device),
         gpu=torch.cuda.get_device_name() if device.type=='cuda' else None,precision=precision,runtime=profile,
         input_hashes={p:digest(root/p) for s in manifest['pooled'].values() for p in s})
@@ -156,7 +165,7 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
             provenance['input_hashes'][p] = digest(root/p)
         (out/'provenance.json').write_text(json.dumps(provenance,indent=2))
         n = len(cat['train'])
-        train_rows = np.array([s*n+i for s in range(len(sources)) for i in fit])
+        train_rows = source_training_rows(fit,val,n,sources,target if cfg['setting']=='loso' else None)
         def eeg_batch(rows):
             x = np.stack([arrays[int(r)//n][int(r)%n] for r in rows])
             return en.transform(torch.from_numpy(x)).to(device)
@@ -180,15 +189,19 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                 outputs.append(F.normalize(value.float(),dim=-1))
             return torch.cat(outputs)
         @torch.no_grad()
-        def validation(model):
+        def validation(model,return_bundles=False):
             g = gallery(model,'train',val)
-            vals=[]
+            vals=[];bundles={}
             for s in range(len(sources)):
                 q = torch.cat([F.normalize(encode_eeg(model,eeg_batch([s*n+i for i in val[k:k+batch]])).float(),dim=-1)
                                for k in range(0,len(val),batch)])
-                vals.append(retrieval_metrics(q@g.T,[ids['train'][i] for i in val],
-                                             [ids['train'][i] for i in val],len(val))['top1'])
-            return float(np.mean(vals))
+                identity=[ids['train'][i] for i in val];scores=q@g.T
+                vals.append(retrieval_metrics(scores,identity,identity,len(val))['top1'])
+                if return_bundles:
+                    bundles[sources[s]]=dict(role='source_validation',score_type='cosine',
+                                             query_ids=identity,gallery_ids=identity,scores=scores.cpu())
+            score=float(np.mean(vals))
+            return (score,bundles) if return_bundles else score
         for arm in cfg['arms']:
             completed=[r for r in records if r['subject']==target and r['seed']==seed and r['arm']==arm]
             if len(completed)==(2 if cfg.get('report_csls',False) else 1):
@@ -197,6 +210,10 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
             model = PatchAligner(int(np.prod(arrays[0].shape[1:])),[x.shape[1] for x in pooled['train']],
                 tokens.meta['width'],tokens.meta['grid'],arm,
                 bottleneck=cfg.get('bottleneck',256),groups=cfg.get('groups',32)).to(device)
+            if cfg.get('encoder','mlp')=='conv':
+                # Preserve image-head initialization; initialize EEG independently of visual arm.
+                torch.manual_seed(seed)
+                model.eeg=ConvEEG(*arrays[0].shape[1:]).to(device)
             # EEG initialization is identical across arms (created first).
             # Reset training RNG so architecture initialization cannot shift dropout/batches.
             seed_all(seed+10000)
@@ -220,7 +237,10 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
             for epoch in range(first_epoch,last_epoch+1):
                 epoch_start=time.time()
                 model.train(); losses=[]
-                for rows in np.array_split(rng.permutation(train_rows),int(np.ceil(len(train_rows)/batch))):
+                batches=(stratified_rows(train_rows,np.repeat(np.arange(len(sources)),n),batch,rng)
+                         if cfg.get('sampler','random')=='subject_stratified' else
+                         np.array_split(rng.permutation(train_rows),int(np.ceil(len(train_rows)/batch))))
+                for rows in batches:
                     if len(rows)<2: continue
                     meter.check(f'{name}:epoch{epoch}')
                     images=(rows%n).tolist()
@@ -231,8 +251,11 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                         optimizer.zero_grad(set_to_none=True)
                         torch.set_rng_state(cpu_rng)
                         if cuda_rng is not None:torch.cuda.set_rng_state_all(cuda_rng)
-                        z=encode_eeg(model,eeg_batch(rows));v=visual(model,'train',images,use_chunk)
-                        loss=(clip_loss(z.float(),v.float(),model.scale()) if cfg['objective']=='diagonal' else
+                        x=augment_eeg(eeg_batch(rows),**cfg.get('augmentation',{}))
+                        z=encode_eeg(model,x);v=visual(model,'train',images,use_chunk)
+                        margin=margin_at_epoch(cfg,epoch)
+                        loss=(margin_multi_positive_loss(z,v,model.scale(),identity,identity,margin) if margin else
+                              clip_loss(z.float(),v.float(),model.scale()) if cfg['objective']=='diagonal' else
                               multi_positive_loss(z,v,model.scale(),identity,identity))
                         if not torch.isfinite(loss):raise FloatingPointError('Nonfinite training loss')
                         scaler.scale(loss).backward()
@@ -260,6 +283,9 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                 del model,optimizer,state,saved
                 continue
             model.load_state_dict(state); model.eval()
+            if cfg.get('save_validation_scores',False):
+                _,bundles=validation(model,return_bundles=True)
+                torch.save(bundles,out/f'{name}_source_validation.pt')
             torch.save(dict(model=state,eeg_norm=en,visual_norms=norms,config=cfg,
                             best_epoch=best_epoch,sources=sources,target=target),out/f'{name}.pt')
             # Only after checkpoint selection is final, open target test EEG.
@@ -282,6 +308,9 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                     records.append(dict(**base,setting=('loso_transductive_csls' if cfg['setting']=='loso' else 'within_transductive_csls')+'_'+cfg['regime'],
                                         **retrieval_metrics(csls(scores,policy),ids['test'],ids['test'])))
             np.save(out/f'{name}_scores.npy',scores.cpu().numpy())
+            if cfg.get('save_validation_scores',False):
+                torch.save(dict(role='test',score_type='cosine',query_ids=ids['test'],gallery_ids=ids['test'],
+                                scores=scores.cpu()),out/f'{name}_test_bundle.pt')
             (out/f'{name}_history.json').write_text(json.dumps(history,indent=2))
             (out/'provenance.json').write_text(json.dumps(provenance,indent=2))
             (out/'results.tmp').write_text(json.dumps(records,indent=2))

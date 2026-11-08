@@ -147,6 +147,14 @@ class PatchTests(unittest.TestCase):
             self.assertFalse((root/'profile/results.json').exists())
             self.assertEqual(results,run(dp,config,root/'profile',resume=True))
             self.assertEqual(results,run(dp,config,root/'run1',resume=True))
+            conv={**cfg,'encoder':'conv','arms':['baseline'],'objective':'multi_positive',
+                  'epochs':1,'save_validation_scores':True,'text_weight':0.}
+            convpath=root/'conv.json';convpath.write_text(json.dumps(conv))
+            conv_result=run(dp,convpath,root/'conv')
+            self.assertEqual(len(conv_result),2)
+            saved=torch.load(root/'conv/loso_sub-02_s0_baseline_multi_positive_source_validation.pt',weights_only=False)
+            self.assertEqual(set(saved),{'sub-01'})
+            self.assertEqual(saved['sub-01']['role'],'source_validation')
             self.assertEqual(len(results),6)
             self.assertTrue((root/'run1/COMPLETE').is_file())
             self.assertTrue(all('inductive' not in r['setting'] for r in results))
