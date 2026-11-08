@@ -48,18 +48,37 @@ def inventory(root,cache,image_roots=()):
         if not p.is_file():report['missing'].append(str(p))
     if meta_path.is_file():
         meta=torch.load(meta_path,map_location='cpu',weights_only=False)
-    roots=list(dict.fromkeys(str(Path(p)) for p in [root,*image_roots]))
+    # Cached paths are relative to the dataset parent, not images_set itself.
+    roots=list(dict.fromkeys(str(Path(p).parent if Path(p).name=='images_set' else Path(p))
+                            for p in [root,*image_roots]))
     for candidate in roots:
         directory=Path(candidate);mp=directory/'images_set/image_metadata.npy'
-        item={'root':candidate,'metadata_exists':mp.is_file(),'missing_images':[], 'metadata_matches':False}
+        item={'root':candidate,'metadata_path':str(mp),'metadata_exists':mp.is_file(),
+              'missing_images':[], 'metadata_matches':False,'reasons':[], 'splits':{}}
+        if not mp.is_file():item['reasons'].append('image_metadata_missing')
+        if meta is None:item['reasons'].append('cache_metadata_missing')
         if mp.is_file() and meta is not None:
-            raw=np.load(mp,allow_pickle=True).item()
-            item['metadata_matches']=all(list(raw[f'{s}_img_files'])==list(meta[f'{s}_files']) for s in ['train','test'])
+            raw=load_dictionary(mp)
+            item['metadata_matches']=True
             for s in ['train','test']:
-                for rel in meta[f'{s}_rel']:
+                names=list(raw.get(f'{s}_img_files',[]));cached=list(meta.get(f'{s}_files',[]))
+                rels=list(meta.get(f'{s}_rel',[]));expected=16540 if s=='train' else 200
+                aligned=len(names)==len(cached)==len(rels)==expected and names==cached
+                item['metadata_matches'] &= aligned
+                if not aligned:item['reasons'].append(f'{s}_metadata_count_or_order_mismatch')
+                if len(set(map(str,rels)))!=len(rels):item['reasons'].append(f'{s}_duplicate_paths')
+                checked=0;missing=0
+                # Exhaustive identity-based checks, never bounded directory scans.
+                for rel in rels:
                     path=directory/rel
-                    if not path.is_file():item['missing_images'].append(str(path))
-            if item['metadata_matches'] and not item['missing_images'] and report['image_root'] is None:
+                    checked+=1
+                    if not path.is_file():
+                        missing+=1
+                        if len(item['missing_images'])<10:item['missing_images'].append(str(path))
+                item['splits'][s]={'expected':expected,'metadata_count':len(names),
+                                  'cached_count':len(cached),'paths_checked':checked,'missing_count':missing}
+                if missing:item['reasons'].append(f'{s}_referenced_images_missing')
+            if not item['reasons'] and report['image_root'] is None:
                 report['image_root']=candidate
         report['image_roots'].append(item)
     if report['image_root'] is None:
@@ -103,6 +122,33 @@ def load_dictionary(path):
     return obj
 
 
+def validate_eeg_times(values,n_samples):
+    """Recognize aligned metadata or the documented 50-sample EEG-only crop.
+
+    EEG_Image_decode/EEG-preprocessing/preprocessing_utils.py epoching saves
+    epochs.times unchanged, but returns sorted_data[..., 50:]. Never crop EEG again.
+    """
+    times=np.asarray(values)
+    if (times.ndim!=1 or times.size==0 or times.dtype.kind not in 'fiu'
+            or not np.isfinite(times).all()
+            or not np.allclose(np.diff(times),1/250,atol=1e-6,rtol=0)):
+        raise ValueError('Invalid time metadata: expected finite 1-D values spaced at 0.004 seconds')
+    offset=0;convention='sample_aligned'
+    if len(times)!=n_samples:
+        if (n_samples==250 and len(times)==300
+                and np.allclose(times,np.arange(300)/250-.2,atol=1e-6,rtol=0)):
+            offset=50;convention='legacy_uncropped_epoch_metadata'
+        else:
+            raise ValueError(f'Time metadata length/range mismatch: {len(times)} values for {n_samples} EEG samples; '
+                             'only the documented 300-point -0.2..0.996 axis may accompany 250 samples')
+    effective=times[offset:]
+    return dict(time_metadata_verified=True,time_convention=convention,
+                time_metadata_samples=len(times),time_metadata_start_seconds=float(times[0]),
+                time_metadata_end_seconds=float(times[-1]),time_metadata_offset_samples=offset,
+                time_start_seconds=float(effective[0]),time_end_seconds=float(effective[-1]),
+                time_samples=len(effective),sampling_rate_hz=250)
+
+
 def inspect_eeg(path,shape,check_ram=True):
     """These trusted NPY dictionaries are pickled; load one at a time, never GPU."""
     if check_ram:
@@ -122,10 +168,7 @@ def inspect_eeg(path,shape,check_ram=True):
         if names!=CHANNELS:raise ValueError('Channel order differs from the existing posterior17 convention')
         result.update(channel_names=names,channels_metadata_verified=True)
     if 'times' in data:
-        times=np.asarray(data['times'])
-        if times.shape!=(shape[-1],) or not np.isfinite(times).all() or not np.allclose(np.diff(times),1/250,atol=1e-6):
-            raise ValueError('Time metadata does not agree with 250 Hz samples')
-        result.update(time_start_seconds=float(times[0]),time_end_seconds=float(times[-1]),time_metadata_verified=True)
+        result.update(validate_eeg_times(data['times'],shape[-1]))
     del x,data;gc.collect()
     return result
 
@@ -174,7 +217,8 @@ def prepare_inputs(root,cache,image_roots=(),download=False,verify_existing=Fals
         output=root/'pilot_input_reports'/f'{stamp}.json'
         write_json(output,{'inventory':report,'status':'inventory_only'})
         print(json.dumps({'inventory_report':str(output),'images_root':report['image_root'],
-                          'ready_images_and_features':report['ready_images_and_features'],'missing':report['missing']},indent=2))
+                          'ready_images_and_features':report['ready_images_and_features'],'missing':report['missing'],
+                          'image_roots':report['image_roots']},indent=2))
         if not download and not verify_existing:return output
         from huggingface_hub import HfApi,hf_hub_download
         plan_path=root/'pilot_sub01_download_plan.json'
