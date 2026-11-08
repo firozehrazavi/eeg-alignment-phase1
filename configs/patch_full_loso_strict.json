@@ -1,0 +1,28 @@
+{
+  "setting": "loso",
+  "regime": "strict",
+  "seeds": [
+    0,
+    1,
+    2
+  ],
+  "split_seed": 0,
+  "val_fraction": 0.1,
+  "arms": [
+    "baseline",
+    "mean",
+    "patch"
+  ],
+  "objective": "multi_positive",
+  "epochs": 60,
+  "batch": 64,
+  "adapter_chunk": 8,
+  "lr": 0.0001,
+  "weight_decay": 0.0001,
+  "grad_clip": 1.0,
+  "patch_layer": 28,
+  "bottleneck": 256,
+  "groups": 32,
+  "report_csls": true,
+  "hyperparameters": "fixed_a_priori"
+}
