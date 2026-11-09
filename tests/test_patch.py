@@ -172,6 +172,10 @@ class PatchTests(unittest.TestCase):
             self.assertEqual(run(dp,config,root/'profile',profile_one_epoch=True),[])
             self.assertFalse((root/'profile/COMPLETE').exists())
             self.assertFalse((root/'profile/results.json').exists())
+            hashes={p.name:digest(p) for p in (root/'profile').glob('*_latest.pt')}
+            self.assertEqual(run(dp,config,root/'profile',resume=True,profile_one_epoch=True),[])
+            self.assertEqual(hashes,{p.name:digest(p) for p in (root/'profile').glob('*_latest.pt')})
+            self.assertFalse((root/'profile/results.json').exists())
             self.assertEqual(results,run(dp,config,root/'profile',resume=True))
             self.assertEqual(results,run(dp,config,root/'run1',resume=True))
             conv={**cfg,'encoder':'conv','arms':['baseline'],'objective':'multi_positive',

@@ -233,7 +233,7 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                 if device.type=='cuda':torch.cuda.set_rng_state_all(saved['cuda_rng'])
                 first_epoch=saved['epoch']+1;best=saved['best'];best_epoch=saved['best_epoch']
                 state=saved['best_state'];history=saved['history'];chunk=min(chunk,saved['chunk'])
-            last_epoch=min(first_epoch,cfg['epochs']) if profile_one_epoch else cfg['epochs']
+            last_epoch=1 if profile_one_epoch else cfg['epochs']
             for epoch in range(first_epoch,last_epoch+1):
                 epoch_start=time.time()
                 model.train(); losses=[]
