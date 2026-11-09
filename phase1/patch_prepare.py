@@ -4,6 +4,7 @@ The distributed preprocessed EEG may contain session-dependent whitening.
 This converter therefore declares benchmark_preprocessed, NOT strict induction.
 Only use pickle inputs downloaded from a trusted THINGS-EEG2 source.
 """
+import gc
 import argparse
 import json
 import os
@@ -51,7 +52,7 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
     if completed('dataset.json'):
         for name in state['completed']:completed(name)
         print(output/'dataset.json');return
-    meta = np.load(required[0],allow_pickle=True).item()
+    meta = load_dictionary(required[0])
     old = torch.load(required[1],map_location='cpu',weights_only=False)
     features = torch.load(required[2],map_location='cpu',weights_only=False)
     for s in ('train','test'):
@@ -98,6 +99,10 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
                     np.save(f,np.asarray(x[selection[s]].float(),dtype='float32'))
                 os.replace(output/(name+'.tmp'),output/name);mark_complete(name)
             manifest['pooled'][s].append(name)
+    # Release pooled tensors before loading the multi-GB pickled EEG.
+    del features
+    if 'x' in locals(): del x
+    gc.collect()
     for subject in subjects:
         manifest['subjects'][subject] = {}
         for s,rawsplit in [('train','training'),('test','test')]:
@@ -105,6 +110,11 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
             name = f'{subject}_{s}_prez.npy'
             manifest['subjects'][subject][s] = name
             if completed(name):continue
+            import psutil
+            required_ram = int(source.stat().st_size * 2.2)
+            if psutil.virtual_memory().available < required_ram:
+                raise MemoryError(f'CPU High-RAM required: {required_ram/2**30:.1f} GiB free before loading {source}; outputs are resumable')
+            print(f'Preparing {subject} {s}: loading existing EEG',flush=True)
             obj = load_dictionary(source)
             x = obj['preprocessed_eeg_data']
             if x.ndim != 4 or x.shape[0] != len(meta[f'{s}_img_files']) or x.shape[2] != 63:
@@ -112,11 +122,12 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
             # Bound temporary RAM: average image chunks instead of all repetitions.
             arr = np.lib.format.open_memmap(output/(name+'.tmp'),mode='w+',dtype='float32',
                 shape=(len(selection[s]),17,x.shape[-1]))
-            for start in range(0,len(arr),64):
-                rows = selection[s][start:start+64]
+            for start in range(0,len(arr),8):
+                rows = selection[s][start:start+8]
                 arr[start:start+len(rows)] = x[rows].mean(1,dtype=np.float32)[:,POST17]
             arr.flush()
             del x,obj,arr
+            gc.collect()
             os.replace(output/(name+'.tmp'),output/name);mark_complete(name)
     (output/'dataset.tmp').write_text(json.dumps(manifest,indent=2))
     os.replace(output/'dataset.tmp',output/'dataset.json');mark_complete('dataset.json')

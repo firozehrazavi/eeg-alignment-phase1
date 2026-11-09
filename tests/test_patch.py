@@ -119,6 +119,12 @@ class PatchTests(unittest.TestCase):
             # The real mirror can store a direct pickle under the .npy filename.
             with open(eegdir/'preprocessed_eeg_training.npy','wb') as f:
                 pickle.dump({'preprocessed_eeg_data':x},f,protocol=4)
+            with open(raw/'images_set/image_metadata.npy','wb') as f:
+                pickle.dump(meta,f,protocol=4)
+            with mock.patch('psutil.virtual_memory') as ram:
+                ram.return_value.available=0
+                with self.assertRaises(MemoryError):prepare(raw,cache,root/'lowram',['sub-01'],concepts=3)
+            prepare(raw,cache,root/'lowram',['sub-01'],concepts=3,resume=True)
             prepare(raw,cache,root/'direct_dict',['sub-01'],concepts=3)
             np.testing.assert_array_equal(np.load(root/'direct_dict/sub-01_train_prez.npy'),expected)
 

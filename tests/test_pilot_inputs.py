@@ -133,7 +133,8 @@ class PilotInputTests(unittest.TestCase):
         self.assertIn("assert not torch.cuda.is_available()",sources[cpu])
         self.assertIn("CUDA_VISIBLE_DEVICES=''",sources[cpu])
         self.assertIn('VERIFY_EXISTING_EEG_ONLY = True',sources[cpu])
-        self.assertIn('/content/eeg-patch-pr2-cpu-dictfix',sources[cpu])
+        self.assertIn("tempfile.mkdtemp(prefix='eeg-patch-pr2-cpu-dictfix-'",sources[cpu])
+        self.assertNotIn('if not REPO.exists()',sources[cpu])
         for source in sources:compile(source,'notebook','exec')
 
 
