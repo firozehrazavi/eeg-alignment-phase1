@@ -77,7 +77,7 @@ def fit_eeg_norm(arrays, rows):
                         torch.tensor(std[None,:,None],dtype=torch.float32))
 
 
-def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False):
+def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False, train_only=False):
     os.environ.setdefault('CUBLAS_WORKSPACE_CONFIG', ':4096:8')
     cfg = json.loads(Path(config_path).read_text())
     margin_at_epoch(cfg,1)  # Validate explicit stage settings before touching data.
@@ -236,6 +236,7 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
             last_epoch=1 if profile_one_epoch else cfg['epochs']
             for epoch in range(first_epoch,last_epoch+1):
                 epoch_start=time.time()
+                if device.type=='cuda':torch.cuda.reset_peak_memory_stats()
                 model.train(); losses=[]
                 batches=(stratified_rows(train_rows,np.repeat(np.arange(len(sources)),n),batch,rng)
                          if cfg.get('sampler','random')=='subject_stratified' else
@@ -266,7 +267,10 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                     scaler.step(optimizer);scaler.update();losses.append(loss)
                 scheduler.step(); model.eval()
                 score=validation(model)
-                history.append(dict(epoch=epoch,loss=float(np.mean(losses)),source_val_top1=score))
+                epoch_seconds=time.time()-epoch_start
+                epoch_peak=torch.cuda.max_memory_allocated() if device.type=='cuda' else 0
+                history.append(dict(epoch=epoch,loss=float(np.mean(losses)),source_val_top1=score,
+                                    seconds=epoch_seconds,peak_gpu_allocated_bytes=epoch_peak))
                 if score>best:
                     best=score; best_epoch=epoch
                     state={k:v.detach().cpu().clone() for k,v in model.state_dict().items()}
@@ -276,10 +280,10 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
                     best=best,best_epoch=best_epoch,best_state=state,history=history,chunk=chunk)
                 torch.save(saved,out/f'{name}_latest.tmp');os.replace(out/f'{name}_latest.tmp',latest)
                 with open(out/'epoch_timing.jsonl','a') as f:
-                    f.write(json.dumps(dict(run=name,epoch=epoch,seconds=time.time()-epoch_start,chunk=chunk))+'\n')
-                print(target,seed,arm,epoch,'source validation',score,flush=True)
+                    f.write(json.dumps(dict(run=name,epoch=epoch,seconds=epoch_seconds,chunk=chunk,loss=float(np.mean(losses)),source_val_top1=score,peak_gpu_allocated_bytes=epoch_peak))+'\n')
+                print(json.dumps(dict(run=name,**history[-1])),flush=True)
                 meter.check(f'{name}:epoch{epoch}:saved',force=True)
-            if profile_one_epoch:
+            if profile_one_epoch or train_only:
                 del model,optimizer,state,saved
                 continue
             model.load_state_dict(state); model.eval()
@@ -322,8 +326,8 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
     provenance['peak_gpu_allocated_bytes']=max(torch.cuda.max_memory_allocated() if device.type=='cuda' else 0,
                                               (previous or {}).get('peak_gpu_allocated_bytes',0))
     (out/'provenance.json').write_text(json.dumps(provenance,indent=2))
-    marker='PILOT_PROFILE_COMPLETE' if profile_one_epoch else 'COMPLETE'
-    (out/marker).write_text('Profile only, no test evaluation.\n' if profile_one_epoch else
+    marker='PILOT_PROFILE_COMPLETE' if profile_one_epoch else 'TRAINING_COMPLETE' if train_only else 'COMPLETE'
+    (out/marker).write_text('Training only, no test evaluation.\n' if (profile_one_epoch or train_only) else
                           'All configured folds, seeds and arms completed.\n')
     return records
 
@@ -333,4 +337,5 @@ if __name__=='__main__':
     p.add_argument('--dataset',required=True);p.add_argument('--config',required=True);p.add_argument('--output',required=True)
     p.add_argument('--resume',action='store_true',help='Skip completed arms only if provenance matches')
     p.add_argument('--profile-one-epoch',action='store_true',help='Checkpoint one epoch per arm without test evaluation')
-    a=p.parse_args();run(a.dataset,a.config,a.output,a.resume,a.profile_one_epoch)
+    p.add_argument('--train-only',action='store_true',help='Complete training checkpoints without test evaluation')
+    a=p.parse_args();run(a.dataset,a.config,a.output,a.resume,a.profile_one_epoch,a.train_only)

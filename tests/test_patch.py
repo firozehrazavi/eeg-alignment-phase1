@@ -178,6 +178,13 @@ class PatchTests(unittest.TestCase):
             self.assertFalse((root/'profile/results.json').exists())
             self.assertEqual(results,run(dp,config,root/'profile',resume=True))
             self.assertEqual(results,run(dp,config,root/'run1',resume=True))
+            self.assertEqual(run(dp,config,root/'train_only',train_only=True),[])
+            self.assertTrue((root/'train_only/TRAINING_COMPLETE').exists())
+            self.assertFalse((root/'train_only/results.json').exists())
+            hashes={p.name:digest(p) for p in (root/'train_only').glob('*_latest.pt')}
+            self.assertEqual(run(dp,config,root/'train_only',resume=True,train_only=True),[])
+            self.assertEqual(hashes,{p.name:digest(p) for p in (root/'train_only').glob('*_latest.pt')})
+            self.assertEqual(results,run(dp,config,root/'train_only',resume=True))
             conv={**cfg,'encoder':'conv','arms':['baseline'],'objective':'multi_positive',
                   'epochs':1,'save_validation_scores':True,'text_weight':0.}
             convpath=root/'conv.json';convpath.write_text(json.dumps(conv))
