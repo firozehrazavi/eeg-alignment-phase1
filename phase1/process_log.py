@@ -21,7 +21,7 @@ def run_logged(args, cwd, log_dir, check_budget=lambda: None, heartbeat=30):
             print(text,end='',flush=True)
         try:
             check_budget()
-            env=dict(os.environ,PYTHONUNBUFFERED='1')
+            env=dict(os.environ,PYTHONUNBUFFERED='1',USE_TORCH='1',USE_FLAX='0',USE_TF='0',USE_TORCH_XLA='0')
             child=subprocess.Popen(args,cwd=cwd,env=env,stdout=subprocess.PIPE,
                 stderr=subprocess.STDOUT,text=True,encoding='utf-8',errors='replace',bufsize=1)
             lines=queue.Queue()

@@ -1,5 +1,6 @@
 # Keep Colab's driver-compatible torch/torchvision; record pip freeze for replay.
-numpy==1.26.4
+numpy==1.26.4; python_version < "3.13"
+numpy==2.2.6; python_version >= "3.13"
 transformers==4.45.2
 accelerate==1.0.1
 huggingface-hub==0.26.2

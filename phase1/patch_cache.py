@@ -65,6 +65,8 @@ class TokenCache:
 
 
 def extract(args):
+    from .extraction_environment import configure
+    configure()
     from PIL import Image
     from transformers import AutoModel, CLIPImageProcessor
     import transformers.dynamic_module_utils as dmu
