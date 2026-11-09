@@ -1,0 +1,28 @@
+{
+  "setting": "within_subject",
+  "regime": "benchmark_preprocessed",
+  "seeds": [
+    0
+  ],
+  "split_seed": 0,
+  "val_fraction": 0.1,
+  "arms": [
+    "baseline"
+  ],
+  "objective": "multi_positive",
+  "epochs": 5,
+  "batch": 64,
+  "adapter_chunk": 8,
+  "lr": 0.0001,
+  "weight_decay": 0.0001,
+  "grad_clip": 1.0,
+  "patch_layer": 28,
+  "bottleneck": 256,
+  "groups": 32,
+  "report_csls": false,
+  "hyperparameters": "fixed_a_priori",
+  "precision": "auto",
+  "encoder": "mlp",
+  "text_weight": 0.0,
+  "save_validation_scores": true
+}

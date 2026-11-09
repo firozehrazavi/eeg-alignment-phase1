@@ -1,0 +1,4 @@
+# Versions used for the recorded CPU tests. Install the matching CUDA torch
+# wheel separately on the experiment machine and record its complete version.
+numpy==2.3.5
+torch==2.9.1

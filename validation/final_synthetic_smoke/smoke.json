@@ -1,0 +1,114 @@
+{
+  "synthetic": true,
+  "scientific_result": false,
+  "torch": "2.9.1+cpu",
+  "python": "3.12.5",
+  "seed": 0,
+  "split": {
+    "fit": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      18,
+      19,
+      20,
+      21,
+      22,
+      23,
+      24,
+      25,
+      26,
+      27,
+      28,
+      29,
+      30,
+      31,
+      32,
+      33,
+      34,
+      35,
+      38,
+      39
+    ],
+    "validation": [
+      16,
+      17,
+      36,
+      37
+    ]
+  },
+  "base_commit": "bd1046d2eb9d4ca7371d00a11e190158d613f403",
+  "arms": {
+    "diagonal": {
+      "history": [
+        {
+          "epoch": 1,
+          "source_val_top1": 33.333333333333336,
+          "train_loss": 3.338724374771118
+        },
+        {
+          "epoch": 2,
+          "source_val_top1": 33.333333333333336,
+          "train_loss": 3.3408401012420654
+        },
+        {
+          "epoch": 3,
+          "source_val_top1": 25.0,
+          "train_loss": 3.3052408695220947
+        }
+      ],
+      "best_epoch": 1,
+      "synthetic_200_way": {
+        "top1": 0.5,
+        "top5": 4.5
+      }
+    },
+    "multi_positive": {
+      "history": [
+        {
+          "epoch": 1,
+          "source_val_top1": 33.333333333333336,
+          "train_loss": 3.0907122611999513
+        },
+        {
+          "epoch": 2,
+          "source_val_top1": 33.333333333333336,
+          "train_loss": 3.030619478225708
+        },
+        {
+          "epoch": 3,
+          "source_val_top1": 33.333333333333336,
+          "train_loss": 2.973913860321045
+        }
+      ],
+      "best_epoch": 1,
+      "synthetic_200_way": {
+        "top1": 0.5,
+        "top5": 4.5
+      }
+    }
+  },
+  "repeat_exact": true,
+  "source_sha256": {
+    "phase1\\__init__.py": "7c6a15363d636c811994e4a796a59f900f26d697022647aee7a3bb3b6a7fb441",
+    "phase1\\core.py": "d7e3c9829cf55d1fcad3465f64ae36ea3342d6812c944ad0a34c613bc77c5cdd",
+    "phase1\\experiment.py": "fd2543be8795f934a73ce1a604d8b0f3ca5fa127c43f1108cb2aead3eb448973",
+    "phase1\\models.py": "ebf768aba929653c7aa999085ca20816b17693d3d6180b8609bc1a0467de7873",
+    "phase1\\reconcile.py": "7e561ec8d0bb2fa80f8f986118bdd6a35cfb31aaa3d34e780c8f44a6a09dfa9b",
+    "phase1\\semantic.py": "ef6a71155985d499ff9a3f68a1619eb072958477374a50a5f21598f406104aaa",
+    "phase1\\smoke.py": "75b55d8c8b4ce0de58c3c1ff163bbfa2210384253b401ff0fa5a87393cc897fc"
+  }
+}
