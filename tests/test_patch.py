@@ -10,7 +10,7 @@ import torch
 from phase1.patch_adapter import ResidualPatchAdapter, PatchAligner
 from phase1.patch_cache import TokenCache, digest
 from phase1.patch_experiment import enforce_provenance, fit_eeg_norm, schedule, run
-from phase1.patch_prepare import prepare, POST17
+from phase1.patch_prepare import prepare, POST17, verify_prepared
 from phase1.patch_resources import estimate_cu, retry_oom, BudgetMeter, BudgetExceeded
 
 
@@ -108,6 +108,13 @@ class PatchTests(unittest.TestCase):
             np.testing.assert_array_equal(np.load(root/'new/sub-01_train_prez.npy'),expected)
             self.assertEqual(before,digest(cache/'feat6_internvit6b.pt'))
             with self.assertRaises(FileExistsError):prepare(raw,cache,root/'new',['sub-01'])
+            verify_prepared(root/'new')
+            victim=root/'new/sub-01_train_prez.npy'
+            saved=victim.read_bytes();victim.unlink()
+            with self.assertRaises(FileNotFoundError):verify_prepared(root/'new')
+            with self.assertRaises(ValueError):prepare(raw,cache,root/'new',['sub-01'],concepts=3,resume=True)
+            victim.write_bytes(saved)
+            with self.assertRaises(FileNotFoundError):verify_prepared(root/'absent')
             prepared_hash=digest(root/'new/dataset.json')
             prepare(raw,cache,root/'new',['sub-01'],concepts=3,resume=True)
             self.assertEqual(prepared_hash,digest(root/'new/dataset.json'))

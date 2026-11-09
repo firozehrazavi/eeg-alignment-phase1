@@ -18,6 +18,28 @@ POST17 = [46,47,48,49,50,51,52,53,54,55,56,57,58,59,60,61,62]
 LAYERS = [20,24,28,32,36]
 
 
+def verify_prepared(output):
+    """Fail closed on missing manifests, references, or completion hashes."""
+    output=Path(output)
+    manifest=json.loads((output/'dataset.json').read_text())
+    state=json.loads((output/'preparation_state.json').read_text())
+    names=['dataset.json',manifest['catalog']]
+    for split in ('train','test'):
+        if len(manifest['pooled'][split])!=5:raise ValueError('Expected five pooled layers')
+        names.extend(manifest['pooled'][split])
+    if not manifest['subjects']:raise ValueError('No prepared subjects')
+    for subject in manifest['subjects'].values():
+        names.extend(subject[s] for s in ('train','test'))
+    for name in names:
+        path=output/name
+        if not path.resolve().is_relative_to(output.resolve()):raise ValueError('Output reference escapes preparation directory')
+        if not path.is_file():raise FileNotFoundError(f'Missing prepared output: {path}')
+        if state['completed'].get(name)!=digest(path):raise ValueError(f'Unverified prepared output: {path}')
+    read_catalog(output/manifest['catalog'])
+    print(f'Verified prepared outputs: {output.resolve()} ({len(names)} files)',flush=True)
+    return manifest
+
+
 def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None, resume=False):
     root, cache, output = Path(root), Path(cache), Path(output)
     image_root=Path(image_root) if image_root else root
@@ -51,6 +73,7 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
         state['completed'][name]=digest(output/name);save_state()
     if completed('dataset.json'):
         for name in state['completed']:completed(name)
+        verify_prepared(output)
         print(output/'dataset.json');return
     meta = load_dictionary(required[0])
     old = torch.load(required[1],map_location='cpu',weights_only=False)
@@ -131,6 +154,7 @@ def prepare(root, cache, output, subjects, concepts=200, seed=0, image_root=None
             os.replace(output/(name+'.tmp'),output/name);mark_complete(name)
     (output/'dataset.tmp').write_text(json.dumps(manifest,indent=2))
     os.replace(output/'dataset.tmp',output/'dataset.json');mark_complete('dataset.json')
+    verify_prepared(output)
     print(output/'dataset.json')
 
 
