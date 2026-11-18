@@ -8,7 +8,7 @@ from .patch_experiment import enforce_provenance, schedule
 from .core import concept_split
 
 
-def preflight(dataset, config):
+def preflight(dataset, config, *, train_only=False):
     root=Path(dataset).resolve().parent
     m=json.loads(Path(dataset).read_text());c=json.loads(Path(config).read_text())
     state=json.loads((root/'preparation_state.json').read_text())
@@ -24,7 +24,7 @@ def preflight(dataset, config):
     for name in ['dataset.json',m['catalog']]:
         if state['completed'].get(name)!=digest(root/name):raise ValueError('Manifest/catalog hash mismatch')
     shapes={}
-    for split in ('train','test'):
+    for split in (('train',) if train_only else ('train','test')):
         names=m['pooled'][split]
         if len(names)!=5:raise ValueError('Expected five pooled layers')
         pairs=[(name,(len(cat[split]),3200)) for name in names]
@@ -45,4 +45,5 @@ def preflight(dataset, config):
 
 if __name__=='__main__':
     p=argparse.ArgumentParser();p.add_argument('--dataset',required=True);p.add_argument('--config',required=True)
-    a=p.parse_args();print(json.dumps(preflight(a.dataset,a.config),indent=2))
+    p.add_argument('--train-only',action='store_true',help='Never open official-test arrays')
+    a=p.parse_args();print(json.dumps(preflight(a.dataset,a.config,train_only=a.train_only),indent=2))

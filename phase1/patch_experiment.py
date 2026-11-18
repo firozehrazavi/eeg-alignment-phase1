@@ -87,17 +87,21 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
     catalog_path = root/manifest['catalog']
     cat = read_catalog(catalog_path)
     plan = schedule(cfg, sorted(manifest['subjects']))
-    tokens = TokenCache(root/manifest['tokens'],catalog_path)
+    # Bound every array access, validation and content hash to the run's scope.
+    # Test identities may be in the shared catalog; test arrays stay unopened.
+    training_only = bool(train_only or profile_one_epoch)
+    data_splits = ('train',) if training_only else ('train', 'test')
+    tokens = TokenCache(root/manifest['tokens'],catalog_path,splits=data_splits)
     if tokens.meta['layer'] != cfg['patch_layer']:
         raise ValueError('Configured layer does not match tokens')
-    pooled = {s:[np.load(root/p,mmap_mode='r') for p in manifest['pooled'][s]] for s in ('train','test')}
+    pooled = {s:[np.load(root/p,mmap_mode='r') for p in manifest['pooled'][s]] for s in data_splits}
     if len(pooled['train']) != 5 or any(x.shape[0]!=len(cat[s]) for s in pooled for x in pooled[s]):
         raise ValueError('Expected five aligned route_c layers [20,24,28,32,36]')
     if any(x.shape[1] != tokens.meta['width'] for s in pooled for x in pooled[s]):
         raise ValueError('Pooled and token widths disagree')
     # Catch wrong hook layer, ordering or preprocessing before costly training.
     # FP16 pooling differs slightly from mean-then-FP16 historical features.
-    for s in ('train','test'):
+    for s in data_splits:
         for i in np.linspace(0,len(cat[s])-1,min(8,len(cat[s])),dtype=int):
             a = tokens.get(s,[int(i)]).mean(1)[0].numpy()
             b = pooled[s][2][i]
@@ -110,6 +114,12 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
     previous = None
     if out.exists():
         previous = json.loads((out/'provenance.json').read_text())
+        if training_only:
+            allowed_inputs = set(manifest['pooled']['train']) | {
+                manifest['subjects'][s]['train'] for _,sources,_ in plan for s in sources}
+            if (previous.get('data_access_splits') != ['train']
+                    or not set(previous['input_hashes']) <= allowed_inputs):
+                raise ValueError('Training-only resume refuses prior test or unscoped input access')
         if (previous['config'] != cfg or previous['dataset_sha256'] != digest(dataset_path)
                 or previous['catalog_sha256'] != digest(catalog_path) or previous['token_manifest'] != tokens.meta):
             raise ValueError('Resume provenance mismatch; choose a new output directory')
@@ -138,11 +148,12 @@ def run(dataset_path, config_path, output, resume=False, profile_one_epoch=False
     # Reuse exactly the pooled L28 affine transformation on every token.
     # Thus normalization and mean pooling commute for the mean/patch controls.
     provenance = dict(config=cfg,dataset=manifest,dataset_sha256=digest(dataset_path),code_hashes=code_hashes,
+        data_access_splits=list(data_splits),
         catalog_sha256=digest(catalog_path),token_manifest=tokens.meta,
         split={'fit':fit,'validation':val},image_ids={s:[r['id'] for r in cat[s]] for s in cat},python=platform.python_version(),
         torch=torch.__version__,numpy=np.__version__,device=str(device),
         gpu=torch.cuda.get_device_name() if device.type=='cuda' else None,precision=precision,runtime=profile,
-        input_hashes={p:digest(root/p) for s in manifest['pooled'].values() for p in s})
+        input_hashes={p:digest(root/p) for s in data_splits for p in manifest['pooled'][s]})
     if previous:
         if previous.get('precision') != precision:
             raise ValueError('Runtime precision changed: choose a new matched run instead of resuming')

@@ -37,14 +37,22 @@ def read_catalog(path):
 
 
 class TokenCache:
-    def __init__(self, root, catalog):
+    def __init__(self, root, catalog, *, splits=('train', 'test')):
+        """Open only explicitly permitted array splits, including completion masks.
+
+        The shared catalog/manifest contain identity metadata. Reading them does
+        not authorize opening the corresponding official-test token artifacts.
+        """
+        splits = tuple(splits)
+        if not splits or len(set(splits)) != len(splits) or not set(splits) <= {'train', 'test'}:
+            raise ValueError('Expected unique train/test cache splits')
         self.root = Path(root)
         self.meta = json.loads((self.root/'manifest.json').read_text())
         if self.meta['catalog_sha256'] != digest(catalog):
             raise ValueError('Patch cache belongs to another catalog')
         records = read_catalog(catalog)
         self.arrays = {}
-        for split in ('train', 'test'):
+        for split in splits:
             self.arrays[split] = np.load(self.root/f'{split}.npy', mmap_mode='r')
             done = np.load(self.root/f'{split}_done.npy')
             if done.dtype != np.bool_ or done.shape != (len(records[split]),):
@@ -58,6 +66,8 @@ class TokenCache:
                 raise ValueError('Expected FP16 native patch array aligned with catalog')
 
     def get(self, split, rows):
+        if split not in self.arrays:
+            raise ValueError(f'Cache split {split!r} was not authorized for this reader')
         x = torch.from_numpy(np.array(self.arrays[split][rows], copy=True)).float()
         if not torch.isfinite(x).all():
             raise ValueError('Nonfinite cached patch tokens')

@@ -136,16 +136,38 @@ class ProtocolTests(unittest.TestCase):
 
 
 class SemanticTests(unittest.TestCase):
-    def test_frozen_inputs_and_finite_head_gradients(self):
+    def test_frozen_inputs_and_nonzero_semantic_gradients(self):
+        torch.manual_seed(42)
         head=SemanticHead(5,6,7,4)
         e=torch.randn(3,5,requires_grad=True)
         t=torch.randn(3,6,requires_grad=True)
         v=torch.randn(3,7,requires_grad=True)
         pos=torch.eye(3,dtype=torch.bool)
-        loss=head(e,t,v,pos,~pos,adaptive=False)
+        # Real negatives are necessary: excluding all nonpositives cancels the
+        # contrastive term exactly and cannot test supervision of the EEG path.
+        loss=head(e,t,v,pos,torch.zeros_like(pos),adaptive=False)
         loss.backward()
         self.assertIsNone(t.grad); self.assertIsNone(v.grad)
         self.assertTrue(all(p.grad is not None and torch.isfinite(p.grad).all() for p in head.parameters()))
+        self.assertTrue(torch.isfinite(e.grad).all())
+        self.assertGreater(e.grad.abs().sum().item(),0)
+        for name,p in head.named_parameters():
+            self.assertGreater(p.grad.abs().sum().item(),0,name)
+
+    def test_all_negatives_excluded_cancels_eeg_semantic_gradient(self):
+        torch.manual_seed(42)
+        head=SemanticHead(5,6,7,4)
+        e=torch.randn(3,5,requires_grad=True)
+        t=torch.randn(3,6); v=torch.randn(3,7)
+        pos=torch.eye(3,dtype=torch.bool)
+        loss=head(e,t,v,pos,~pos,adaptive=False)
+        loss.backward()
+        torch.testing.assert_close(e.grad,torch.zeros_like(e))
+        for p in head.eeg.parameters():
+            torch.testing.assert_close(p.grad,torch.zeros_like(p))
+        # The visual/text agreement term can still train the other heads;
+        # finite gradients alone would therefore conceal the missing EEG term.
+        self.assertGreater(head.text.weight.grad.abs().sum().item(),0)
 
     def test_zero_weight_and_ambiguity(self):
         head=SemanticHead(5,6,7,4)

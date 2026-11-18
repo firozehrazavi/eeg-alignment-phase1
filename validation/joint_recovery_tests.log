@@ -1,0 +1,379 @@
+python : test_pinned_cpu_smoke_and_gpu_gate 
+(test_cpu_import_gate.CPUImportGateTests.test_pinned_cpu_smoke_and_gpu_gate) ... ok
+At line:2 char:1
++ python -m unittest discover -s tests -v *> validation/joint_recovery_ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (test_pinned_cpu...pu_gate) ... ok:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+test_backend_settings_override_auto 
+(test_extraction_environment.ExtractionEnvironmentTests.test_backend_settings_override_auto) ... ok
+test_smoke_precedes_probe_and_extractor_configures_before_import (test_extraction_environment.ExtractionEnvironmentTest
+s.test_smoke_precedes_probe_and_extractor_configures_before_import) ... ok
+test_approval_precedes_all_reads (test_final_audit.FinalAuditTests.test_approval_precedes_all_reads) ... ok
+test_audit_fifteen_records_is_read_only (test_final_audit.FinalAuditTests.test_audit_fifteen_records_is_read_only) ... 
+ok
+{"timestamp": 1794981131.4447048, "stage": "evaluation:baseline:0", "session_seconds": 0.012694358825683594, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:8", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:16", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:24", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:32", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:40", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:48", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:56", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4531186, "stage": "evaluation:baseline:64", "session_seconds": 0.021108150482177734, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:72", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:80", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:88", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:96", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:104", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:112", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.46874, "stage": "evaluation:baseline:120", "session_seconds": 0.03672957420349121, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4720163, "stage": "evaluation:baseline:128", "session_seconds": 0.04000592231750488, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4723363, "stage": "evaluation:baseline:136", "session_seconds": 0.04032588005065918, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4728673, "stage": "evaluation:baseline:144", "session_seconds": 0.04085683822631836, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4731853, "stage": "evaluation:baseline:152", "session_seconds": 0.041174888610839844, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4731853, "stage": "evaluation:baseline:160", "session_seconds": 0.041174888610839844, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4731853, "stage": "evaluation:baseline:168", "session_seconds": 0.041174888610839844, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4741843, "stage": "evaluation:baseline:176", "session_seconds": 0.04217386245727539, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4741843, "stage": "evaluation:baseline:184", "session_seconds": 0.04217386245727539, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.4741843, "stage": "evaluation:baseline:192", "session_seconds": 0.04217386245727539, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5368893, "stage": "evaluation:mean:0", "session_seconds": 0.10487890243530273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5408792, "stage": "evaluation:mean:8", "session_seconds": 0.10886883735656738, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5408792, "stage": "evaluation:mean:16", "session_seconds": 0.10886883735656738, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5408792, "stage": "evaluation:mean:24", "session_seconds": 0.10886883735656738, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5418773, "stage": "evaluation:mean:32", "session_seconds": 0.10986685752868652, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5418773, "stage": "evaluation:mean:40", "session_seconds": 0.10986685752868652, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5418773, "stage": "evaluation:mean:48", "session_seconds": 0.10986685752868652, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5428748, "stage": "evaluation:mean:56", "session_seconds": 0.11086440086364746, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5428748, "stage": "evaluation:mean:64", "session_seconds": 0.11086440086364746, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5428748, "stage": "evaluation:mean:72", "session_seconds": 0.11086440086364746, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5438716, "stage": "evaluation:mean:80", "session_seconds": 0.1118612289428711, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5438716, "stage": "evaluation:mean:88", "session_seconds": 0.1118612289428711, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5438716, "stage": "evaluation:mean:96", "session_seconds": 0.1118612289428711, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.544869, "stage": "evaluation:mean:104", "session_seconds": 0.11285853385925293, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.544869, "stage": "evaluation:mean:112", "session_seconds": 0.11285853385925293, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.544869, "stage": "evaluation:mean:120", "session_seconds": 0.11285853385925293, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.545866, "stage": "evaluation:mean:128", "session_seconds": 0.11385560035705566, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.545866, "stage": "evaluation:mean:136", "session_seconds": 0.11385560035705566, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.545866, "stage": "evaluation:mean:144", "session_seconds": 0.11385560035705566, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5468633, "stage": "evaluation:mean:152", "session_seconds": 0.1148529052734375, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5468633, "stage": "evaluation:mean:160", "session_seconds": 0.1148529052734375, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5468633, "stage": "evaluation:mean:168", "session_seconds": 0.1148529052734375, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5478613, "stage": "evaluation:mean:176", "session_seconds": 0.11585092544555664, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5478613, "stage": "evaluation:mean:184", "session_seconds": 0.11585092544555664, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5478613, "stage": "evaluation:mean:192", "session_seconds": 0.11585092544555664, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.554841, "stage": "evaluation:patch:0", "session_seconds": 0.12283062934875488, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.555839, "stage": "evaluation:patch:8", "session_seconds": 0.12382864952087402, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.555839, "stage": "evaluation:patch:16", "session_seconds": 0.12382864952087402, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.555839, "stage": "evaluation:patch:24", "session_seconds": 0.12382864952087402, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5568354, "stage": "evaluation:patch:32", "session_seconds": 0.12482500076293945, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5568354, "stage": "evaluation:patch:40", "session_seconds": 0.12482500076293945, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5568354, "stage": "evaluation:patch:48", "session_seconds": 0.12482500076293945, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5578327, "stage": "evaluation:patch:56", "session_seconds": 0.1258223056793213, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5578327, "stage": "evaluation:patch:64", "session_seconds": 0.1258223056793213, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5578327, "stage": "evaluation:patch:72", "session_seconds": 0.1258223056793213, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5588298, "stage": "evaluation:patch:80", "session_seconds": 0.12681937217712402, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5588298, "stage": "evaluation:patch:88", "session_seconds": 0.12681937217712402, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5588298, "stage": "evaluation:patch:96", "session_seconds": 0.12681937217712402, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.559827, "stage": "evaluation:patch:104", "session_seconds": 0.12781667709350586, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.559827, "stage": "evaluation:patch:112", "session_seconds": 0.12781667709350586, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.559827, "stage": "evaluation:patch:120", "session_seconds": 0.12781667709350586, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5608244, "stage": "evaluation:patch:128", "session_seconds": 0.1288139820098877, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5608244, "stage": "evaluation:patch:136", "session_seconds": 0.1288139820098877, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5608244, "stage": "evaluation:patch:144", "session_seconds": 0.1288139820098877, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.561896, "stage": "evaluation:patch:152", "session_seconds": 0.12988567352294922, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.561896, "stage": "evaluation:patch:160", "session_seconds": 0.12988567352294922, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.561896, "stage": "evaluation:patch:168", "session_seconds": 0.12988567352294922, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5628948, "stage": "evaluation:patch:176", "session_seconds": 0.13088440895080566, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5628948, "stage": "evaluation:patch:184", "session_seconds": 0.13088440895080566, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981131.5628948, "stage": "evaluation:patch:192", "session_seconds": 0.13088440895080566, "estimated_cu": null, "observed_cu_per_hour": null}
+test_frozen_evaluation_idempotent_synthetic 
+(test_final_audit.FinalAuditTests.test_frozen_evaluation_idempotent_synthetic) ... ok
+test_metrics_and_tie_selection (test_final_audit.FinalAuditTests.test_metrics_and_tie_selection) ... ok
+test_notebook_gate_is_first_statement (test_final_audit.FinalAuditTests.test_notebook_gate_is_first_statement) ... ok
+test_only_train_only_is_exposed (test_five_epoch_notebook.FiveEpochNotebookTests.test_only_train_only_is_exposed) ... 
+ok
+test_both_containers_report_mismatched_time_axis_without_fixing_it 
+(test_input_diagnostics.InputDiagnosticsTests.test_both_containers_report_mismatched_time_axis_without_fixing_it) ... 
+ok
+test_directory_scan_handles_nested_layout_without_reading_images 
+(test_input_diagnostics.InputDiagnosticsTests.test_directory_scan_handles_nested_layout_without_reading_images) ... ok
+test_nonfinite_and_nonnumeric_time_metadata_are_safe_to_print 
+(test_input_diagnostics.InputDiagnosticsTests.test_nonfinite_and_nonnumeric_time_metadata_are_safe_to_print) ... ok
+test_ram_guard_does_not_load_file (test_input_diagnostics.InputDiagnosticsTests.test_ram_guard_does_not_load_file) ... 
+ok
+test_standalone_notebook_matches_tested_source 
+(test_input_diagnostics.InputDiagnosticsTests.test_standalone_notebook_matches_tested_source) ... ok
+test_image_inference_and_refusal_to_overwrite 
+(test_joint_inference.JointInferenceTests.test_image_inference_and_refusal_to_overwrite) ... ok
+test_invalid_gallery_rejected_before_output 
+(test_joint_inference.JointInferenceTests.test_invalid_gallery_rejected_before_output) ... ok
+test_text_inference_never_accesses_image_inputs_or_residualizer 
+(test_joint_inference.JointInferenceTests.test_text_inference_never_accesses_image_inputs_or_residualizer) ... ok
+test_backbone_initialization_and_image_score_preserve_06b 
+(test_joint_model.JointModelTests.test_backbone_initialization_and_image_score_preserve_06b) ... ok
+test_direct_text_inference_accepts_eeg_and_text_only 
+(test_joint_model.JointModelTests.test_direct_text_inference_accepts_eeg_and_text_only) ... ok
+test_distillation_only_trains_readout_and_no_raw_text 
+(test_joint_model.JointModelTests.test_distillation_only_trains_readout_and_no_raw_text) ... ok
+test_identity_loss_handles_duplicate_and_rectangular_matches 
+(test_joint_model.JointModelTests.test_identity_loss_handles_duplicate_and_rectangular_matches) ... ok
+test_invalid_shapes_and_nonfinite_values_fail 
+(test_joint_model.JointModelTests.test_invalid_shapes_and_nonfinite_values_fail) ... ok
+test_joint_has_nonzero_three_way_mixed_difference 
+(test_joint_model.JointModelTests.test_joint_has_nonzero_three_way_mixed_difference) ... ok
+test_joint_objective_reaches_all_three_projections_and_backbone 
+(test_joint_model.JointModelTests.test_joint_objective_reaches_all_three_projections_and_backbone) ... ok
+test_shuffled_text_changes_joint_but_not_image_inference 
+(test_joint_model.JointModelTests.test_shuffled_text_changes_joint_but_not_image_inference) ... ok
+test_zero_joint_weight_backbone_gradient_equals_baseline_even_with_student 
+(test_joint_model.JointModelTests.test_zero_joint_weight_backbone_gradient_equals_baseline_even_with_student) ... ok
+test_fitted_state_is_independent_of_heldout_values 
+(test_joint_model.ResidualizerTests.test_fitted_state_is_independent_of_heldout_values) ... ok
+test_fitting_indices_and_invalid_inputs_fail 
+(test_joint_model.ResidualizerTests.test_fitting_indices_and_invalid_inputs_fail) ... ok
+test_linear_visual_information_is_removed_on_simple_problem 
+(test_joint_model.ResidualizerTests.test_linear_visual_information_is_removed_on_simple_problem) ... ok
+test_transform_is_pointwise_and_fitted_state_roundtrips 
+(test_joint_model.ResidualizerTests.test_transform_is_pointwise_and_fitted_state_roundtrips) ... ok
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.8560944199562073, "tune_image_top1": 100.0, "seconds": 0.07799999999997453}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 4.128852367401123, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 4.123420238494873, "tune_image_top1": 100.0, "seconds": 0.04699999999979809}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 4.12249493598938, "tune_image_top1": 100.0, "seconds": 0.06200000000012551}
+test_full_four_arm_cpu_pipeline (test_joint_pipeline.PipelineTests.test_full_four_arm_cpu_pipeline) ... ok
+test_hash_and_provenance_fail_closed (test_joint_pipeline.PipelineTests.test_hash_and_provenance_fail_closed) ... ok
+test_split_disjoint_and_derangement (test_joint_pipeline.PipelineTests.test_split_disjoint_and_derangement) ... ok
+test_train_loader_never_opens_unused_subject_or_test 
+(test_joint_pipeline.PipelineTests.test_train_loader_never_opens_unused_subject_or_test) ... ok
+test_inventory_full_counts_roots_order_and_late_missing_path 
+(test_observed_inputs.ObservedInputsTests.test_inventory_full_counts_roots_order_and_late_missing_path) ... ok
+test_observed_float64_dictionary_and_scalar_wrapper 
+(test_observed_inputs.ObservedInputsTests.test_observed_float64_dictionary_and_scalar_wrapper) ... ok
+test_rejects_unsupported_time_conventions 
+(test_observed_inputs.ObservedInputsTests.test_rejects_unsupported_time_conventions) ... ok
+test_verification_notebook_is_existing_only_and_cpu_only 
+(test_observed_inputs.ObservedInputsTests.test_verification_notebook_is_existing_only_and_cpu_only) ... ok
+CUDA OOM: retrying adapter chunk=4; contrastive batch unchanged
+CUDA OOM: retrying adapter chunk=2; contrastive batch unchanged
+{"timestamp": 1794981142.7228997, "stage": "synthetic_budget", "session_seconds": 1794981142.7228997, "estimated_cu": 4986058.729785833, "observed_cu_per_hour": 10.0}
+test_budget_and_oom_safeguards (test_patch.PatchTests.test_budget_and_oom_safeguards) ... ok
+test_checkpoint_chunking_preserves_gradients (test_patch.PatchTests.test_checkpoint_chunking_preserves_gradients) ... 
+ok
+{"timestamp": 1794981143.1850443, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.0812985897064209, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981143.3228393, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.13779497146606445, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.04995393753051758, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981143.425623, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.24057865142822266, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.056852102279663086, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981143.5540836, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.36903929710388184, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.046901702880859375, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981143.6165695, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.43152523040771484, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.06642913818359375, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981143.785875, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.6008307933807373, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.08422017097473145, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981143.8897576, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.7047133445739746, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981144.0178037, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.05706167221069336, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.1244118, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.10660815238952637, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.04378151893615723, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.207352, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.18954825401306152, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.03926396369934082, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.3264139, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.308610200881958, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.050521135330200195, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.3851817, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.36737799644470215, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.07592129707336426, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.5504413, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.5326375961303711, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.0654144287109375, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.6314785, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.6136748790740967, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981144.7509847, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.06124615669250488, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.843322, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.09233736991882324, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.058832406997680664, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981144.9333951, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.18241047859191895, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.06872987747192383, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981145.0464265, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.2954418659210205, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981145.2681293, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981145.5150335, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.04698920249938965, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981145.6093032, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.0942697525024414, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.03999948501586914, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981145.7496629, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.23462939262390137, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.06627821922302246, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981145.9192538, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.4042203426361084, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981146.0470097, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981146.0938609, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.046599626541137695, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981146.171692, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.07783102989196777, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.04686713218688965, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981146.2482777, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.15441679954528809, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.05053567886352539, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981146.5387816, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.44492077827453613, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.040697574615478516, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981146.595103, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.5012421607971191, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.0673825740814209, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981146.6937733, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.5999124050140381, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.06820321083068848, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981146.780309, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.6864480972290039, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981147.0489798, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981147.291925, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981147.5933018, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.9619786739349365, "source_val_top1": 100.0, "seconds": 0.21430277824401855, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981147.886732, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.2934303283691406, "estimated_cu": null, "observed_cu_per_hour": null}
+test_end_to_end_synthetic_pilot_and_cache_guards 
+(test_patch.PatchTests.test_end_to_end_synthetic_pilot_and_cache_guards) ... ok
+test_matched_eeg_initialization (test_patch.PatchTests.test_matched_eeg_initialization) ... ok
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\new (14 files)
+C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\new\dataset.json
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\new (14 files)
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\new (14 files)
+C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\new\dataset.json
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\partial (14 files)
+C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\partial\dataset.json
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\lowram (14 files)
+C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\lowram\dataset.json
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\direct_dict (14 files)
+test_prepare_authoritative_rows_without_overwriting 
+(test_patch.PatchTests.test_prepare_authoritative_rows_without_overwriting) ... ok
+test_residual_formula_and_gradient (test_patch.PatchTests.test_residual_formula_and_gradient) ... ok
+test_source_moments_and_strict_guard (test_patch.PatchTests.test_source_moments_and_strict_guard) ... ok
+test_ten_fold_schedule (test_patch.PatchTests.test_ten_fold_schedule) ... ok
+test_zero_branch_is_mean_control (test_patch.PatchTests.test_zero_branch_is_mean_control) ... ok
+test_invalid_gallery (test_phase1.MetricTests.test_invalid_gallery) ... ok
+test_known_top1_top5 (test_phase1.MetricTests.test_known_top1_top5) ... ok
+test_ties_are_not_all_correct_and_permutation_safe 
+(test_phase1.MetricTests.test_ties_are_not_all_correct_and_permutation_safe) ... ok
+test_baseline_architecture_and_loss_are_unchanged 
+(test_phase1.ObjectiveTests.test_baseline_architecture_and_loss_are_unchanged) ... ok
+test_duplicate_identity_removes_false_negative_penalty 
+(test_phase1.ObjectiveTests.test_duplicate_identity_removes_false_negative_penalty) ... ok
+test_missing_positive_rejected (test_phase1.ObjectiveTests.test_missing_positive_rejected) ... ok
+test_permutation_invariant (test_phase1.ObjectiveTests.test_permutation_invariant) ... ok
+test_rectangular_reordered_positive_indexing (test_phase1.ObjectiveTests.test_rectangular_reordered_positive_indexing) 
+... ok
+test_unique_matches_baseline_loss_and_gradient 
+(test_phase1.ObjectiveTests.test_unique_matches_baseline_loss_and_gradient) ... ok
+test_concept_partition (test_phase1.ProtocolTests.test_concept_partition) ... ok
+test_duplicate_content_detected (test_phase1.ProtocolTests.test_duplicate_content_detected) ... ok
+test_normalization_independent_of_other_queries 
+(test_phase1.ProtocolTests.test_normalization_independent_of_other_queries) ... ok
+test_policy_rejects_hidden_transduction (test_phase1.ProtocolTests.test_policy_rejects_hidden_transduction) ... ok
+test_source_selection (test_phase1.ProtocolTests.test_source_selection) ... ok
+test_test_concepts_and_content_cannot_overlap 
+(test_phase1.ProtocolTests.test_test_concepts_and_content_cannot_overlap) ... ok
+test_all_negatives_excluded_cancels_eeg_semantic_gradient 
+(test_phase1.SemanticTests.test_all_negatives_excluded_cancels_eeg_semantic_gradient) ... ok
+test_frozen_inputs_and_nonzero_semantic_gradients 
+(test_phase1.SemanticTests.test_frozen_inputs_and_nonzero_semantic_gradients) ... ok
+test_zero_weight_and_ambiguity (test_phase1.SemanticTests.test_zero_weight_and_ambiguity) ... ok
+test_both_formats_preserve_all_eeg_validation 
+(test_pilot_inputs.PilotInputTests.test_both_formats_preserve_all_eeg_validation) ... ok
+test_dictionary_loader_rejects_other_containers 
+(test_pilot_inputs.PilotInputTests.test_dictionary_loader_rejects_other_containers) ... ok
+test_existing_corrupt_file_is_never_replaced 
+(test_pilot_inputs.PilotInputTests.test_existing_corrupt_file_is_never_replaced) ... ok
+C:\Users\jg\AppData\Local\Temp\tmp_s6u9e8w\direct_dict\dataset.json
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_training.npy", "bytes": 8, "sha256": "afafb16ac47b9b3da9825787ce354896fce376ae6cb1b5a157fa682a122011a1", "remote_sha256_verified": true, "shape": [16540, 4, 63, 250]}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_test.npy", "bytes": 8, "sha256": "afafb16ac47b9b3da9825787ce354896fce376ae6cb1b5a157fa682a122011a1", "remote_sha256_verified": true, "shape": [200, 80, 63, 250]}
+test_existing_only_mode_cannot_download (test_pilot_inputs.PilotInputTests.test_existing_only_mode_cannot_download) 
+... ok
+test_inspect_eeg_direct_dict_and_scalar_object_array 
+(test_pilot_inputs.PilotInputTests.test_inspect_eeg_direct_dict_and_scalar_object_array) ... ok
+test_inventory_is_read_only_and_not_ready_with_missing_images 
+(test_pilot_inputs.PilotInputTests.test_inventory_is_read_only_and_not_ready_with_missing_images) ... ok
+test_notebook_cpu_phase_precedes_gpu_gate 
+(test_pilot_inputs.PilotInputTests.test_notebook_cpu_phase_precedes_gpu_gate) ... ok
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_training.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [16540, 4, 63, 250], "finite": true}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_test.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [200, 80, 63, 250], "finite": true}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_training.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [16540, 4, 63, 250], "finite": true}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_test.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [200, 80, 63, 250], "finite": true}
+test_resume_download_and_skip_existing_without_other_subjects 
+(test_pilot_inputs.PilotInputTests.test_resume_download_and_skip_existing_without_other_subjects) ... ok
+test_shape_metadata_finiteness_and_ram_guard 
+(test_pilot_inputs.PilotInputTests.test_shape_metadata_finiteness_and_ram_guard) ... ok
+test_subject_allowlist (test_pilot_inputs.PilotInputTests.test_subject_allowlist) ... ok
+test_headers_and_missing_output (test_pilot_preflight.PreflightTests.test_headers_and_missing_output) ... ok
+test_early_failure_is_visible_and_saved_without_token_directory 
+(test_process_log.ProcessLogTests.test_early_failure_is_visible_and_saved_without_token_directory) ... ok
+test_success_and_launch_failure_preserve_distinct_logs 
+(test_process_log.ProcessLogTests.test_success_and_launch_failure_preserve_distinct_logs) ... ok
+test_fresh_gpu_setup_defines_all_paths_without_section_a 
+(test_section_b_workflow.SectionBWorkflowTests.test_fresh_gpu_setup_defines_all_paths_without_section_a) ... ok
+test_setup_includes_validation_and_probe_fails_clearly_if_skipped 
+(test_section_b_workflow.SectionBWorkflowTests.test_setup_includes_validation_and_probe_fails_clearly_if_skipped) ... 
+ok
+{"timestamp": 1794981153.1952336, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.4997523427009583, "source_val_top1": 25.0, "seconds": 0.046866655349731445, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981153.2961087, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.1008751392364502, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_multi_positive", "epoch": 1, "loss": 1.5976786613464355, "source_val_top1": 0.0, "seconds": 0.046862125396728516, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981153.3953948, "stage": "loso_sub-02_s0_patch_multi_positive:epoch1:saved", "session_seconds": 0.20016121864318848, "estimated_cu": null, "observed_cu_per_hour": null}
+test_resume_rejects_test_hash_before_opening_it 
+(test_train_only_boundary.TrainOnlyBoundaryTests.test_resume_rejects_test_hash_before_opening_it) ... ok
+test_scoped_token_reader_refuses_unloaded_split 
+(test_train_only_boundary.TrainOnlyBoundaryTests.test_scoped_token_reader_refuses_unloaded_split) ... ok
+{"timestamp": 1794981153.5473037, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.4997523427009583, "source_val_top1": 25.0, "seconds": 0.031883955001831055, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981153.6094732, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.062169551849365234, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_multi_positive", "epoch": 1, "loss": 1.5976786613464355, "source_val_top1": 0.0, "seconds": 0.05740237236022949, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981153.6939685, "stage": "loso_sub-02_s0_patch_multi_positive:epoch1:saved", "session_seconds": 0.14666485786437988, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981153.7408755, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981153.8740203, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.4997523427009583, "source_val_top1": 25.0, "seconds": 0.04485154151916504, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981153.954928, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.08090758323669434, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_multi_positive", "epoch": 1, "loss": 1.5976786613464355, "source_val_top1": 0.0, "seconds": 0.031281232833862305, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1794981154.022414, "stage": "loso_sub-02_s0_patch_multi_positive:epoch1:saved", "session_seconds": 0.1483936309814453, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1794981154.0848978, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+test_training_and_profile_never_open_or_hash_test_artifacts 
+(test_train_only_boundary.TrainOnlyBoundaryTests.test_training_and_profile_never_open_or_hash_test_artifacts) ... ok
+test_completed_tokens_and_disk_guards (test_training_entry.TrainingEntryTests.test_completed_tokens_and_disk_guards) 
+... ok
+test_notebook_has_no_extraction_or_full_training_command 
+(test_training_entry.TrainingEntryTests.test_notebook_has_no_extraction_or_full_training_command) ... ok
+test_resource_setup_imports_budget_meter_in_fresh_namespace 
+(test_training_runtime.TrainingRuntimeTests.test_resource_setup_imports_budget_meter_in_fresh_namespace) ... ok
+test_skipped_predecessors_fail_before_work 
+(test_training_runtime.TrainingRuntimeTests.test_skipped_predecessors_fail_before_work) ... ok
+test_ablation_configs_change_one_factor (test_v7_controls.V7Tests.test_ablation_configs_change_one_factor) ... ok
+test_augmentation_is_explicit_and_does_not_mutate 
+(test_v7_controls.V7Tests.test_augmentation_is_explicit_and_does_not_mutate) ... ok
+test_conv_shape_gradient_and_inductive_batch_independence 
+(test_v7_controls.V7Tests.test_conv_shape_gradient_and_inductive_batch_independence) ... ok
+test_ensemble_uses_only_complete_source_validation_and_ids 
+(test_v7_controls.V7Tests.test_ensemble_uses_only_complete_source_validation_and_ids) ... ok
+test_global_stratified_rows_exclude_validation 
+(test_v7_controls.V7Tests.test_global_stratified_rows_exclude_validation) ... ok
+test_margin_all_positives_and_permutation (test_v7_controls.V7Tests.test_margin_all_positives_and_permutation) ... ok
+test_text_cannot_switch_on_from_configuration (test_v7_controls.V7Tests.test_text_cannot_switch_on_from_configuration) 
+... ok
+test_actual_pool_and_normalization_do_not_fit_validation 
+(test_validation_root_audit.RootAuditTests.test_actual_pool_and_normalization_do_not_fit_validation) ... ok
+test_image_retrieval_not_concept_classification 
+(test_validation_root_audit.RootAuditTests.test_image_retrieval_not_concept_classification) ... ok
+test_mean_affine_commutes_and_scale_can_lower_loss_without_new_rank 
+(test_validation_root_audit.RootAuditTests.test_mean_affine_commutes_and_scale_can_lower_loss_without_new_rank) ... ok
+test_prefix_nested_mapping_and_fail_closed 
+(test_validation_root_audit.RootAuditTests.test_prefix_nested_mapping_and_fail_closed) ... ok
+test_stats_audit_opens_training_arrays_only_and_preserves_inputs 
+(test_validation_root_audit.RootAuditTests.test_stats_audit_opens_training_arrays_only_and_preserves_inputs) ... ok
+test_training_prefix_does_not_consume_test_values 
+(test_validation_root_audit.RootAuditTests.test_training_prefix_does_not_consume_test_values) ... ok
+test_uncertainty_and_effective_batch_counts 
+(test_validation_root_audit.RootAuditTests.test_uncertainty_and_effective_batch_counts) ... ok
+test_unique_stimuli_have_no_duplicate_false_negatives 
+(test_validation_root_audit.RootAuditTests.test_unique_stimuli_have_no_duplicate_false_negatives) ... ok
+test_gate_and_no_training_or_final_test_entry_points 
+(test_validation_root_notebook.RootNotebookTests.test_gate_and_no_training_or_final_test_entry_points) ... ok
+
+----------------------------------------------------------------------
+Ran 103 tests in 24.278s
+
+OK

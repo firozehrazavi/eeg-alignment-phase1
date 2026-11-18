@@ -1,6 +1,7 @@
 import json
 import tempfile
 import unittest
+from unittest import mock
 from pathlib import Path
 import numpy as np
 from phase1.pilot_preflight import preflight
@@ -29,3 +30,14 @@ class PreflightTests(unittest.TestCase):
             with self.assertRaises(ValueError):preflight(root/'dataset.json',cfg)
             (root/'test_eeg.npy').unlink()
             with self.assertRaises(FileNotFoundError):preflight(root/'dataset.json',cfg)
+            loaded=[]; original_load=np.load
+            def train_load(path,*args,**kwargs):
+                if Path(path).name.startswith('test'):
+                    raise AssertionError('Training preflight tried to open test array')
+                loaded.append(Path(path).name)
+                return original_load(path,*args,**kwargs)
+            with mock.patch('numpy.load',side_effect=train_load):
+                result=preflight(root/'dataset.json',cfg,train_only=True)
+            self.assertEqual(result['status'],'header_preflight_passed')
+            self.assertEqual(len(loaded),6)
+            self.assertFalse(any(name.startswith('test') for name in result['shapes']))

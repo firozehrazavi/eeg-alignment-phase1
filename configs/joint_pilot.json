@@ -1,0 +1,7 @@
+{
+  "setting": "within_subject", "subjects": ["sub-01"], "seeds": [0],
+  "arms": ["A", "B", "C", "D"], "epochs": 5, "batch": 256,
+  "lr": 0.0001, "weight_decay": 0.0001, "device": "cuda",
+  "max_seconds": 5400, "split_seed": 20261117, "rank": 64,
+  "ridge": 1.0, "joint_weight": 0.1, "distill_weight": 0.1, "readout_weight": 0.1
+}
