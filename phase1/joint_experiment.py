@@ -18,6 +18,31 @@ from .joint_data import load_training, split_three, derangement, digest
 from .joint_model import JointAligner, Residualizer, symmetric_identity_nce
 
 
+def duplicate_aware_text_metrics(scores, query_ids, gallery_ids, image_ids):
+    """Top-k exact *caption-string* retrieval, with duplicate descriptions accepted.
+
+    200 candidate IMAGE rows may have fewer than 200 distinct caption strings.
+    Every identical caption is a valid textual positive; ties are stable by
+    (caption ID, image ID) so row reordering does not change reported ranks.
+    This is NOT image-instance accuracy and MUST be reported separately.
+    """
+    if scores.ndim != 2 or scores.shape != (len(query_ids), len(gallery_ids)):
+        raise ValueError('Caption score/identity mismatch')
+    if len(image_ids) != len(gallery_ids) or len(set(image_ids)) != len(image_ids):
+        raise ValueError('Need aligned, unique candidate image IDs for stable ties')
+    if not set(query_ids) <= set(gallery_ids) or not torch.isfinite(scores).all():
+        raise ValueError('Missing positive caption or nonfinite scores')
+    order = sorted(range(len(gallery_ids)), key=lambda j: (str(gallery_ids[j]), str(image_ids[j])))
+    cand = [gallery_ids[j] for j in order]
+    ranked = scores[:, order].argsort(dim=1, descending=True, stable=True)
+    lookup = {cid: i for i, cid in enumerate(sorted(set(cand)))}
+    candidate_groups = torch.tensor([lookup[x] for x in cand], device=scores.device)
+    query_groups = torch.tensor([lookup[x] for x in query_ids], device=scores.device)
+    hit = candidate_groups[ranked] == query_groups[:, None]
+    return {f'top{k}': 100*hit[:, :min(k,len(cand))].any(1).double().mean().item()
+            for k in (1,5)}
+
+
 @torch.no_grad()
 def evaluate(model, eeg, visual, text, rows, image_ids, caption_ids, device, batch):
     model.eval()
@@ -31,7 +56,7 @@ def evaluate(model, eeg, visual, text, rows, image_ids, caption_ids, device, bat
     st = model.text_scores(ze, text[rows].to(device)).cpu()
     ids, tids = [image_ids[i] for i in rows], [caption_ids[i] for i in rows]
     im = retrieval_metrics(si, ids, ids, len(rows))
-    tx = retrieval_metrics(st, tids, tids, len(rows))
+    tx = duplicate_aware_text_metrics(st, tids, tids, ids)
     return {**{'image_' + k: v for k, v in im.items()}, **{'text_' + k: v for k, v in tx.items()}}, dict(image_scores=si, text_scores=st, image_ids=ids, caption_ids=tids)
 
 
@@ -116,9 +141,11 @@ def run(manifest_path, config_path, output):
                                 loss = multi_positive_loss(ze, zi, model.backbone.scale(), identity, identity)
                             else:
                                 loss = model.loss(ze, zi, text[ix].to(device), train_semantic[ix].to(device), identity,
-                                    joint_weight=cfg.get('joint_weight', .1), distill_weight=cfg.get('distill_weight', .1))
+                                    joint_weight=cfg.get('joint_weight', .1), distill_weight=cfg.get('distill_weight', .1),
+                                    caption_ids=[cids[i] for i in ix])
                             # Identical supervised readout in all arms, detached from backbone.
-                            loss = loss + cfg.get('readout_weight', .1) * symmetric_identity_nce(model.text_scores(ze.detach(), text[ix].to(device)), identity, identity)
+                            loss = loss + cfg.get('readout_weight', .1) * symmetric_identity_nce(model.text_scores(ze.detach(), text[ix].to(device)),
+                                        [cids[i] for i in ix], [cids[i] for i in ix])
                             if not torch.isfinite(loss): raise FloatingPointError('Nonfinite objective')
                             optimizer.zero_grad(set_to_none=True); loss.backward()
                             # Independent clipping prevents student gradients from rescaling backbone steps.
@@ -136,7 +163,8 @@ def run(manifest_path, config_path, output):
                         if score > best:
                             best, best_epoch = score, epoch
                             best_state = {k: v.detach().cpu().clone() for k, v in model.state_dict().items()}
-                        torch.save(dict(model=model.state_dict(), optimizer=optimizer.state_dict(), epoch=epoch), out / (run_name + '_latest.pt'))
+                        if cfg.get('save_latest', True):
+                            torch.save(dict(model=model.state_dict(), optimizer=optimizer.state_dict(), epoch=epoch), out / (run_name + '_latest.pt'))
                     model.load_state_dict(best_state); model.eval()
                     torch.save(dict(model=best_state, config=cfg, eeg_mean=en.mean, eeg_std=en.std,
                         visual_mean=[n.mean for n in vn], visual_std=[n.std for n in vn], text_mean=tn.mean,
@@ -151,7 +179,7 @@ def run(manifest_path, config_path, output):
                     metrics, bundle = evaluate(model, evaluation_eeg, visual, text, hold, ids, cids, device, cfg['batch'])
                     torch.save(bundle, out / (run_name + '_holdout_scores.pt'))
                     row = dict(subject=target, seed=seed, arm=arm, setting=cfg.get('setting','within_subject'), role='locked_development_holdout',
-                        candidates=len(hold), selected_epoch=best_epoch, parameters=sum(p.numel() for p in model.parameters()),
+                        candidates=len(hold), unique_caption_candidates=len(set(cids[i] for i in hold)), selected_epoch=best_epoch, parameters=sum(p.numel() for p in model.parameters()),
                         backbone_parameters=sum(p.numel() for p in model.backbone.parameters()), **metrics)
                     records.append(row)
                     with (out / 'results.csv').open('w', newline='') as f:

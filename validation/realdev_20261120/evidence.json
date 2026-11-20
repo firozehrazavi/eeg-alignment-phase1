@@ -1,0 +1,105 @@
+{
+  "date_utc": "2026-11-20",
+  "status": "four real training-partition development arms completed on CPU",
+  "source_subset": "historically examined 200 THINGS-EEG2 training concepts, 2000 unique images, sub-01, 17 channels by 250 samples",
+  "dataset_kind": "strictly DEVELOPMENT, NOT untouched official 200-way test, NOT independent publication-clean",
+  "manifest_sha256": "5ee356401c5306432b83b1272a85f05aa72fefa883854c533711832c1ee83a0d",
+  "split": {
+    "fit_images": 1600,
+    "tune_images": 200,
+    "locked_development_holdout_images": 200,
+    "split_by": "concept",
+    "seed": 20261117
+  },
+  "captions": {
+    "unique_of_2000": 1924,
+    "duplicate_rows_in_duplicate_groups": 131,
+    "duplicate_groups": 55,
+    "holdout_unique_captions": 193
+  },
+  "arms": [
+    {
+      "subject": "sub-01",
+      "seed": "0",
+      "arm": "A",
+      "setting": "within_subject",
+      "role": "locked_development_holdout",
+      "candidates": "200",
+      "unique_caption_candidates": "193",
+      "selected_epoch": "3",
+      "parameters": "22056071",
+      "backbone_parameters": "21793798",
+      "image_top1": "5.0",
+      "image_top5": "16.5",
+      "text_top1": "0.0",
+      "text_top5": "2.0"
+    },
+    {
+      "subject": "sub-01",
+      "seed": "0",
+      "arm": "B",
+      "setting": "within_subject",
+      "role": "locked_development_holdout",
+      "candidates": "200",
+      "unique_caption_candidates": "193",
+      "selected_epoch": "3",
+      "parameters": "22056071",
+      "backbone_parameters": "21793798",
+      "image_top1": "5.0",
+      "image_top5": "16.5",
+      "text_top1": "0.0",
+      "text_top5": "2.5"
+    },
+    {
+      "subject": "sub-01",
+      "seed": "0",
+      "arm": "C",
+      "setting": "within_subject",
+      "role": "locked_development_holdout",
+      "candidates": "200",
+      "unique_caption_candidates": "193",
+      "selected_epoch": "3",
+      "parameters": "22056071",
+      "backbone_parameters": "21793798",
+      "image_top1": "5.0",
+      "image_top5": "16.5",
+      "text_top1": "0.0",
+      "text_top5": "2.5"
+    },
+    {
+      "subject": "sub-01",
+      "seed": "0",
+      "arm": "D",
+      "setting": "within_subject",
+      "role": "locked_development_holdout",
+      "candidates": "200",
+      "unique_caption_candidates": "193",
+      "selected_epoch": "3",
+      "parameters": "22056071",
+      "backbone_parameters": "21793798",
+      "image_top1": "5.0",
+      "image_top5": "16.5",
+      "text_top1": "0.0",
+      "text_top5": "2.5"
+    }
+  ],
+  "image_hits_each_arm": 10,
+  "text_hits_each_arm": 0,
+  "image_top1_agreement_with_A": {
+    "B": 199,
+    "C": 200,
+    "D": 198
+  },
+  "warnings": [
+    "The source pilot subset and source concepts were previously explored, so this is not a pristine final benchmark.",
+    "The official THINGS-EEG2 test EEG and test image feature arrays were not loaded.",
+    "Only one subject, one seed, 5 epochs; results cannot justify SOTA, statistical significance, or novelty.",
+    "BLIP-generated captions depend on images; residual semantics are not independent linguistic ground truth.",
+    "Backbone started from random initialization, not historical trained 06b checkpoint; numbers cannot be compared with historical 78.8% top1.",
+    "Three original-arm runs finished A/B/C, then process timed out during D checkpoint write; D was rerun with identical training settings but latest-checkpoint saving disabled to finish safely.",
+    "Numerical A/B/C/D Top1 matches are not evidence of equal trained weights: predictions differ on a few images.",
+    "The historical successful route_c can dynamically select five layers; this pilot fixes layers [20,24,28,32,36]."
+  ],
+  "code_branch": "research/conditional-trimodal-realdev-20261120",
+  "code_prior_sha": "f9c2db492a2525fcaa1f2d77619a9c83e7800da6"
+}

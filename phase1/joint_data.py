@@ -31,8 +31,8 @@ def load_training(path, subjects):
     c = m['catalog']
     validate_catalog(c['image_ids'], c['concept_ids'], c['content_hashes'])
     n = len(c['image_ids'])
-    if len(c['caption_ids']) != n or len(set(c['caption_ids'])) != n:
-        raise ValueError('Need distinct caption identities; repeated captions require another protocol')
+    if len(c['caption_ids']) != n or not all(isinstance(c, str) and c for c in c['caption_ids']):
+        raise ValueError('Caption IDs must be nonempty strings aligned with image rows')
     hashes = {}
     def array(entry):
         if entry.get('partition') != 'official_training':
@@ -60,8 +60,16 @@ def load_training(path, subjects):
         raise ValueError('Visual/text arrays must be rows x features')
     if any(x.ndim != 3 or x.shape != next(iter(eeg.values())).shape for x in eeg.values()):
         raise ValueError('EEG must be aligned rows x channels x time for every source')
-    if len(torch.unique(text, dim=0)) != n:
-        raise ValueError('Identical caption embeddings: image-specific retrieval would be ambiguous')
+    # Generated image captions have real exact-text duplicates. Identical strings are
+    # the SAME retrieval answer, even when they describe different images.
+    # They must not be treated as false negatives or rejected by the loader.
+    first = {}
+    for i, cid in enumerate(c['caption_ids']):
+        j = first.setdefault(cid, i)
+        if j != i and not torch.equal(text[i], text[j]):
+            raise ValueError('Same caption identity has inconsistent text embedding')
+    if len(torch.unique(text, dim=0)) != len(first):
+        raise ValueError('Identical text embeddings have incompatible caption identities')
     return m, visual, text, eeg, hashes
 
 

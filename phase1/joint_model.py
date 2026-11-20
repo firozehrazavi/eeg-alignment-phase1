@@ -98,7 +98,7 @@ class JointAligner(nn.Module):
         return base + self.alpha * (e @ (v * t).T) / math.sqrt(self.rank)
 
     def loss_terms(self, ze, zi, text, residual_text, ids, joint_weight=.1,
-                   distill_weight=.1, image_ids=None):
+                   distill_weight=.1, image_ids=None, caption_ids=None):
         if any(not math.isfinite(w) or w < 0 for w in (joint_weight, distill_weight)):
             raise ValueError('Loss weights must be finite and nonnegative')
         image_ids = ids if image_ids is None else image_ids
@@ -112,18 +112,31 @@ class JointAligner(nn.Module):
         # Image effects can consequently be attributed to the joint objective.
         student = self.text_scores(ze.detach(), text)
         temp = self.temperature
+        target_probs = F.softmax(teacher.detach() / temp, dim=1)
+        if caption_ids is not None:
+            if len(caption_ids) != len(zi):
+                raise ValueError('Caption IDs must match candidate rows')
+            # Image teacher cannot demand distinguishing two identical
+            # caption candidates; aggregate its mass by exact text identity.
+            groups = {}
+            for j, cid in enumerate(caption_ids):
+                groups.setdefault(cid, []).append(j)
+            target_probs = target_probs.clone()
+            for positions in groups.values():
+                if len(positions) > 1:
+                    target_probs[:, positions] = (target_probs[:, positions]
+                            .sum(dim=1, keepdim=True) / len(positions))
         distill = F.kl_div(F.log_softmax(student / temp, dim=1),
-                          F.softmax(teacher.detach() / temp, dim=1),
-                          reduction='batchmean') * temp**2
+                          target_probs, reduction='batchmean') * temp**2
         total = base + joint_weight * joint + distill_weight * distill
         if not torch.isfinite(total):
             raise ValueError('Nonfinite joint loss')
         return {'total': total, 'base': base, 'joint': joint, 'distill': distill}
 
     def loss(self, ze, zi, text, residual_text, ids, joint_weight=.1,
-             distill_weight=.1, image_ids=None):
+             distill_weight=.1, image_ids=None, caption_ids=None):
         return self.loss_terms(ze, zi, text, residual_text, ids, joint_weight,
-                               distill_weight, image_ids)['total']
+                               distill_weight, image_ids, caption_ids)['total']
 
 
 class Residualizer(nn.Module):

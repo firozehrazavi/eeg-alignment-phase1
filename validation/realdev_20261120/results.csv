@@ -1,0 +1,5 @@
+subject,seed,arm,setting,role,candidates,unique_caption_candidates,selected_epoch,parameters,backbone_parameters,image_top1,image_top5,text_top1,text_top5
+sub-01,0,A,within_subject,locked_development_holdout,200,193,3,22056071,21793798,5.0,16.5,0.0,2.0
+sub-01,0,B,within_subject,locked_development_holdout,200,193,3,22056071,21793798,5.0,16.5,0.0,2.5
+sub-01,0,C,within_subject,locked_development_holdout,200,193,3,22056071,21793798,5.0,16.5,0.0,2.5
+sub-01,0,D,within_subject,locked_development_holdout,200,193,3,22056071,21793798,5.0,16.5,0.0,2.5
