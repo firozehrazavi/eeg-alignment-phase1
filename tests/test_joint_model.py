@@ -30,6 +30,19 @@ class JointModelTests(unittest.TestCase):
         expected = historical.scale() * torch.nn.functional.normalize(e, dim=-1) @ torch.nn.functional.normalize(v, dim=-1).T
         torch.testing.assert_close(self.model.image_scores(e, v), expected)
 
+    def test_plain_06b_checkpoint_load_preserves_backbone_outputs(self):
+        torch.manual_seed(19)
+        historical = Aligner(6, [7, 5]).eval()
+        transferred = JointAligner(6, [7, 5], 8, rank=4).eval()
+        transferred.load_06b_backbone_state(historical.state_dict())
+        expected_eeg = historical.eeg(self.eeg)
+        expected_image = historical.img(self.visuals)
+        actual_eeg, actual_image = transferred.backbone.eeg(self.eeg), transferred.backbone.img(self.visuals)
+        torch.testing.assert_close(actual_eeg, expected_eeg, rtol=0, atol=0)
+        torch.testing.assert_close(actual_image, expected_image, rtol=0, atol=0)
+        with self.assertRaisesRegex(ValueError, 'plain, compatible'):
+            transferred.load_06b_backbone_state({'backbone.' + k: v for k, v in historical.state_dict().items()})
+
     def test_joint_objective_reaches_all_three_projections_and_backbone(self):
         e, v = self.encode()
         symmetric_identity_nce(self.model.joint_scores(e, v, self.text), self.ids).backward()
@@ -116,6 +129,8 @@ class JointModelTests(unittest.TestCase):
             self.model.text_scores(e, self.text * float('inf'))
         with self.assertRaises(ValueError):
             self.model.loss(e, v, self.text, self.text, self.ids, joint_weight=-1)
+        with self.assertRaisesRegex(ValueError, 'rows are not aligned'):
+            self.model.encode(self.eeg[:3], self.visuals)
 
 
 class ResidualizerTests(unittest.TestCase):

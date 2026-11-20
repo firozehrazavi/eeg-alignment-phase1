@@ -72,9 +72,20 @@ class JointAligner(nn.Module):
             raise ValueError('Nonfinite EEG or wrong number of visual layers')
         for x, width in zip(visuals, self.dims):
             _matrix(x, width, 'visual feature')
-        if any(len(x) != len(visuals[0]) for x in visuals):
-            raise ValueError('Visual rows are not aligned')
+        if any(len(x) != len(eeg) for x in visuals):
+            raise ValueError('EEG and visual rows are not aligned')
         return self.backbone.eeg(eeg), self.backbone.img([x.detach() for x in visuals])
+
+    def load_06b_backbone_state(self, state):
+        """Load the plain Aligner.state_dict saved by the historical 06b code."""
+        expected = self.backbone.state_dict()
+        if not isinstance(state, dict) or set(state) != set(expected):
+            raise ValueError('Checkpoint is not a plain, compatible 06b Aligner state_dict')
+        for key, value in state.items():
+            if (not torch.is_tensor(value) or value.shape != expected[key].shape
+                    or not torch.isfinite(value).all()):
+                raise ValueError(f'Invalid 06b backbone tensor: {key}')
+        self.backbone.load_state_dict(state, strict=True)
 
     def image_scores(self, ze, zi):
         _matrix(ze, EMB, 'EEG embedding'); _matrix(zi, EMB, 'image embedding')

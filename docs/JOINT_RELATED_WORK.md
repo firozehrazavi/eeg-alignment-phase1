@@ -49,3 +49,23 @@ Direct EEG→caption retrieval must rank texts without candidate-image features.
 The decisive language control compares the same parameterization, budget, splits and initialization with correct versus identity-shuffled text and with a capacity-matched nonsemantic substitute. Improvement over the unmodified baseline alone does not attribute a gain to language. Report image and text galleries separately; average seeds within each subject before subject-level paired uncertainty. Keep previously examined development concepts identified as such, and record benchmark exposure rather than calling the official test pristine.
 
 No new EEG result, numerical improvement, or SOTA claim is established by this review.
+
+## Engineering verification and resumable comparison
+
+`JointAligner.load_06b_backbone_state` accepts the plain `Aligner.state_dict()`
+format emitted by the 06b source and validates keys, shapes, and finite values
+before transfer. CPU tests compare transferred EEG and image embeddings exactly.
+This verifies architecture/state-dict compatibility, **not** loading a trained
+historical checkpoint: no 06b checkpoint tensor file is present in this
+repository. Do not initialize a clean split from weights trained on its held-out
+images.
+
+The single Colab entry point uses the matched A/B/C/D training-only comparison
+and a stable Drive output directory. Its `--resume` checkpoints are epoch-boundary
+continuations: model, optimizer, scheduler, selection state and RNG state are
+restored only when the config, manifest hash, source-code hashes, and Python /
+PyTorch / NumPy versions match.
+Re-run setup and training cells after a runtime restart; the manifest is reused
+only when present, and input hashes are checked by the training loader. The
+development holdout remains for final reporting, never tuning; no official test
+data is loaded by the comparison.
