@@ -101,5 +101,15 @@
     "The historical successful route_c can dynamically select five layers; this pilot fixes layers [20,24,28,32,36]."
   ],
   "code_branch": "research/conditional-trimodal-realdev-20261120",
-  "code_prior_sha": "f9c2db492a2525fcaa1f2d77619a9c83e7800da6"
+  "code_prior_sha": "f9c2db492a2525fcaa1f2d77619a9c83e7800da6",
+  "direct_inference": {
+    "code_path": "phase1.joint_inference --modality text",
+    "score_shape": [
+      200,
+      200
+    ],
+    "max_abs_difference": 0.0,
+    "image_gallery_loaded": false,
+    "outcome": "engineering PASS; text Top-1 remains 0/200"
+  }
 }

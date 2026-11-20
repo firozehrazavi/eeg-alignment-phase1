@@ -20,3 +20,5 @@
 **Reproducibility:** See `prepare_real_dev.py`, `configs/joint_realdev_cpu.json`, `tests/test_joint_caption_duplicates.py`, `evidence.json`, and GitHub research branch. Results include output score matrices and model checkpoints in local experiment output directories; large tensors/checkpoints are intentionally not committed to GitHub.
 
 **Limitations:** Development holdout is historically exposed (not a virgin test). One subject and one seed. Caption teacher is image-generated. Five epochs with random initialization is undertrained relative to 60-epoch 06b. No final official test, LOSO, multi-seed or paper-ready novelty claim.
+
+**Direct inference functionality (verified):** The trained B checkpoint was loaded with `phase1.joint_inference --modality text` using only held-out EEG and 200 text-feature candidates. The emitted 200×200 score matrix was **bitwise identical** (maximum absolute difference 0.0) to the training-run saved holdout text scores; **no image gallery is read in the inference code path**. This is an engineering verification, NOT a demonstrated useful text-retrieval accuracy.

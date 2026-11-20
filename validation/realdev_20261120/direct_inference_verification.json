@@ -1,0 +1,12 @@
+{
+  "direct_inference_passed": true,
+  "modality": "text",
+  "test_image_gallery_opened": false,
+  "max_abs_delta_against_training_holdout_scores": 0.0,
+  "scores_shape": [
+    200,
+    200
+  ],
+  "model": "sub-01_s0_B_best.pt",
+  "eval": "training concept-disjoint development holdout, 200 captions rows / 193 unique"
+}
