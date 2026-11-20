@@ -45,8 +45,12 @@ def prepare(source, output):
         if a.shape!=exp or a.dtype!=np.float32 or not np.isfinite(a).all():
             raise ValueError(f'Array shape/dtype/nonfinite: {name}, actual={a.shape}')
     feat=torch.load(src/'feats7_blip_caps_clip_b32.pt',map_location='cpu',weights_only=True)
-    if feat['train'].shape!=(16540,512) or feat['test'].shape!=(200,512):
-        raise ValueError('Caption cache expected whole official training partition')
+    if not isinstance(feat, dict) or feat['train'].shape!=(16540,512):
+        raise ValueError('Caption cache must contain 16540 aligned training embeddings')
+    # This legacy serialized source ALSO contains a test tensor. torch.load
+    # deserializes the entire object, though training selects only feat['train'].
+    # Do not call this preparation fully test-blind; regenerate train-only
+    # caption embeddings from raw train captions for a clean benchmark.
     feats=feat['train'][idx].to(dtype=torch.float32).numpy()
     from collections import defaultdict
     groups=defaultdict(list)
@@ -71,6 +75,8 @@ def prepare(source, output):
                'selected_original_training_indices':idx,
                'original_dataset_json_sha256':sha(src/'dataset.json'),
                'original_preparation_state_sha256':sha(src/'preparation_state.json'),
+               'mixed_train_test_caption_serialization_deserialized':('test' in feat),
+               'used_training_caption_rows_only':True,
                'caption_full_cache_sha256':sha(src/'feats7_blip_caps_clip_b32.pt'),
                'caption_strings_sha256':sha(src/'captions_blip_large.json')}}
     def add(name,original=None):
@@ -85,7 +91,7 @@ def prepare(source, output):
         manifest['visuals'].append(add(name,source_path))
     name='captions_train_selected.npy';np.save(dst/name,feats);manifest['text']=add(name)
     (dst/'train.json').write_text(json.dumps(manifest,indent=2,ensure_ascii=False))
-    meta={'source':'selected 200 concepts, no official test data accessed',
+    meta={'source':'selected 200 concepts; official test EEG/image values not opened; legacy mixed caption serialization deserialized (test tensor not selected)',
           'train_images':n,'concepts':len(ccounts), 'unique_captions':len(groups),
           'duplicate_caption_rows':sum(k for k in dups.values() if k>1),
           'duplicate_caption_groups':sum(1 for k in dups.values() if k>1),

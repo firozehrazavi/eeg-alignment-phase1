@@ -1,0 +1,35 @@
+ENV: Python Python 3.13.5
+ENV: torch 2.10.0+cpu numpy 2.3.5 CUDA available False
+test_duplicate_caption_candidates_count_as_same_answer (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_duplicate_caption_candidates_count_as_same_answer) ... ok
+test_duplicate_caption_student_loss_finite_with_gradients (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_duplicate_caption_student_loss_finite_with_gradients) ... ok
+test_gallery_row_permutation_invariant (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_gallery_row_permutation_invariant) ... ok
+test_missing_positive_rejected (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_missing_positive_rejected) ... ok
+test_image_inference_and_refusal_to_overwrite (test_joint_inference.JointInferenceTests.test_image_inference_and_refusal_to_overwrite) ... ok
+test_invalid_gallery_rejected_before_output (test_joint_inference.JointInferenceTests.test_invalid_gallery_rejected_before_output) ... ok
+test_text_inference_never_accesses_image_inputs_or_residualizer (test_joint_inference.JointInferenceTests.test_text_inference_never_accesses_image_inputs_or_residualizer) ... ok
+test_backbone_initialization_and_image_score_preserve_06b (test_joint_model.JointModelTests.test_backbone_initialization_and_image_score_preserve_06b) ... ok
+test_direct_text_inference_accepts_eeg_and_text_only (test_joint_model.JointModelTests.test_direct_text_inference_accepts_eeg_and_text_only) ... ok
+test_distillation_only_trains_readout_and_no_raw_text (test_joint_model.JointModelTests.test_distillation_only_trains_readout_and_no_raw_text) ... ok
+test_identity_loss_handles_duplicate_and_rectangular_matches (test_joint_model.JointModelTests.test_identity_loss_handles_duplicate_and_rectangular_matches) ... ok
+test_invalid_shapes_and_nonfinite_values_fail (test_joint_model.JointModelTests.test_invalid_shapes_and_nonfinite_values_fail) ... ok
+test_joint_has_nonzero_three_way_mixed_difference (test_joint_model.JointModelTests.test_joint_has_nonzero_three_way_mixed_difference) ... ok
+test_joint_objective_reaches_all_three_projections_and_backbone (test_joint_model.JointModelTests.test_joint_objective_reaches_all_three_projections_and_backbone) ... ok
+test_shuffled_text_changes_joint_but_not_image_inference (test_joint_model.JointModelTests.test_shuffled_text_changes_joint_but_not_image_inference) ... ok
+test_zero_joint_weight_backbone_gradient_equals_baseline_even_with_student (test_joint_model.JointModelTests.test_zero_joint_weight_backbone_gradient_equals_baseline_even_with_student) ... ok
+test_fitted_state_is_independent_of_heldout_values (test_joint_model.ResidualizerTests.test_fitted_state_is_independent_of_heldout_values) ... ok
+test_fitting_indices_and_invalid_inputs_fail (test_joint_model.ResidualizerTests.test_fitting_indices_and_invalid_inputs_fail) ... ok
+test_linear_visual_information_is_removed_on_simple_problem (test_joint_model.ResidualizerTests.test_linear_visual_information_is_removed_on_simple_problem) ... ok
+test_transform_is_pointwise_and_fitted_state_roundtrips (test_joint_model.ResidualizerTests.test_transform_is_pointwise_and_fitted_state_roundtrips) ... ok
+test_full_four_arm_cpu_pipeline (test_joint_pipeline.PipelineTests.test_full_four_arm_cpu_pipeline) ... {"run": "sub-01_s0_A", "epoch": 1, "loss": 2.8560946583747864, "tune_image_top1": 100.0, "seconds": 0.030659386000024824}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 4.128852486610413, "tune_image_top1": 100.0, "seconds": 0.025135554999906162}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 4.123420238494873, "tune_image_top1": 100.0, "seconds": 0.028422236999631423}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 4.12249493598938, "tune_image_top1": 100.0, "seconds": 0.023685425000167015}
+ok
+test_hash_and_provenance_fail_closed (test_joint_pipeline.PipelineTests.test_hash_and_provenance_fail_closed) ... ok
+test_split_disjoint_and_derangement (test_joint_pipeline.PipelineTests.test_split_disjoint_and_derangement) ... ok
+test_train_loader_never_opens_unused_subject_or_test (test_joint_pipeline.PipelineTests.test_train_loader_never_opens_unused_subject_or_test) ... ok
+
+----------------------------------------------------------------------
+Ran 24 tests in 3.611s
+
+OK

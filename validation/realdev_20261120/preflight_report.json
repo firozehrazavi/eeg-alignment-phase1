@@ -1,0 +1,17 @@
+{
+  "source": "selected 200 concepts, no official test data accessed",
+  "train_images": 2000,
+  "concepts": 200,
+  "unique_captions": 1924,
+  "duplicate_caption_rows": 131,
+  "duplicate_caption_groups": 55,
+  "duplicate_counts": {
+    "1": 1869,
+    "2": 43,
+    "3": 7,
+    "4": 2,
+    "5": 2,
+    "6": 1
+  },
+  "manifest_sha256": "5ee356401c5306432b83b1272a85f05aa72fefa883854c533711832c1ee83a0d"
+}

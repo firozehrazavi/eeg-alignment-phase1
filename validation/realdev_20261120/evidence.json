@@ -98,7 +98,8 @@
     "Backbone started from random initialization, not historical trained 06b checkpoint; numbers cannot be compared with historical 78.8% top1.",
     "Three original-arm runs finished A/B/C, then process timed out during D checkpoint write; D was rerun with identical training settings but latest-checkpoint saving disabled to finish safely.",
     "Numerical A/B/C/D Top1 matches are not evidence of equal trained weights: predictions differ on a few images.",
-    "The historical successful route_c can dynamically select five layers; this pilot fixes layers [20,24,28,32,36]."
+    "The historical successful route_c can dynamically select five layers; this pilot fixes layers [20,24,28,32,36].",
+    "Legacy feats7 caption .pt serializes BOTH official train and test caption tensors; torch.load deserializes both, although only selected training caption vectors were used. This is not fully test-blind preparation."
   ],
   "code_branch": "research/conditional-trimodal-realdev-20261120",
   "code_prior_sha": "f9c2db492a2525fcaa1f2d77619a9c83e7800da6",
@@ -111,5 +112,12 @@
     "max_abs_difference": 0.0,
     "image_gallery_loaded": false,
     "outcome": "engineering PASS; text Top-1 remains 0/200"
+  },
+  "mixed_caption_cache_test_tensor_present_during_preparation": true,
+  "source_preparation_recheck": {
+    "result": "seven numeric inputs byte-identical after script change",
+    "original_manifest_hash": "5ee356401c5306432b83b1272a85f05aa72fefa883854c533711832c1ee83a0d",
+    "reprepared_manifest_hash": "4ecd025e61c7cb28e3f621774fe0bcdec3064997235f6577a8e2746abc530e49",
+    "cause_of_difference": "additional mixed-caption-cache provenance metadata; the training arrays/captions selected are identical"
   }
 }
