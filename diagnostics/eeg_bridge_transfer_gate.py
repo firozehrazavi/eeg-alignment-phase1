@@ -74,6 +74,92 @@ def compare(eeg_dev, image_dev, text_dev, identities, image_ids, real, shuffled)
     }
 
 
+def direct_eeg_ridge_diagnostic(eeg_all, text_all, caption_ids, train, val,
+                                image_bridge_map):
+    """Fit caption readout on train EEG only; evaluate original 1,654-way dev.
+
+    This is a diagnostic of information in frozen EEG, NOT joint learning.
+    """
+    from phase1.joint_data import derangement
+
+    if len(eeg_all) != 16540 or len(text_all) != 16540:
+        raise ValueError("Direct EEG readout requires all 16,540 train-partition rows")
+    if len(train) != 14886 or len(val) != 1654:
+        raise ValueError("Expected historical 9/1 split; no official test")
+    if not torch.isfinite(eeg_all).all():
+        raise ValueError("Non-finite EEG embeddings")
+
+    ids = [caption_ids[int(i)] for i in val]
+    rows = [int(i) for i in val]
+
+    direct = fit_bridge(eeg_all, text_all, train)
+    shuffled = fit_bridge(
+        eeg_all, text_all, train,
+        derangement((train // 10).tolist(), CONTROL_SEED))
+
+    real_scores = bridge_scores_from_embeddings(eeg_all[val], text_all[val], direct)
+    shuf_scores = bridge_scores_from_embeddings(eeg_all[val], text_all[val], shuffled)
+    image_scores = bridge_scores_from_embeddings(
+        image_bridge_map[0], text_all[val], image_bridge_map[1])
+
+    a1, a5 = caption_hits(real_scores, ids, ids, rows)
+    b1, b5 = caption_hits(shuf_scores, ids, ids, rows)
+    v1, v5 = caption_hits(image_scores, ids, ids, rows)
+
+    rng = np.random.default_rng(20261122)
+    permuted_scores = real_scores[torch.as_tensor(rng.permutation(1654))]
+    p1, p5 = caption_hits(permuted_scores, ids, ids, rows)
+
+    def summarize(top1, top5):
+        return {
+            "top1_pct": round(float(top1.mean() * 100), 5),
+            "top5_pct": round(float(top5.mean() * 100), 5),
+            "hits_top1": int(top1.sum()),
+            "hits_top5": int(top5.sum()),
+        }
+
+    # Diagnostic held-out concepts for the *readout only*: the frozen EEG
+    # backbone itself was trained on these concepts; not concept zero-shot.
+    rng2 = np.random.default_rng(20261121)
+    held_concepts = torch.as_tensor(np.sort(rng2.choice(1654, size=165, replace=False)))
+    inner_train = train[~torch.isin(train // 10, held_concepts)]
+    inner_query = val[torch.isin(val // 10, held_concepts)]
+    inner_direct = fit_bridge(eeg_all, text_all, inner_train)
+    inner_s = bridge_scores_from_embeddings(eeg_all[inner_query], text_all[val], inner_direct)
+    inner_ids = [caption_ids[int(i)] for i in inner_query]
+    held_1, held_5 = caption_hits(inner_s, inner_ids, ids, rows)
+
+    low_real_vs_shuf = bootstrap_ci(a1, b1, 20261130)[0]
+    low_real_vs_img = bootstrap_ci(a1, v1, 20261131)[0]
+    primary = summarize(a1, a5)
+    result = {
+        "PRIMARY_frozen_eeg_trained_ridge_to_caption": primary,
+        "CONTROL_shuffled_eeg_caption_train_pairs": summarize(b1, b5),
+        "CONTROL_permuted_eeg_dev_queries": summarize(p1, p5),
+        "REFERENCE_image_trained_bridge_on_same_frozen_eeg": summarize(v1, v5),
+        "readout_heldout_165_concepts_1654_way": summarize(held_1, held_5),
+        "real_minus_shuffle_top1_ci95_pp": bootstrap_ci(a1, b1, 20261130),
+        "real_minus_image_bridge_top1_ci95_pp": bootstrap_ci(a1, v1, 20261131),
+        "real_minus_image_bridge_top5_ci95_pp": bootstrap_ci(a5, v5, 20261132),
+        "heldout_concept_readout_fit_rows": len(inner_train),
+        "pre_registered_decision": (
+            "GO_for_joint_three_way_hypothesis_only" if
+            primary["top1_pct"] >= 4.0 and
+            low_real_vs_shuf > 0 and
+            low_real_vs_img > 0 and
+            primary["top5_pct"] > float(v5.mean() * 100) else
+            "NO_GO_or_inconclusive_for_GPU"
+        ),
+        "interpretation_limit": (
+            "Readout training sees 9 EEG trials/exemplars per known concept; "
+            "held-out concepts are excluded only from the linear readout, "
+            "NOT from the 06b EEG backbone. No claim of novel concepts or "
+            "joint EEG-Image-Text learning is supported by this diagnostic."
+        ),
+    }
+    return result
+
+
 def run(root, cache):
     from phase1.historical_06b import (
         _load_training, POST17, ROUTE_INIT, ROUTE_LAYERS, FEATURE_WIDTH)
@@ -108,8 +194,10 @@ def run(root, cache):
         images = torch.cat([
             model.img([x[rows] for x in layers]).float()
             for rows in torch.arange(len(eeg)).split(256)],dim=0)
-        eeg_dev = torch.cat([
-            model.eeg(eeg[rows].float()).float() for rows in val.split(256)],dim=0)
+        eeg_all = torch.cat([
+            model.eeg(eeg[rows].float()).float()
+            for rows in torch.arange(len(eeg)).split(256)],dim=0)
+        eeg_dev = eeg_all[val]
     del model,eeg,layers
     captions, caption_ids = _load_text(text_file,ids_file,torch.device("cpu"))
     if len(captions) != len(images) or len(caption_ids) != len(images):
@@ -124,6 +212,8 @@ def run(root, cache):
     rows = val.tolist()
     identities = [caption_ids[i] for i in rows]
     report = compare(eeg_dev,images[val],text[val],identities,rows,real,shuffled)
+    report["EEG_fitted_readout_gate"] = direct_eeg_ridge_diagnostic(
+        eeg_all, text, caption_ids, train, val, (eeg_dev, real))
     report.update({
         "status":"measured_cpu_only",
         "official_test_opened":False,
