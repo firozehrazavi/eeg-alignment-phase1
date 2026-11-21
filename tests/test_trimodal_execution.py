@@ -242,9 +242,20 @@ class ExecutionTests(unittest.TestCase):
             self.invoke(name, arms=('B','D'), resume=True,
                         semantic_correction=True, live_caption_gradient=True,
                         max_epochs_per_arm=1)
-        with self.assertRaisesRegex(ValueError, 'signature|Resume'):
+        # Switching off the live-caption objective on the same saved path
+        # is rejected by the fresh-output-name guard before signature checks.
+        with self.assertRaisesRegex(ValueError, 'separate.*output directory'):
             self.invoke(name, arms=('B','D'), resume=True,
                         semantic_correction=True, live_caption_gradient=False)
+        # With the same experiment name, the signed training protocol still
+        # rejects an altered loss weight (and may not update stored files).
+        run_record = self.root / name / 'run.json'
+        before_record = run_record.read_bytes()
+        with patch.object(runner, 'JOINT_WEIGHT', runner.JOINT_WEIGHT + .01):
+            with self.assertRaisesRegex(ValueError, 'signature|Resume'):
+                self.invoke(name, arms=('B','D'), resume=True,
+                            semantic_correction=True, live_caption_gradient=True)
+        self.assertEqual(run_record.read_bytes(), before_record)
 
     def test_invalid_execution_options_are_rejected_before_reading_inputs(self):
         options = [dict(arms=()), dict(arms=('A', 'A')), dict(arms=('E',)),
