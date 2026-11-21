@@ -295,6 +295,18 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
             raise ValueError("Existing A/B/C/D results have duplicate or unknown runs")
     for record in run_records:
         _verify_completed_artifacts(output, record)
+    # Validate saved preprocessing BEFORE any fast return (already-complete,
+    # zero-budget, etc.). Previously finish() could silently re-hash a corrupted
+    # file and overwrite the trusted digest in run.json.
+    if resume and (prior.get("preprocessing") is not None
+                   or prior.get("preprocessing_sha256") is not None
+                   or run_records):
+        prep = output / "preprocessing.pt"
+        if (prior.get("preprocessing") != prep.name
+                or not isinstance(prior.get("preprocessing_sha256"), str)
+                or not prep.is_file()
+                or prior["preprocessing_sha256"] != _sha256(prep)):
+            raise ValueError("Tri-modal preprocessing artifact missing or changed")
     completed = {(row["subject"], int(row["seed"]), row["arm"])
                  for row in run_records}
     preparation_seconds = None
