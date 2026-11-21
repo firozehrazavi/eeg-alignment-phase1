@@ -128,11 +128,32 @@ class ExecutionTests(unittest.TestCase):
                                semantic_correction=True)
         self.assertEqual({r['arm'] for r in finished}, {'B','D'})
         self.assertEqual(self.metadata(dirname)['status'], 'complete_training_only')
+        # A completed run returns numeric Python values; reloading results.csv
+        # via csv.DictReader returns string values. Test persisted identities,
+        # artifact integrity and zero optimizer updates instead of mismatched
+        # Python types from two equivalent representations.
+        import csv
+        records_path = self.root / dirname / 'results.csv'
+        original_csv = records_path.read_bytes()
+        checkpoint_paths = [
+            self.root / dirname / f'sub-01_s0_{arm}_latest.pt'
+            for arm in 'BD'
+        ] + [
+            self.root / dirname / f'sub-01_s0_{arm}_best.pt'
+            for arm in 'BD'
+        ]
+        original_checkpoints = {p: p.read_bytes() for p in checkpoint_paths}
         with patch.object(torch.optim.AdamW, 'step',
                           side_effect=AssertionError('Corrected experiment restarted')):
             same = self.invoke(dirname, arms=('B','D'), resume=True,
                                semantic_correction=True)
-        self.assertEqual(same, finished)
+        with records_path.open(newline='') as handle:
+            persisted = list(csv.DictReader(handle))
+        self.assertEqual(same, persisted)
+        self.assertEqual({row['arm'] for row in same}, {'B', 'D'})
+        self.assertEqual(records_path.read_bytes(), original_csv)
+        self.assertEqual({p: p.read_bytes() for p in checkpoint_paths},
+                         original_checkpoints)
         with self.assertRaisesRegex(ValueError, 'signature|Resume'):
             self.invoke(dirname, arms=('B','D'), resume=True, semantic_correction=False)
 
