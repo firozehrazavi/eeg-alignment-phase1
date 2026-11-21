@@ -196,7 +196,7 @@ def _protect_output(output, baseline_output, manifest_path, input_paths):
 def run(manifest_path, baseline_output, text_features, caption_ids_path,
         caption_provenance, output, device_name="cuda", resume=False, *,
         arms=("A", "B", "C", "D"), max_seconds=None, max_epochs_per_arm=None,
-        semantic_correction=False):
+        semantic_correction=False, live_caption_gradient=False):
     """Run selected arms with the fixed scientific schedule.
 
     Execution limits are invocation-only. The soft wall-time limit includes
@@ -207,12 +207,19 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
     selected_arms = _execution_options(arms, max_seconds, max_epochs_per_arm)
     if type(semantic_correction) is not bool:
         raise ValueError('semantic_correction must be bool')
+    if type(live_caption_gradient) is not bool:
+        raise ValueError('live_caption_gradient must be bool')
+    if live_caption_gradient and not semantic_correction:
+        raise ValueError('Live-caption EEG gradient requires corrected B/D teacher')
     if semantic_correction and any(arm not in ('B', 'D') for arm in selected_arms):
         raise ValueError("Corrected semantic experiment only permits arms B and D")
     required_arms = ('B', 'D') if semantic_correction else tuple('ABCD')
     joint_alpha = SEMANTIC_CORRECTION_ALPHA if semantic_correction else 1.0
     output = Path(output).resolve()
-    if semantic_correction and not output.name.startswith('trimodal_semantic_correction_bd_'):
+    if live_caption_gradient:
+        if not output.name.startswith('trimodal_live_caption_bd_'):
+            raise ValueError('Live-caption experiment requires a fresh trimodal_live_caption_bd_* output directory')
+    elif semantic_correction and not output.name.startswith('trimodal_semantic_correction_bd_'):
         raise ValueError('Corrected experiment requires a separate trimodal_semantic_correction_bd_* output directory')
     baseline_output = Path(baseline_output).resolve()
     _protect_output(output, baseline_output, manifest_path,
@@ -269,7 +276,10 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
         joint_weight=JOINT_WEIGHT, distill_weight=DISTILL_WEIGHT,
         readout_weight=READOUT_WEIGHT, arms=list("ABCD"),
         semantic_correction=semantic_correction, joint_alpha=joint_alpha,
-        gradient_policy="detached_teacher_base_only_in_corrected_arms",
+        live_caption_gradient=live_caption_gradient,
+        gradient_policy=("detached_joint_teacher_image_base_plus_live_caption_readout"
+                         if live_caption_gradient else
+                         "detached_joint_teacher_image_base_plus_detached_caption_readout"),
         alpha_calibration="fixed_20_from_epoch15_fit_only_D1_B_H_over_B_0.050752")
     prior = {}
     if output.exists():
@@ -527,7 +537,12 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
                             caption_ids=caption_batch_ids)
                         loss = terms["total"]
                     loss = loss + READOUT_WEIGHT * symmetric_identity_nce(
-                        model.text_scores(ze.detach(), text_batch),
+                        # A single controlled change: let the *direct* EEG-to-
+                        # Caption retrieval loss train the EEG encoder in the
+                        # opt-in live-caption B/D experiment. Distillation
+                        # above stays detached to isolate this intervention.
+                        model.text_scores(ze if live_caption_gradient else ze.detach(),
+                                          text_batch),
                         caption_batch_ids, caption_batch_ids)
                     if not torch.isfinite(loss):
                         raise FloatingPointError(f"Nonfinite loss in arm {arm}")
@@ -608,7 +623,8 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
             _torch_save_atomic(scores, scores_path)
             _torch_save_atomic(best_state, best_path)
             record = dict(subject="sub-01", seed=0, arm=arm,
-                          setting=("semantic_correction_Bprime_Dprime" if semantic_correction
+                          setting=("live_caption_gradient_B_D" if live_caption_gradient else
+                                    "semantic_correction_Bprime_Dprime" if semantic_correction
                                     else "historical_06b_warm_start"),
                           role="training_validation",
                           candidates=len(val_rows),
@@ -649,6 +665,8 @@ def main():
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--semantic-correction", action="store_true",
                         help="Opt-in B-prime/D-prime detached teacher base; requires new output")
+    parser.add_argument("--live-caption-gradient", action="store_true",
+                        help="Train EEG encoder using direct caption readout; requires corrected teacher and new output")
     parser.add_argument("--arms", nargs="+", choices=list("ABCD"), default=list("ABCD"))
     parser.add_argument("--max-seconds", type=float,
                         help="Soft invocation wall-time limit; finishes a started epoch and checkpoint")
@@ -659,7 +677,8 @@ def main():
                  args.caption_ids, args.caption_provenance, args.output,
                  args.device, args.resume, arms=args.arms, max_seconds=args.max_seconds,
                  max_epochs_per_arm=args.max_epochs_per_arm,
-                  semantic_correction=args.semantic_correction)
+                  semantic_correction=args.semantic_correction,
+                  live_caption_gradient=args.live_caption_gradient)
     print(json.dumps(result, indent=2))
 
 
