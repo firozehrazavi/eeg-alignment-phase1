@@ -2,7 +2,7 @@
 import unittest
 import torch
 from diagnostics.eeg_bridge_transfer_gate import (
-    bridge_scores_from_embeddings, check, compare)
+    bridge_scores_from_embeddings, check, compare, direct_eeg_ridge_diagnostic)
 from diagnostics.image_caption_bridge_gate import bridge_scores
 
 
@@ -26,6 +26,14 @@ class EEGBridgeGateTests(unittest.TestCase):
                                 ['cat','cat','dog'], [10,11,12])
         self.assertEqual(result['hits_top1'], 3)
         self.assertEqual(hits.tolist(), [1.,1.,1.])
+
+    def test_direct_readout_rejects_partial_or_invalid_shape(self):
+        eeg = torch.randn(10, 1024)
+        cap = torch.randn(10, 512)
+        with self.assertRaisesRegex(ValueError, '16,540'):
+            direct_eeg_ridge_diagnostic(
+                eeg, cap, ['x']*10,
+                torch.arange(9), torch.tensor([9]), (eeg[-1:], None))
 
     def test_shapes_and_invalid_oracle_fail_closed(self):
         z = torch.randn(11, 1024)
