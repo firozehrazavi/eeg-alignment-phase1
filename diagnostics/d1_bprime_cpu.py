@@ -6,7 +6,11 @@ import hashlib
 import json
 import math
 import os
+import sys
 from pathlib import Path
+
+# Make phase1 importable when launched as a standalone script from Colab.
+sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import torch
 from phase1.historical_06b import _load_training, PER_CONCEPT
