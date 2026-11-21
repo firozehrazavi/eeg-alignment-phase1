@@ -32,7 +32,7 @@ class Notebook06CBootstrapTests(unittest.TestCase):
         shutil.copytree(ROOT / 'phase1', self.checkout / 'phase1',
                         ignore=shutil.ignore_patterns('__pycache__'))
 
-    def execute(self, branch='research/trimodal-budgeted-arms-20261121', dirty='', stale_phase1=False):
+    def execute(self, branch='research/semantic-correction-bd-20261121', dirty='', stale_phase1=False):
         def git_output(command, **kwargs):
             if command[-2:] == ['branch', '--show-current']:
                 return branch
@@ -65,7 +65,7 @@ class Notebook06CBootstrapTests(unittest.TestCase):
             p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
             for p in sorted((ROOT / 'phase1').rglob('*.py'))})
         self.assertEqual(commands[0].args[0][-3:],
-                         ['--ff-only', 'origin', 'research/trimodal-budgeted-arms-20261121'])
+                         ['--ff-only', 'origin', 'research/semantic-correction-bd-20261121'])
         self.assertIn("os.environ.get('EEG_CACHE'", ''.join(self.notebook['cells'][3]['source']))
         self.assertIn("os.environ.get('EEG_06C_RUN_ROOT'", ''.join(self.notebook['cells'][3]['source']))
 
@@ -76,7 +76,7 @@ class Notebook06CBootstrapTests(unittest.TestCase):
             self.execute()
 
     def test_reused_wrong_branch_or_dirty_checkout_is_preserved(self):
-        for branch, dirty in [('main', ''), ('research/trimodal-budgeted-arms-20261121', ' M local.py')]:
+        for branch, dirty in [('main', ''), ('research/semantic-correction-bd-20261121', ' M local.py')]:
             with self.subTest(branch=branch, dirty=dirty):
                 with self.assertRaisesRegex(RuntimeError, 'another branch or has local changes'):
                     self.execute(branch, dirty)
@@ -165,7 +165,7 @@ class Notebook06CBootstrapTests(unittest.TestCase):
         self.assertEqual(before, {path: path.read_bytes() for path in protected})
         self.assertFalse((output / 'budgeted_cpu_checks_20261121').exists())
         self.assertFalse(namespace['TRIMODAL_OUTPUT'].exists())
-        self.assertEqual(namespace['TRIMODAL_OUTPUT'], output / 'trimodal_budgeted_20261121')
+        self.assertEqual(namespace['TRIMODAL_OUTPUT'], output / 'trimodal_semantic_correction_bd_20261121')
 
     def test_enabled_gpu_controls_resume_one_new_output_in_both_modes(self):
         from phase1 import trimodal_06b as trimodal
@@ -176,7 +176,7 @@ class Notebook06CBootstrapTests(unittest.TestCase):
                          'caption_ids_train_only.json', 'caption_provenance_train_only.json')]
         for path in caption_files:
             path.write_bytes(b'input existence fixture; runner is mocked')
-        for profile, arms in [(True, ('A','B','C','D')), (True, ('B',)), (False, ('B','D'))]:
+        for profile, arms in [(True, ('B','D')), (True, ('B',)), (False, ('B','D'))]:
             with self.subTest(profile=profile, arms=arms):
                 namespace = {'pathlib': pathlib, 'json': json, 'os': os, 'torch': torch,
                              'RUN_ROOT': output, 'MANIFEST': output / 'train_only_manifest.json',
@@ -186,23 +186,18 @@ class Notebook06CBootstrapTests(unittest.TestCase):
                 source = ''.join(self.notebook['cells'][9]['source'])
                 source = source.replace('RUN_TRIMODAL=False', 'RUN_TRIMODAL=True')
                 source = source.replace('PROFILE=True', f'PROFILE={profile}')
-                source = source.replace("ARMS=('A','B','C','D')", f'ARMS={arms!r}')
+                source = source.replace("ARMS=('B','D')", f'ARMS={arms!r}')
                 with patch.object(torch.cuda, 'is_available', return_value=True), \
                         patch.object(trimodal, 'run', return_value=[]) as run, \
-                        patch.object(trimodal, 'summarize_gpu_profile', create=True,
-                                     return_value={'status': 'fixture_only'}) as summary, \
                         contextlib.redirect_stdout(io.StringIO()):
                     namespace['run_trimodal'] = run
                     exec(source, namespace)
                 self.assertEqual(run.call_args.args[1], output / 'baseline')
-                self.assertEqual(run.call_args.args[5], output / 'trimodal_budgeted_20261121')
+                self.assertEqual(run.call_args.args[5], output / 'trimodal_semantic_correction_bd_20261121')
                 self.assertEqual(run.call_args.kwargs,
                                  {'resume': True, 'arms': arms, 'max_seconds': 900.0,
-                                  'max_epochs_per_arm': 5 if profile else None})
-                if profile:
-                    summary.assert_called_once_with(output / 'trimodal_budgeted_20261121')
-                else:
-                    summary.assert_not_called()
+                                  'max_epochs_per_arm': 5 if profile else None,
+                                   'semantic_correction': True})
 
     def test_invalid_budget_cannot_enter_runner(self):
         from unittest.mock import Mock

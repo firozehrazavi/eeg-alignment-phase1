@@ -45,7 +45,7 @@ class JointAligner(nn.Module):
     remains active, and no text features are required by image_scores.
     """
     def __init__(self, n_in, dims, text_dim, rank=64, init_logits=None, alpha=1.,
-                 temperature=2.):
+                 temperature=2., semantic_correction=False):
         super().__init__()
         dims = list(dims)
         if n_in < 1 or not dims or min(dims) < 1 or text_dim < 1 or rank < 1:
@@ -55,7 +55,10 @@ class JointAligner(nn.Module):
         if init_logits is not None and len(init_logits) != len(dims):
             raise ValueError('Layer mixture shape mismatch')
         self.n_in, self.dims, self.text_dim, self.rank = n_in, dims, text_dim, rank
+        if not isinstance(semantic_correction, bool):
+            raise ValueError('semantic_correction must be a bool')
         self.alpha, self.temperature = float(alpha), float(temperature)
+        self.semantic_correction = semantic_correction
         # Construct this first: a matched RNG seed yields precisely 06b weights.
         self.backbone = Aligner(n_in, dims, init_logits)
         self.joint_eeg = nn.Linear(EMB, rank, bias=False)
@@ -106,7 +109,12 @@ class JointAligner(nn.Module):
         e = self.joint_eeg(ze).tanh()
         v = self.joint_image(zi).tanh()
         t = self.joint_text(residual_text.detach()).tanh()
-        return base + self.alpha * (e @ (v * t).T) / math.sqrt(self.rank)
+        # Opt-in B'/D' experiment: use the frozen image score as a context,
+        # while allowing this loss to update the encoder only via the
+        # genuinely triadic interaction. The base image loss remains live
+        # separately in loss_terms; the legacy A/B/C/D path is unchanged.
+        teacher_base = base.detach() if self.semantic_correction else base
+        return teacher_base + self.alpha * (e @ (v * t).T) / math.sqrt(self.rank)
 
     def loss_terms(self, ze, zi, text, residual_text, ids, joint_weight=.1,
                    distill_weight=.1, image_ids=None, caption_ids=None):

@@ -34,6 +34,10 @@ RIDGE = 1.
 JOINT_WEIGHT = .1
 DISTILL_WEIGHT = .1
 READOUT_WEIGHT = .1
+# Frozen from the epoch-15 train-fit D1 observation H/B ~= 0.050752.
+# 20x brings the interaction logit spread approximately to the image-logit
+# spread before new training; this is a hypothesis, not a measured improvement.
+SEMANTIC_CORRECTION_ALPHA = 20.0
 
 
 def _safe_input(path):
@@ -191,7 +195,8 @@ def _protect_output(output, baseline_output, manifest_path, input_paths):
 
 def run(manifest_path, baseline_output, text_features, caption_ids_path,
         caption_provenance, output, device_name="cuda", resume=False, *,
-        arms=("A", "B", "C", "D"), max_seconds=None, max_epochs_per_arm=None):
+        arms=("A", "B", "C", "D"), max_seconds=None, max_epochs_per_arm=None,
+        semantic_correction=False):
     """Run selected arms with the fixed scientific schedule.
 
     Execution limits are invocation-only. The soft wall-time limit includes
@@ -200,7 +205,15 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
     """
     invocation_started = time.monotonic()
     selected_arms = _execution_options(arms, max_seconds, max_epochs_per_arm)
+    if type(semantic_correction) is not bool:
+        raise ValueError('semantic_correction must be bool')
+    if semantic_correction and any(arm not in ('B', 'D') for arm in selected_arms):
+        raise ValueError("Corrected semantic experiment only permits arms B and D")
+    required_arms = ('B', 'D') if semantic_correction else tuple('ABCD')
+    joint_alpha = SEMANTIC_CORRECTION_ALPHA if semantic_correction else 1.0
     output = Path(output).resolve()
+    if semantic_correction and not output.name.startswith('trimodal_semantic_correction_bd_'):
+        raise ValueError('Corrected experiment requires a separate trimodal_semantic_correction_bd_* output directory')
     baseline_output = Path(baseline_output).resolve()
     _protect_output(output, baseline_output, manifest_path,
                     (text_features, caption_ids_path, caption_provenance))
@@ -254,7 +267,10 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
         layers=list(ROUTE_LAYERS), epochs=EPOCHS, batch=BATCH, lr=LR,
         weight_decay=WEIGHT_DECAY, rank=RANK, ridge=RIDGE,
         joint_weight=JOINT_WEIGHT, distill_weight=DISTILL_WEIGHT,
-        readout_weight=READOUT_WEIGHT, arms=list("ABCD"))
+        readout_weight=READOUT_WEIGHT, arms=list("ABCD"),
+        semantic_correction=semantic_correction, joint_alpha=joint_alpha,
+        gradient_policy="detached_teacher_base_only_in_corrected_arms",
+        alpha_calibration="fixed_20_from_epoch15_fit_only_D1_B_H_over_B_0.050752")
     prior = {}
     if output.exists():
         if not resume or not (output / "run.json").is_file():
@@ -279,6 +295,18 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
             raise ValueError("Existing A/B/C/D results have duplicate or unknown runs")
     for record in run_records:
         _verify_completed_artifacts(output, record)
+    # Validate saved preprocessing BEFORE any fast return (already-complete,
+    # zero-budget, etc.). Previously finish() could silently re-hash a corrupted
+    # file and overwrite the trusted digest in run.json.
+    if resume and (prior.get("preprocessing") is not None
+                   or prior.get("preprocessing_sha256") is not None
+                   or run_records):
+        prep = output / "preprocessing.pt"
+        if (prior.get("preprocessing") != prep.name
+                or not isinstance(prior.get("preprocessing_sha256"), str)
+                or not prep.is_file()
+                or prior["preprocessing_sha256"] != _sha256(prep)):
+            raise ValueError("Tri-modal preprocessing artifact missing or changed")
     completed = {(row["subject"], int(row["seed"]), row["arm"])
                  for row in run_records}
     preparation_seconds = None
@@ -295,7 +323,8 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
             }
         result = {
             "signature": signature,
-            "status": "complete_training_only" if len(completed) == 4 else status,
+            "status": "complete_training_only" if all(
+                ("sub-01", 0, arm) in completed for arm in required_arms) else status,
             "official_test_opened": False,
             "baseline_checkpoint": str(baseline_path),
             "subject": "sub-01", "seed": 0, "layers": list(ROUTE_LAYERS),
@@ -322,7 +351,7 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
 
     if _budget_expired(invocation_started, max_seconds):
         return finish("paused_budget")
-    if len(completed) == 4:
+    if all(("sub-01", 0, arm) in completed for arm in required_arms):
         return finish("complete_training_only")
 
     manifest, eeg, visual, train_rows, val_rows, visual_norms = _load_training(
@@ -350,7 +379,8 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
     else:
         _torch_save_atomic({
             "model_dimensions": dict(n_in=n_in, dims=dims, text_dim=TEXT_WIDTH,
-                                     rank=RANK, init_logits=list(ROUTE_INIT)),
+                                     rank=RANK, init_logits=list(ROUTE_INIT),
+                                     alpha=joint_alpha, semantic_correction=semantic_correction),
             "eeg_normalization": "historical_z16_no_additional_fit",
             "eeg_source_channels": list(POST17_INDICES),
             "text_mean": text_mean.detach().cpu(),
@@ -367,7 +397,8 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
 
     seed_all(initial_seed)
     initial = JointAligner(n_in, dims, TEXT_WIDTH, rank=RANK,
-                           init_logits=list(ROUTE_INIT))
+                           init_logits=list(ROUTE_INIT), alpha=joint_alpha,
+                           semantic_correction=semantic_correction)
     initial.load_06b_backbone_state(backbone_state)
     initial_state = {key: value.detach().cpu().clone()
                      for key, value in initial.state_dict().items()}
@@ -404,7 +435,8 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
                             device_type=device.type)
             progress_path = output / f"sub-01_s0_{arm}_progress.json"
             model = JointAligner(n_in, dims, TEXT_WIDTH, rank=RANK,
-                                 init_logits=list(ROUTE_INIT)).to(device)
+                                 init_logits=list(ROUTE_INIT), alpha=joint_alpha,
+                                 semantic_correction=semantic_correction).to(device)
             model.load_state_dict(initial_state, strict=True)
             seed_all(initial_seed)
             optimizer = torch.optim.AdamW(model.parameters(), lr=LR,
@@ -576,7 +608,9 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
             _torch_save_atomic(scores, scores_path)
             _torch_save_atomic(best_state, best_path)
             record = dict(subject="sub-01", seed=0, arm=arm,
-                          setting="historical_06b_warm_start", role="training_validation",
+                          setting=("semantic_correction_Bprime_Dprime" if semantic_correction
+                                    else "historical_06b_warm_start"),
+                          role="training_validation",
                           candidates=len(val_rows),
                           unique_caption_candidates=len(set(
                               caption_ids[index] for index in val_rows.cpu().tolist())),
@@ -613,6 +647,8 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--semantic-correction", action="store_true",
+                        help="Opt-in B-prime/D-prime detached teacher base; requires new output")
     parser.add_argument("--arms", nargs="+", choices=list("ABCD"), default=list("ABCD"))
     parser.add_argument("--max-seconds", type=float,
                         help="Soft invocation wall-time limit; finishes a started epoch and checkpoint")
@@ -622,7 +658,8 @@ def main():
     result = run(args.manifest, args.baseline_output, args.text_features,
                  args.caption_ids, args.caption_provenance, args.output,
                  args.device, args.resume, arms=args.arms, max_seconds=args.max_seconds,
-                 max_epochs_per_arm=args.max_epochs_per_arm)
+                 max_epochs_per_arm=args.max_epochs_per_arm,
+                  semantic_correction=args.semantic_correction)
     print(json.dumps(result, indent=2))
 
 
