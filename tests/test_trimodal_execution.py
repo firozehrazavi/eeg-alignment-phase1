@@ -154,6 +154,27 @@ class ExecutionTests(unittest.TestCase):
         self.assertEqual(records_path.read_bytes(), original_csv)
         self.assertEqual({p: p.read_bytes() for p in checkpoint_paths},
                          original_checkpoints)
+        # Even the already-complete fast path must reject deleted/tampered
+        # preprocessing without re-hashing and legitimizing corrupted bytes.
+        prep_path = self.root / dirname / 'preprocessing.pt'
+        original_prep = prep_path.read_bytes()
+        record_path = self.root / dirname / 'run.json'
+        original_record = record_path.read_bytes()
+        for changed in (False, True):
+            with self.subTest(changed=changed):
+                if changed:
+                    prep_path.write_bytes(original_prep + b'corruption')
+                else:
+                    prep_path.unlink()
+                try:
+                    with patch.object(torch.optim.AdamW, 'step',
+                                      side_effect=AssertionError('Corrupt resume trained')), \
+                         self.assertRaisesRegex(ValueError, 'preprocessing artifact'):
+                        self.invoke(dirname, arms=('B','D'), resume=True,
+                                    semantic_correction=True)
+                    self.assertEqual(record_path.read_bytes(), original_record)
+                finally:
+                    prep_path.write_bytes(original_prep)
         with self.assertRaisesRegex(ValueError, 'signature|Resume'):
             self.invoke(dirname, arms=('B','D'), resume=True, semantic_correction=False)
 
