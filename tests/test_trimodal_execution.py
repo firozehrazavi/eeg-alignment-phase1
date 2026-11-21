@@ -197,6 +197,55 @@ class ExecutionTests(unittest.TestCase):
         self.assertFalse(torch.allclose(
             grad, torch.autograd.grad(base.sum(), e)[0]))
 
+    def test_live_caption_gradient_passes_from_text_to_eeg(self):
+        from phase1.joint_model import JointAligner
+        model = JointAligner(3, [4], 5, rank=2, alpha=20.,
+                             semantic_correction=True)
+        ze = torch.randn(3, 1024, requires_grad=True)
+        text = torch.randn(3, 5)
+        identity = ['a', 'b', 'c']
+        loss_live = runner.symmetric_identity_nce(model.text_scores(ze, text),
+                                                   identity, identity)
+        g_live = torch.autograd.grad(loss_live, ze)[0]
+        self.assertTrue(torch.isfinite(g_live).all())
+        self.assertGreater(float(g_live.norm()), 0.)
+        # Legacy readout intentionally trained only its own heads, never EEG.
+        loss_detached = runner.symmetric_identity_nce(
+            model.text_scores(ze.detach(), text), identity, identity)
+        g_detached = torch.autograd.grad(loss_detached, ze,
+                                         allow_unused=True)[0]
+        self.assertIsNone(g_detached)
+
+    def test_live_caption_runs_only_on_new_bd_output_and_resumes(self):
+        self._baseline()
+        with self.assertRaisesRegex(ValueError, 'requires corrected'):
+            self.invoke('trimodal_live_caption_bd_fixture', arms=('B', 'D'),
+                        resume=True, live_caption_gradient=True)
+        with self.assertRaisesRegex(ValueError, 'fresh'):
+            self.invoke('trimodal_semantic_correction_bd_fixture', arms=('B','D'),
+                        resume=True, semantic_correction=True, live_caption_gradient=True)
+        name = 'trimodal_live_caption_bd_fixture'
+        first = self.invoke(name, arms=('B','D'), resume=True,
+                            semantic_correction=True, live_caption_gradient=True,
+                            max_epochs_per_arm=1)
+        self.assertEqual(first, [])
+        metadata = self.metadata(name)
+        self.assertEqual(metadata['status'], 'paused_epoch_limit')
+        self.assertTrue(metadata['signature']['live_caption_gradient'])
+        for arm in 'BD':
+            checkpoint = torch.load(self.root / name / f'sub-01_s0_{arm}_latest.pt',
+                                    weights_only=True)
+            self.assertEqual(checkpoint['epoch'], 1)
+            self.assertTrue(checkpoint['signature']['live_caption_gradient'])
+        with patch.object(torch.optim.AdamW, 'step',
+                          side_effect=AssertionError('Ceiling trained twice')):
+            self.invoke(name, arms=('B','D'), resume=True,
+                        semantic_correction=True, live_caption_gradient=True,
+                        max_epochs_per_arm=1)
+        with self.assertRaisesRegex(ValueError, 'signature|Resume'):
+            self.invoke(name, arms=('B','D'), resume=True,
+                        semantic_correction=True, live_caption_gradient=False)
+
     def test_invalid_execution_options_are_rejected_before_reading_inputs(self):
         options = [dict(arms=()), dict(arms=('A', 'A')), dict(arms=('E',)),
                    dict(max_seconds=-1), dict(max_seconds=float('nan')),
