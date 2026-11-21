@@ -93,6 +93,68 @@ class ExecutionTests(unittest.TestCase):
             self.invoke('budget', resume=True)
             self.assert_states_equal('reference', 'budget')
 
+    def test_semantic_correction_requires_fresh_bd_only_output(self):
+        # Guardrails must fire before reading real data or touching old outputs.
+        with patch.object(runner, 'baseline_preflight',
+                          side_effect=AssertionError('Invalid experiment accessed data')):
+            for arms in (('A',), ('C',), ('B','C'), ('A','B','C','D')):
+                with self.subTest(arms=arms), self.assertRaisesRegex(ValueError, 'only permits arms B and D'):
+                    self.invoke('trimodal_semantic_correction_bd_fixture',
+                                arms=arms, semantic_correction=True)
+            with self.assertRaisesRegex(ValueError, 'separate'):
+                self.invoke('reference', arms=('B','D'), semantic_correction=True)
+
+    def test_semantic_correction_bd_resume_and_artifact_identity(self):
+        self._baseline()
+        dirname = 'trimodal_semantic_correction_bd_fixture'
+        records = self.invoke(dirname, arms=('B','D'), resume=True,
+                              semantic_correction=True, max_epochs_per_arm=1)
+        self.assertEqual(records, [])
+        state = self.metadata(dirname)
+        self.assertEqual(state['status'], 'paused_epoch_limit')
+        self.assertTrue(state['signature']['semantic_correction'])
+        self.assertEqual(state['signature']['joint_alpha'], 20.0)
+        self.assertFalse(state['official_test_opened'])
+        self.assertFalse((self.root / dirname / 'sub-01_s0_A_latest.pt').exists())
+        prep = torch.load(self.root / dirname / 'preprocessing.pt', weights_only=True)
+        dims = prep['model_dimensions']
+        self.assertTrue(dims['semantic_correction'])
+        self.assertEqual(dims['alpha'], 20.)
+        with patch.object(torch.optim.AdamW, 'step',
+                          side_effect=AssertionError('Repeated corrected epoch')):
+            self.invoke(dirname, arms=('B','D'), resume=True,
+                        semantic_correction=True, max_epochs_per_arm=1)
+        finished = self.invoke(dirname, arms=('B','D'), resume=True,
+                               semantic_correction=True)
+        self.assertEqual({r['arm'] for r in finished}, {'B','D'})
+        self.assertEqual(self.metadata(dirname)['status'], 'complete_training_only')
+        with patch.object(torch.optim.AdamW, 'step',
+                          side_effect=AssertionError('Corrected experiment restarted')):
+            same = self.invoke(dirname, arms=('B','D'), resume=True,
+                               semantic_correction=True)
+        self.assertEqual(same, finished)
+        with self.assertRaisesRegex(ValueError, 'signature|Resume'):
+            self.invoke(dirname, arms=('B','D'), resume=True, semantic_correction=False)
+
+    def test_tri_residual_teacher_gradient_has_no_image_base_path(self):
+        from phase1.joint_model import JointAligner
+        model = JointAligner(3, [4], 5, rank=2, alpha=20.,
+                             semantic_correction=True).eval()
+        torch.manual_seed(1)
+        e = torch.randn(3, 1024, requires_grad=True)
+        v = torch.randn(3, 1024, requires_grad=True)
+        r = torch.randn(3, 5)
+        scores = model.joint_scores(e, v, r)
+        base = model.image_scores(e, v)
+        interaction = scores - base.detach()
+        grad = torch.autograd.grad(scores.sum(), e, retain_graph=True)[0]
+        pure_grad = torch.autograd.grad(interaction.sum(), e, retain_graph=True)[0]
+        torch.testing.assert_close(grad, pure_grad, atol=1e-7, rtol=1e-6)
+        self.assertGreater(float(grad.abs().sum()), 0.)
+        self.assertTrue(torch.isfinite(grad).all())
+        self.assertFalse(torch.allclose(
+            grad, torch.autograd.grad(base.sum(), e)[0]))
+
     def test_invalid_execution_options_are_rejected_before_reading_inputs(self):
         options = [dict(arms=()), dict(arms=('A', 'A')), dict(arms=('E',)),
                    dict(max_seconds=-1), dict(max_seconds=float('nan')),
