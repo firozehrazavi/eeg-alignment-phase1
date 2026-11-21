@@ -143,9 +143,67 @@ def _verify_completed_artifacts(output, record):
             raise ValueError(f"Completed arm artifact missing or changed: {expected}")
 
 
+def _execution_options(arms, max_seconds, max_epochs_per_arm):
+    requested = tuple(arms)
+    if (not requested or any(arm not in tuple("ABCD") for arm in requested)
+            or len(set(requested)) != len(requested)):
+        raise ValueError("arms must contain distinct selections from A, B, C, D")
+    if (max_seconds is not None and (isinstance(max_seconds, bool)
+            or not isinstance(max_seconds, (int, float))
+            or not math.isfinite(max_seconds) or max_seconds < 0)):
+        raise ValueError("max_seconds must be finite and nonnegative")
+    if (max_epochs_per_arm is not None and (isinstance(max_epochs_per_arm, bool)
+            or not isinstance(max_epochs_per_arm, int) or max_epochs_per_arm < 1)):
+        raise ValueError("max_epochs_per_arm must be a positive integer")
+    return tuple(arm for arm in "ABCD" if arm in requested)
+
+
+def _budget_expired(start, max_seconds):
+    return max_seconds is not None and time.monotonic() - start >= max_seconds
+
+
+def _sync(device):
+    if device.type == "cuda":
+        torch.cuda.synchronize(device)
+
+
+def _memory_peaks(device):
+    return {
+        "peak_cuda_allocated_bytes": torch.cuda.max_memory_allocated(device)
+        if device.type == "cuda" else None,
+        "peak_cuda_reserved_bytes": torch.cuda.max_memory_reserved(device)
+        if device.type == "cuda" else None,
+    }
+
+
+def _protect_output(output, baseline_output, manifest_path, input_paths):
+    """Keep mutable run artifacts away from the baseline and source files."""
+    if output == baseline_output or output in baseline_output.parents or baseline_output in output.parents:
+        raise ValueError("Tri-modal output must be separate from the baseline directory")
+    manifest = json.loads(Path(manifest_path).read_text())
+    cache = Path(manifest.get("cache_root", Path(manifest_path).parent)).resolve()
+    for path in (Path(manifest_path).resolve(), *(Path(p).resolve() for p in input_paths)):
+        if output == path or output == path.parent or output in path.parents:
+            raise ValueError("Tri-modal output must not contain or replace input files/directories")
+    if output == cache or output in cache.parents:
+        raise ValueError("Tri-modal output must be separate from the source cache directory")
+
+
 def run(manifest_path, baseline_output, text_features, caption_ids_path,
-        caption_provenance, output, device_name="cuda", resume=False):
-    """Warm-start all four arms from the verified 06b best-validation checkpoint."""
+        caption_provenance, output, device_name="cuda", resume=False, *,
+        arms=("A", "B", "C", "D"), max_seconds=None, max_epochs_per_arm=None):
+    """Run selected arms with the fixed scientific schedule.
+
+    Execution limits are invocation-only. The soft wall-time limit includes
+    preparation and stops at an epoch boundary: an already started epoch,
+    its scheduled validation and atomic checkpoint are always finished.
+    """
+    invocation_started = time.monotonic()
+    selected_arms = _execution_options(arms, max_seconds, max_epochs_per_arm)
+    output = Path(output).resolve()
+    baseline_output = Path(baseline_output).resolve()
+    _protect_output(output, baseline_output, manifest_path,
+                    (text_features, caption_ids_path, caption_provenance))
     base_report = baseline_preflight(manifest_path)
     text_report = preflight_text_inputs(text_features, caption_ids_path, caption_provenance)
     baseline_output = Path(baseline_output).resolve()
@@ -197,7 +255,6 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
         weight_decay=WEIGHT_DECAY, rank=RANK, ridge=RIDGE,
         joint_weight=JOINT_WEIGHT, distill_weight=DISTILL_WEIGHT,
         readout_weight=READOUT_WEIGHT, arms=list("ABCD"))
-    output = Path(output).resolve()
     prior = {}
     if output.exists():
         if not resume or not (output / "run.json").is_file():
@@ -209,6 +266,64 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
         output.mkdir(parents=True)
         _write_json_atomic({"signature": signature, "status": "running",
                             "official_test_opened": False}, output / "run.json")
+
+    run_records = []
+    records_path = output / "results.csv"
+    if resume and records_path.exists():
+        with records_path.open(newline="") as handle:
+            run_records = list(csv.DictReader(handle))
+        done = [(row.get("subject"), int(row.get("seed", -1)), row.get("arm"))
+                for row in run_records]
+        if len(set(done)) != len(done) or any(
+                item not in {("sub-01", 0, arm) for arm in "ABCD"} for item in done):
+            raise ValueError("Existing A/B/C/D results have duplicate or unknown runs")
+    for record in run_records:
+        _verify_completed_artifacts(output, record)
+    completed = {(row["subject"], int(row["seed"]), row["arm"])
+                 for row in run_records}
+    preparation_seconds = None
+
+    def finish(status):
+        _sync(device)
+        progress = {}
+        for arm in "ABCD":
+            path = output / f"sub-01_s0_{arm}_progress.json"
+            progress[arm] = json.loads(path.read_text()) if path.exists() else {
+                "arm": arm, "current_epoch": 0, "completed": False,
+                "status": "not_started", "latest_validation_metrics": None,
+                "official_test_opened": False,
+            }
+        result = {
+            "signature": signature,
+            "status": "complete_training_only" if len(completed) == 4 else status,
+            "official_test_opened": False,
+            "baseline_checkpoint": str(baseline_path),
+            "subject": "sub-01", "seed": 0, "layers": list(ROUTE_LAYERS),
+            "arms": sorted(run_records, key=lambda row: row["arm"]),
+            "arm_progress": progress,
+            "caption_provenance": text_report["provenance"],
+            "text_normalization_fit": "optimizer/training rows only",
+            "residualizer_fit": "optimizer/training rows only",
+            "direct_text_inference": "EEG and candidate text only; no image candidate features",
+            "execution": {
+                "selected_arms": list(selected_arms), "max_seconds": max_seconds,
+                "max_epochs_per_arm": max_epochs_per_arm,
+                "epoch_cap_semantics": "absolute ceiling; scientific schedule unchanged",
+                "elapsed_wall_seconds": time.monotonic() - invocation_started,
+                "preparation_seconds": preparation_seconds,
+                "budget_semantics": "soft epoch boundary; includes preparation; may exceed by one epoch, validation and checkpoint",
+            },
+        }
+        prep = output / "preprocessing.pt"
+        if prep.exists():
+            result.update(preprocessing=prep.name, preprocessing_sha256=_sha256(prep))
+        _write_json_atomic(result, output / "run.json")
+        return result["arms"]
+
+    if _budget_expired(invocation_started, max_seconds):
+        return finish("paused_budget")
+    if len(completed) == 4:
+        return finish("complete_training_only")
 
     manifest, eeg, visual, train_rows, val_rows, visual_norms = _load_training(
         manifest_path, device)
@@ -268,26 +383,26 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
     pseudo *= residual[fit_tensor].std(0, correction=0).clamp_min(1e-6).cpu()
     pseudo = pseudo.to(residual.device)
     semantic = {"A": None, "B": residual, "C": pseudo, "D": shuffled}
-    run_records = []
-    records_path = output / "results.csv"
-    if resume and records_path.exists():
-        with records_path.open(newline="") as handle:
-            run_records = list(csv.DictReader(handle))
-        done = [(row.get("subject"), int(row.get("seed", -1)), row.get("arm"))
-                for row in run_records]
-        if len(set(done)) != len(done) or any(
-                item not in {("sub-01", 0, arm) for arm in "ABCD"} for item in done):
-            raise ValueError("Existing A/B/C/D results have duplicate or unknown runs")
-    completed = {(row["subject"], int(row["seed"]), row["arm"])
-                 for row in run_records}
+    _sync(device)
+    preparation_seconds = time.monotonic() - invocation_started
+    stop_reason = None
 
     try:
-        for record in run_records:
-            _verify_completed_artifacts(output, record)
-        for arm in "ABCD":
+        for arm in selected_arms:
             run_key = ("sub-01", 0, arm)
             if run_key in completed:
                 continue
+            if _budget_expired(invocation_started, max_seconds):
+                stop_reason = "paused_budget"
+                break
+            _sync(device)
+            arm_started = time.monotonic()
+            if device.type == "cuda":
+                torch.cuda.reset_peak_memory_stats(device)
+            resource = dict(wall_seconds=0., train_seconds=0., validation_seconds=0.,
+                            checkpoint_seconds=0., epochs_measured=0,
+                            device_type=device.type)
+            progress_path = output / f"sub-01_s0_{arm}_progress.json"
             model = JointAligner(n_in, dims, TEXT_WIDTH, rank=RANK,
                                  init_logits=list(ROUTE_INIT)).to(device)
             model.load_state_dict(initial_state, strict=True)
@@ -301,6 +416,7 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
             run_name = f"sub-01_s0_{arm}"
             latest_path = output / f"{run_name}_latest.pt"
             first_epoch = 1
+            latest_metrics, latest_validation_epoch = None, None
             if resume and latest_path.exists():
                 saved = torch.load(latest_path, map_location="cpu", weights_only=True)
                 if saved.get("signature") != signature or saved.get("run_key") != list(run_key):
@@ -311,14 +427,49 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
                 best_score, best_epoch = float(saved["best_score"]), int(saved["best_epoch"])
                 best_state = saved["best_state"]
                 first_epoch = int(saved["epoch"]) + 1
+                latest_metrics = saved.get("latest_validation_metrics")
+                latest_validation_epoch = saved.get("latest_validation_epoch")
                 torch.set_rng_state(saved["torch_rng"].cpu())
                 if device.type == "cuda":
                     torch.cuda.set_rng_state_all(saved["cuda_rng"])
+            if first_epoch < 1 or first_epoch > EPOCHS + 1:
+                raise ValueError(f"Latest checkpoint epoch exceeds configured schedule for arm {arm}")
+            current_epoch = first_epoch - 1
+
+            def save_progress(status, completed_arm=False):
+                _sync(device)
+                resource["wall_seconds"] = time.monotonic() - arm_started
+                resource.update(_memory_peaks(device))
+                progress = dict(
+                    arm=arm, current_epoch=current_epoch, completed=completed_arm,
+                    status=status, scheduled_epochs=EPOCHS,
+                    latest_validation_epoch=latest_validation_epoch,
+                    latest_validation_metrics=latest_metrics,
+                    best_validation_epoch=best_epoch or None,
+                    best_validation_image_top1=best_score if best_epoch else None,
+                    invocation_resources=dict(resource),
+                    signature=signature, official_test_opened=False,
+                    baseline_checkpoint_sha256=baseline_record["checkpoint_sha256"],
+                    preprocessing_sha256=_sha256(preprocessing_path))
+                if latest_path.exists():
+                    progress.update(latest_checkpoint=latest_path.name,
+                                    latest_checkpoint_sha256=_sha256(latest_path))
+                _write_json_atomic(progress, progress_path)
+
+            ceiling = EPOCHS if max_epochs_per_arm is None else min(EPOCHS, max_epochs_per_arm)
+            arm_stop = None
             for epoch in range(first_epoch, EPOCHS + 1):
+                if epoch > ceiling:
+                    arm_stop = "paused_epoch_limit"
+                    break
+                if _budget_expired(invocation_started, max_seconds):
+                    arm_stop = "paused_budget"
+                    break
+                _sync(device)
+                epoch_started = time.monotonic()
                 model.train()
                 permutation_rows = train_rows[torch.randperm(len(train_rows), device=device)]
                 losses = []
-                epoch_started = time.monotonic()
                 for start in range(0, len(permutation_rows), BATCH):
                     rows = permutation_rows[start:start + BATCH]
                     if len(rows) < 2:
@@ -359,22 +510,25 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
                     optimizer.step()
                     scheduler.step()
                     losses.append(float(loss.detach()))
+                _sync(device)
+                train_seconds = time.monotonic() - epoch_started
+                validation_started = time.monotonic()
                 score = None
                 tune_text_top1 = None
-                if epoch % EVAL_EVERY == 0 or epoch == EPOCHS:
+                evaluated = epoch % EVAL_EVERY == 0 or epoch == EPOCHS
+                if evaluated:
                     metrics, _ = _validation_metrics(
                         model, eeg, visual, text, val_rows, caption_ids, device, BATCH)
                     score = metrics["image_top1"]
                     tune_text_top1 = metrics["text_top1"]
+                    latest_metrics, latest_validation_epoch = metrics, epoch
                     if score > best_score:
                         best_score, best_epoch = score, epoch
                         best_state = {key: value.detach().cpu().clone()
                                       for key, value in model.state_dict().items()}
-                epoch_record = dict(run=run_name, epoch=epoch, loss=float(np.mean(losses)),
-                                    tune_image_top1=score,
-                                    tune_text_top1=tune_text_top1,
-                                    seconds=time.monotonic() - epoch_started)
-                _write_epoch_log(epoch_record, output / "epochs.jsonl")
+                _sync(device)
+                validation_seconds = time.monotonic() - validation_started if evaluated else 0.
+                checkpoint_started = time.monotonic()
                 _torch_save_atomic({
                     "signature": signature, "run_key": list(run_key),
                     "model": model.state_dict(), "optimizer": optimizer.state_dict(),
@@ -383,8 +537,35 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
                     "best_state": best_state, "torch_rng": torch.get_rng_state(),
                     "cuda_rng": torch.cuda.get_rng_state_all()
                     if device.type == "cuda" else [],
+                    "latest_validation_metrics": latest_metrics,
+                    "latest_validation_epoch": latest_validation_epoch,
                 }, latest_path)
+                _sync(device)
+                checkpoint_seconds = time.monotonic() - checkpoint_started
+                current_epoch = epoch
+                resource["train_seconds"] += train_seconds
+                resource["validation_seconds"] += validation_seconds
+                resource["checkpoint_seconds"] += checkpoint_seconds
+                resource["epochs_measured"] += 1
+                epoch_record = dict(
+                    run=run_name, epoch=epoch, loss=float(np.mean(losses)),
+                    tune_image_top1=score, tune_text_top1=tune_text_top1,
+                    validation_evaluated=evaluated, train_seconds=train_seconds,
+                    validation_seconds=validation_seconds,
+                    checkpoint_seconds=checkpoint_seconds,
+                    seconds=time.monotonic() - epoch_started,
+                    device_type=device.type, **_memory_peaks(device))
+                _write_epoch_log(epoch_record, output / "epochs.jsonl")
+                save_progress("running")
                 print(json.dumps(epoch_record), flush=True)
+            if current_epoch < EPOCHS:
+                arm_stop = arm_stop or "paused_epoch_limit"
+                save_progress(arm_stop)
+                stop_reason = arm_stop
+                del model, optimizer, scheduler
+                if arm_stop == "paused_budget":
+                    break
+                continue
             if best_state is None:
                 raise RuntimeError(f"No image-validation checkpoint for arm {arm}")
             model.load_state_dict(best_state, strict=True)
@@ -409,25 +590,11 @@ def run(manifest_path, baseline_output, text_features, caption_ids_path,
                           **metrics)
             run_records.append(record)
             completed.add(run_key)
+            run_records.sort(key=lambda row: row["arm"])
             _atomic_results(run_records, records_path)
-        result = {
-            "signature": signature,
-            "status": "complete_training_only",
-            "official_test_opened": False,
-            "baseline_checkpoint": str(baseline_path),
-            "preprocessing": preprocessing_path.name,
-            "preprocessing_sha256": _sha256(preprocessing_path),
-            "subject": "sub-01",
-            "seed": 0,
-            "layers": list(ROUTE_LAYERS),
-            "arms": run_records,
-            "caption_provenance": text_report["provenance"],
-            "text_normalization_fit": "optimizer/training rows only",
-            "residualizer_fit": "optimizer/training rows only",
-            "direct_text_inference": "EEG and candidate text only; no image candidate features",
-        }
-        _write_json_atomic(result, output / "run.json")
-        return run_records
+            save_progress("complete_training_only", completed_arm=True)
+            del model, optimizer, scheduler
+        return finish(stop_reason or "partial_training_only")
     except Exception as error:
         run_state = json.loads((output / "run.json").read_text())
         run_state.update(status="incomplete",
@@ -446,10 +613,16 @@ def main():
     parser.add_argument("--output", required=True)
     parser.add_argument("--device", default="cuda")
     parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--arms", nargs="+", choices=list("ABCD"), default=list("ABCD"))
+    parser.add_argument("--max-seconds", type=float,
+                        help="Soft invocation wall-time limit; finishes a started epoch and checkpoint")
+    parser.add_argument("--max-epochs-per-arm", type=int,
+                        help="Absolute execution ceiling for profiling; full training schedule is unchanged")
     args = parser.parse_args()
     result = run(args.manifest, args.baseline_output, args.text_features,
                  args.caption_ids, args.caption_provenance, args.output,
-                 args.device, args.resume)
+                 args.device, args.resume, arms=args.arms, max_seconds=args.max_seconds,
+                 max_epochs_per_arm=args.max_epochs_per_arm)
     print(json.dumps(result, indent=2))
 
 
