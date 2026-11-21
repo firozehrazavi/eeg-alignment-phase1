@@ -1,0 +1,165 @@
+{
+  "base_commit": "3562609d9af4e1347ebcc21a9d344827ed23766e",
+  "audit_branch": "research/06b-independent-audit-20261120",
+  "python": "3.12.5",
+  "torch": "2.9.1+cpu",
+  "numpy": "2.3.5",
+  "regression": {
+    "command": "python -m unittest discover -s tests -v",
+    "tests": 124,
+    "passed": 124,
+    "seconds": 40.412,
+    "data": "synthetic fixtures only"
+  },
+  "real_data_full_cpu_preflight": "pending mounted-Drive Colab execution; no local EEG cache",
+  "gpu_training_started": false,
+  "official_test_evaluated": false,
+  "real_training_chunk_inspected": {
+    "name": "train_008.pt",
+    "bytes": 13982621,
+    "sha256": "0d6c91f6255826d27aa012c4c6e02a3ce465f95143b912a288e920b462d81c96",
+    "source": "original Google Drive feat6_internvit6b_parts/train_008.pt",
+    "tensors": [
+      {
+        "layer": 12,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 12,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 16,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 16,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 20,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 20,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 24,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 24,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 28,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 28,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 32,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 32,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 36,
+        "pool": "mean",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      },
+      {
+        "layer": 36,
+        "pool": "cls",
+        "shape": [
+          156,
+          3200
+        ],
+        "dtype": "torch.float16",
+        "finite": true
+      }
+    ]
+  }
+}

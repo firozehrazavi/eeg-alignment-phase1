@@ -56,8 +56,10 @@ class Historical06BTests(unittest.TestCase):
                          baseline.EPOCHS * math.ceil(4 / baseline.BATCH))
         for path in report["input_sha256"]:
             self.assertNotIn("test", path.lower())
-        profile = baseline.profile_cpu(self.manifest_path, batch_size=4)
+        profile = baseline.profile_cpu(self.manifest_path, batch_size=32)
         self.assertEqual(profile["profile_batch_size"], 4)
+        self.assertEqual(profile["requested_profile_batch_size"], 32)
+        self.assertIsNone(profile["linear_cpu_hours_for_full_schedule"])
         self.assertEqual(profile["device"], "cpu")
         self.assertGreaterEqual(profile["profile_step_seconds"], 0)
         self.assertFalse(profile["official_test_opened"])
@@ -80,6 +82,12 @@ class Historical06BTests(unittest.TestCase):
     def test_epoch_checkpoint_resume_matches_uninterrupted_run(self):
         with patch.multiple(baseline, EPOCHS=3, BATCH=4, EVAL_EVERY=1):
             reference = baseline.run_baseline(self.manifest_path, self.root / "reference", "cpu")
+            changed_runtime = baseline._runtime_signature(torch.device("cpu"), False)
+            changed_runtime["float32_matmul_precision"] = "different_precision"
+            with patch.object(baseline, "_runtime_signature", return_value=changed_runtime):
+                with self.assertRaisesRegex(ValueError, "environment"):
+                    baseline.run_baseline(self.manifest_path, self.root / "reference",
+                                          "cpu", resume=True)
             original_validation = baseline._validation_top1
             calls = {"n": 0}
 
@@ -108,6 +116,21 @@ class Historical06BTests(unittest.TestCase):
                                 map_location="cpu", weights_only=True)
             for key in expected:
                 torch.testing.assert_close(actual[key], expected[key], rtol=0, atol=0)
+
+    def test_runtime_signature_uses_requested_cuda_device(self):
+        # No GPU work: metadata mocks ensure cuda:1 is not mistaken for cuda:0.
+        with patch.object(torch.cuda, "get_device_name", return_value="GPU one") as name, \
+                patch.object(torch.cuda, "get_device_capability", return_value=(8, 0)) as capability, \
+                patch.object(torch.cuda, "device_count", return_value=2):
+            signature = baseline._runtime_signature(torch.device("cuda:1"), True)
+        name.assert_called_once_with(1)
+        capability.assert_called_once_with(1)
+        self.assertEqual(signature["device_index"], 1)
+        self.assertEqual(signature["device_capability"], [8, 0])
+        self.assertEqual(signature["autocast_dtype"], "bfloat16")
+        self.assertNotEqual(signature, baseline._runtime_signature("cpu", False))
+        with self.assertRaisesRegex(ValueError, "requires CUDA"):
+            baseline._runtime_signature("cpu", True)
 
 
 if __name__ == "__main__":

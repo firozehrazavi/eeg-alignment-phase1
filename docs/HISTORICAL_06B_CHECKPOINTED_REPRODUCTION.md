@@ -1,5 +1,9 @@
 # Checkpointed historical 06b reproduction
 
+For the independent audit, measured verification scope, remaining provenance
+blockers, and the next CPU-only Colab step, see
+[the 2026-11-21 audit](INDEPENDENT_06B_AUDIT_20261121.md).
+
 `notebooks/06c_checkpointed_06b_and_trimodal.ipynb` is the single Colab entry
 point for a train-only `sub-01`, seed-0 reproduction followed, optionally, by a
 matched warm-start A/B/C/D comparison. It does not evaluate or open official
@@ -36,7 +40,10 @@ updates and model/target memory lower bounds. The notebook then profiles one
 actual CPU update before enabling the separately gated GPU run. A latest
 checkpoint is written atomically each epoch; it includes optimizer, scheduler,
 best validation state and RNG state. `--resume` verifies input hashes, source
-code, environment and protocol. The final `*_best.pt` is a plain 06b
+code, environment, device/precision/backend settings and protocol. A CPU
+interrupted-resume regression is not evidence of bit-exact CUDA replay.
+The batch-32 CPU profile reports measured update time; it does not extrapolate
+that time to the batch-1,024 schedule. The final `*_best.pt` is a plain 06b
 `Aligner.state_dict()` and `run.json` records subject, seed, layers, dimensions,
 selected epoch, input hashes and checkpoint hash.
 
@@ -64,6 +71,17 @@ new-head initialization, share the historical schedule, and report both image
 retrieval and duplicate-aware direct EEG-to-caption retrieval on the training
 validation gallery. Caption scoring consumes EEG and caption candidates only;
 it does not use candidate image features.
+
+Tri-modal outputs preserve a separate hashed `preprocessing.pt` containing
+model dimensions, selected EEG channel indices, frozen image/text normalizers,
+residualizer state and fit/validation rows. Keep it with each plain
+`*_best.pt`, `run.json`, and validation-score artifact. Resume rejects missing
+or changed completed checkpoints, scores, or preprocessing. Reconstruct the
+model from `model_dimensions`, load its state, select the saved channels from
+the historical **already-z16** EEG, and normalize candidate text using the
+saved moments. `tests/test_trimodal_06b.py` verifies this direct-text path
+without refitting or image inputs. These files are not the separate
+pre-z-score bundle format accepted by `phase1.joint_inference`.
 
 This is a reproduction/engineering workflow, not a result or SOTA claim. It
 does not recreate weights that the historical notebook failed to save, and it

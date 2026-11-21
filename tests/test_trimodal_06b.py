@@ -146,6 +146,93 @@ class Historical06BTrimodalTests(unittest.TestCase):
             for key in expected:
                 torch.testing.assert_close(actual[key], expected[key], rtol=0, atol=0)
 
+    def test_bfloat16_backbone_outputs_train_all_float32_heads(self):
+        """Exercise the real runner's AMP boundary without requiring a GPU."""
+        self._baseline()
+        seen = []
+        original = trimodal.JointAligner.text_scores
+
+        def checked_text_scores(model, ze, text):
+            seen.append(ze.dtype)
+            self.assertEqual(ze.dtype, torch.float32)
+            return original(model, ze, text)
+
+        with patch.object(trimodal, "_autocast", side_effect=lambda *args:
+                          torch.autocast("cpu", dtype=torch.bfloat16)), \
+             patch.object(trimodal.JointAligner, "text_scores", checked_text_scores):
+            records = trimodal.run(
+                self.manifest, self.root / "baseline", self.text_path,
+                self.ids_path, self.provenance_path, self.root / "trimodal_amp",
+                device_name="cpu")
+        self.assertEqual([row["arm"] for row in records], list("ABCD"))
+        self.assertTrue(seen)
+        latest = torch.load(self.root / "trimodal_amp/sub-01_s0_B_latest.pt",
+                            map_location="cpu", weights_only=True)
+        self.assertTrue(all(torch.isfinite(value).all()
+                            for value in latest["model"].values()))
+
+    def test_fresh_resume_saves_reconstructable_preprocessing_and_checks_artifacts(self):
+        self._baseline()
+        common = (self.manifest, self.root / "baseline", self.text_path,
+                  self.ids_path, self.provenance_path)
+        output = self.root / "trimodal_fresh_resume"
+        # The Colab entry uses resume=True even on the first invocation.
+        records = trimodal.run(*common, output, device_name="cpu", resume=True)
+        self.assertEqual([row["arm"] for row in records], list("ABCD"))
+        metadata = json.loads((output / "run.json").read_text())
+        prep_path = output / metadata["preprocessing"]
+        self.assertEqual(baseline._sha256(prep_path), metadata["preprocessing_sha256"])
+        prep = torch.load(prep_path, map_location="cpu", weights_only=True)
+        model = trimodal.JointAligner(**prep["model_dimensions"]).eval()
+        model.load_state_dict(torch.load(output / "sub-01_s0_B_best.pt",
+                                         map_location="cpu", weights_only=True))
+        saved_scores = torch.load(output / "sub-01_s0_B_validation_scores.pt",
+                                  map_location="cpu", weights_only=True)
+        self.assertEqual(prep["eeg_normalization"], "historical_z16_no_additional_fit")
+        # Reconstruct direct text scores solely from a checkpoint, its frozen
+        # preprocessing, EEG queries and raw caption candidates. No fitting or
+        # image feature access is allowed on this inference path.
+        original_load = np.load
+        allowed = {self.root / "sub-01_train_z16.npy", self.text_path}
+
+        def text_only_load(path, *args, **kwargs):
+            self.assertIn(Path(path), allowed)
+            return original_load(path, *args, **kwargs)
+
+        with patch.object(np, "load", side_effect=text_only_load), \
+             patch.object(trimodal, "_load_training", side_effect=AssertionError("Training loaded")), \
+             patch.object(trimodal.Residualizer, "fit", side_effect=AssertionError("Refitted")), \
+             patch.object(trimodal.Residualizer, "transform", side_effect=AssertionError("Image residual used")), \
+             patch.object(trimodal.JointAligner, "image_scores", side_effect=AssertionError("Image scores used")), \
+             torch.no_grad():
+            rows = prep["validation_rows"]
+            eeg = torch.from_numpy(np.load(self.root / "sub-01_train_z16.npy", allow_pickle=False))
+            eeg = eeg[:, prep["eeg_source_channels"], :][rows].float()
+            raw_text = torch.from_numpy(np.load(self.text_path, allow_pickle=False))
+            candidates = ((raw_text - prep["text_mean"]) / prep["text_std"])[rows]
+            actual = model.text_scores(model.backbone.eeg(eeg), candidates)
+        torch.testing.assert_close(actual, saved_scores["text_scores"], rtol=0, atol=0)
+
+        for filename, message in (
+                ("sub-01_s0_A_best.pt", "Completed arm artifact"),
+                ("sub-01_s0_B_validation_scores.pt", "Completed arm artifact"),
+                ("preprocessing.pt", "preprocessing artifact")):
+            artifact = output / filename
+            original_bytes = artifact.read_bytes()
+            for changed in (False, True):
+                with self.subTest(artifact=filename, changed=changed):
+                    if changed:
+                        artifact.write_bytes(original_bytes + b"corruption")
+                    else:
+                        artifact.unlink()
+                    try:
+                        with patch.object(torch.optim.AdamW, "step",
+                                          side_effect=AssertionError("Unexpected training")), \
+                             self.assertRaisesRegex(ValueError, message):
+                            trimodal.run(*common, output, device_name="cpu", resume=True)
+                    finally:
+                        artifact.write_bytes(original_bytes)
+
 
 if __name__ == "__main__":
     unittest.main()

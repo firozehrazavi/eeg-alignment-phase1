@@ -317,6 +317,41 @@ def _code_hashes():
     return {name: _sha256(root / name) for name in ("historical_06b.py", "models.py", "core.py")}
 
 
+def _runtime_signature(device, amp):
+    """Bind resume to numerical execution settings; this is not a determinism claim."""
+    device = torch.device(device)
+    if amp and device.type != "cuda":
+        raise ValueError("Historical BF16 autocast requires CUDA")
+    runtime = {
+        "device_type": device.type,
+        "autocast_dtype": "bfloat16" if amp else None,
+        "parameter_dtype": "float32",
+        "machine": platform.machine(),
+        "processor": platform.processor(),
+        "torch_num_threads": torch.get_num_threads(),
+        "torch_num_interop_threads": torch.get_num_interop_threads(),
+        "deterministic_algorithms": torch.are_deterministic_algorithms_enabled(),
+        "deterministic_warn_only": torch.is_deterministic_algorithms_warn_only_enabled(),
+        "float32_matmul_precision": torch.get_float32_matmul_precision(),
+    }
+    if device.type == "cuda":
+        index = torch.cuda.current_device() if device.index is None else device.index
+        runtime.update(
+            device_index=index,
+            device_name=torch.cuda.get_device_name(index),
+            device_capability=list(torch.cuda.get_device_capability(index)),
+            cuda_device_count=torch.cuda.device_count(),
+            cuda_version=torch.version.cuda,
+            cudnn_version=torch.backends.cudnn.version(),
+            cudnn_deterministic=torch.backends.cudnn.deterministic,
+            cudnn_benchmark=torch.backends.cudnn.benchmark,
+            cudnn_allow_tf32=torch.backends.cudnn.allow_tf32,
+            matmul_allow_tf32=torch.backends.cuda.matmul.allow_tf32,
+            cublas_workspace_config=os.environ.get("CUBLAS_WORKSPACE_CONFIG"),
+        )
+    return runtime
+
+
 def run_baseline(manifest_path, output, device_name="cuda", resume=False,
                  max_seconds=None):
     """Train exact 06b route_c on training images and select by training validation."""
@@ -324,6 +359,7 @@ def run_baseline(manifest_path, output, device_name="cuda", resume=False,
     device = torch.device(device_name)
     if device.type == "cuda" and not torch.cuda.is_available():
         raise RuntimeError("CUDA requested but unavailable")
+    amp = (device.type == "cuda" and torch.cuda.get_device_capability(device)[0] >= 8)
     output = Path(output).resolve()
     manifest_sha = report["manifest_sha256"]
     signature = dict(manifest_sha256=manifest_sha, code_hashes=_code_hashes(),
@@ -331,7 +367,7 @@ def run_baseline(manifest_path, output, device_name="cuda", resume=False,
                      numpy=str(np.__version__), subject="sub-01", seed=0,
                      layers=list(ROUTE_LAYERS), init_logits=list(ROUTE_INIT),
                      epochs=EPOCHS, batch=BATCH, lr=LR, weight_decay=WEIGHT_DECAY,
-                     eval_every=EVAL_EVERY)
+                     eval_every=EVAL_EVERY, runtime=_runtime_signature(device, amp))
     if output.exists():
         if not resume:
             raise FileExistsError(str(output))
@@ -353,7 +389,6 @@ def run_baseline(manifest_path, output, device_name="cuda", resume=False,
     torch.manual_seed(seed)
     if device.type == "cuda":
         torch.cuda.manual_seed_all(seed)
-    amp = (device.type == "cuda" and torch.cuda.get_device_capability()[0] >= 8)
     model = Aligner(len(POST17) * eeg.shape[2], [FEATURE_WIDTH] * len(ROUTE_LAYERS),
                     list(ROUTE_INIT)).to(device)
     optimizer = torch.optim.AdamW(model.parameters(), lr=LR, weight_decay=WEIGHT_DECAY)
@@ -481,10 +516,17 @@ def profile_cpu(manifest_path, batch_size=32):
     return {
         **report,
         "profile": "one actual CPU optimizer update after one warm-up update",
-        "profile_batch_size": batch_size,
+        "profile_batch_size": len(ids),
+        "requested_profile_batch_size": batch_size,
         "profile_step_seconds": seconds_per_step,
-        "linear_cpu_hours_for_full_schedule": seconds_per_step
-        * report["total_optimizer_updates"] / 3600,
+        # A small-batch update does not predict a 1,024-row contrastive update.
+        # Even at the configured batch size this excludes validation and I/O.
+        "linear_cpu_hours_for_full_schedule": (
+            seconds_per_step * report["total_optimizer_updates"] / 3600
+            if len(ids) == BATCH else None),
+        "timing_estimate_scope": (
+            "optimizer updates only; excludes validation, loading, and checkpoints"
+            if len(ids) == BATCH else "no full-schedule estimate: profile batch differs from training batch"),
         "device": "cpu",
         "official_test_opened": False,
     }
