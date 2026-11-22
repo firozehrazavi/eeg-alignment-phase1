@@ -1,0 +1,504 @@
+test_cached_phase1_cannot_bypass_verified_disk_sources (test_06c_notebook_audit.Notebook06CBootstrapTests.test_cached_phase1_cannot_bypass_verified_disk_sources) ... ok
+test_cpu_cells_execute_real_preflight_and_profile_without_training (test_06c_notebook_audit.Notebook06CBootstrapTests.test_cpu_cells_execute_real_preflight_and_profile_without_training) ... ok
+test_current_sources_are_pinned_and_cpu_paths_are_configurable (test_06c_notebook_audit.Notebook06CBootstrapTests.test_current_sources_are_pinned_and_cpu_paths_are_configurable) ... ok
+test_default_continuation_skips_completed_work_and_preserves_inputs (test_06c_notebook_audit.Notebook06CBootstrapTests.test_default_continuation_skips_completed_work_and_preserves_inputs) ... ok
+test_enabled_gpu_controls_resume_one_new_output_in_both_modes (test_06c_notebook_audit.Notebook06CBootstrapTests.test_enabled_gpu_controls_resume_one_new_output_in_both_modes) ... ok
+test_gpu_actions_remain_off_and_cuda_determinism_precedes_import (test_06c_notebook_audit.Notebook06CBootstrapTests.test_gpu_actions_remain_off_and_cuda_determinism_precedes_import) ... ok
+test_invalid_budget_cannot_enter_runner (test_06c_notebook_audit.Notebook06CBootstrapTests.test_invalid_budget_cannot_enter_runner) ... ok
+test_issue5_first_cell_runs_one_cpu_gate_and_pins_diagnostics (test_06c_notebook_audit.Notebook06CBootstrapTests.test_issue5_first_cell_runs_one_cpu_gate_and_pins_diagnostics) ... ok
+test_reused_wrong_branch_or_dirty_checkout_is_preserved (test_06c_notebook_audit.Notebook06CBootstrapTests.test_reused_wrong_branch_or_dirty_checkout_is_preserved) ... ok
+test_updated_branch_cannot_silently_change_audited_code (test_06c_notebook_audit.Notebook06CBootstrapTests.test_updated_branch_cannot_silently_change_audited_code) ... ok
+test_pinned_cpu_smoke_and_gpu_gate (test_cpu_import_gate.CPUImportGateTests.test_pinned_cpu_smoke_and_gpu_gate) ... ok
+test_bridge_scoring_equals_validated_image_bridge_scoring (test_eeg_bridge_transfer_gate.EEGBridgeGateTests.test_bridge_scoring_equals_validated_image_bridge_scoring) ... ok
+test_caption_duplicate_identity_scores (test_eeg_bridge_transfer_gate.EEGBridgeGateTests.test_caption_duplicate_identity_scores) ... ok
+test_direct_readout_rejects_partial_or_invalid_shape (test_eeg_bridge_transfer_gate.EEGBridgeGateTests.test_direct_readout_rejects_partial_or_invalid_shape) ... ok
+test_shapes_and_invalid_oracle_fail_closed (test_eeg_bridge_transfer_gate.EEGBridgeGateTests.test_shapes_and_invalid_oracle_fail_closed) ... ok
+test_backend_settings_override_auto (test_extraction_environment.ExtractionEnvironmentTests.test_backend_settings_override_auto) ... ok
+test_smoke_precedes_probe_and_extractor_configures_before_import (test_extraction_environment.ExtractionEnvironmentTests.test_smoke_precedes_probe_and_extractor_configures_before_import) ... ok
+test_approval_precedes_all_reads (test_final_audit.FinalAuditTests.test_approval_precedes_all_reads) ... ok
+test_audit_fifteen_records_is_read_only (test_final_audit.FinalAuditTests.test_audit_fifteen_records_is_read_only) ... ok
+{"timestamp": 1795321802.6160944, "stage": "evaluation:baseline:0", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6160944, "stage": "evaluation:baseline:8", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6160944, "stage": "evaluation:baseline:16", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6160944, "stage": "evaluation:baseline:24", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6160944, "stage": "evaluation:baseline:32", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6160944, "stage": "evaluation:baseline:40", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:48", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:56", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:64", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:72", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:80", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:88", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:96", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:104", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:112", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:120", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:128", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:136", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:144", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:152", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:160", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:168", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:176", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:184", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6317153, "stage": "evaluation:baseline:192", "session_seconds": 0.015620946884155273, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6473396, "stage": "evaluation:mean:0", "session_seconds": 0.03124523162841797, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6473396, "stage": "evaluation:mean:8", "session_seconds": 0.03124523162841797, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6473396, "stage": "evaluation:mean:16", "session_seconds": 0.03124523162841797, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:24", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:32", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:40", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:48", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:56", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:64", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:72", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:80", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:88", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:96", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:104", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:112", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:120", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:128", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:136", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:144", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:152", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:160", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:168", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:176", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:184", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6629584, "stage": "evaluation:mean:192", "session_seconds": 0.04686403274536133, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:0", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:8", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:16", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:24", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:32", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:40", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:48", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:56", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:64", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:72", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:80", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:88", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:96", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:104", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:112", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:120", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:128", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:136", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:144", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:152", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:160", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:168", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:176", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:184", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321802.6785786, "stage": "evaluation:patch:192", "session_seconds": 0.0624842643737793, "estimated_cu": null, "observed_cu_per_hour": null}
+test_frozen_evaluation_idempotent_synthetic (test_final_audit.FinalAuditTests.test_frozen_evaluation_idempotent_synthetic) ... ok
+test_metrics_and_tie_selection (test_final_audit.FinalAuditTests.test_metrics_and_tie_selection) ... ok
+test_notebook_gate_is_first_statement (test_final_audit.FinalAuditTests.test_notebook_gate_is_first_statement) ... ok
+test_only_train_only_is_exposed (test_five_epoch_notebook.FiveEpochNotebookTests.test_only_train_only_is_exposed) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.2176456451416016, "validation_top1": 50.0, "seconds": 0.04599999999999227}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.1573039293289185, "validation_top1": 50.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 3, "loss": 1.0795173645019531, "validation_top1": 50.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.2176456451416016, "validation_top1": 50.0, "seconds": 0.016000000000019554}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.1573039293289185, "validation_top1": 50.0, "seconds": 0.01599999999996271}
+{"run": "within_route_c_sub-01_s0", "epoch": 3, "loss": 1.0795173645019531, "validation_top1": 50.0, "seconds": 0.016000000000019554}
+test_epoch_checkpoint_resume_matches_uninterrupted_run (test_historical_06b.Historical06BTests.test_epoch_checkpoint_resume_matches_uninterrupted_run) ... ok
+test_preflight_rejects_modified_and_test_named_inputs (test_historical_06b.Historical06BTests.test_preflight_rejects_modified_and_test_named_inputs) ... ok
+test_preflight_validates_train_only_rows_and_work_profile (test_historical_06b.Historical06BTests.test_preflight_validates_train_only_rows_and_work_profile) ... ok
+test_runtime_signature_uses_requested_cuda_device (test_historical_06b.Historical06BTests.test_runtime_signature_uses_requested_cuda_device) ... ok
+test_bootstrap_reproducibility (test_image_caption_bridge_gate.ImageCaptionGateTests.test_bootstrap_reproducibility) ... ok
+test_duplicate_caption_is_a_valid_positive (test_image_caption_bridge_gate.ImageCaptionGateTests.test_duplicate_caption_is_a_valid_positive) ... ok
+test_fit_cannot_duplicate_rows_or_inject_validation (test_image_caption_bridge_gate.ImageCaptionGateTests.test_fit_cannot_duplicate_rows_or_inject_validation) ... ok
+test_missing_positives_and_duplicate_gallery_rows_rejected (test_image_caption_bridge_gate.ImageCaptionGateTests.test_missing_positives_and_duplicate_gallery_rows_rejected) ... ok
+test_real_pairing_beats_shuffled_on_unseen_images (test_image_caption_bridge_gate.ImageCaptionGateTests.test_real_pairing_beats_shuffled_on_unseen_images) ... ok
+test_both_containers_report_mismatched_time_axis_without_fixing_it (test_input_diagnostics.InputDiagnosticsTests.test_both_containers_report_mismatched_time_axis_without_fixing_it) ... ok
+test_directory_scan_handles_nested_layout_without_reading_images (test_input_diagnostics.InputDiagnosticsTests.test_directory_scan_handles_nested_layout_without_reading_images) ... ok
+test_nonfinite_and_nonnumeric_time_metadata_are_safe_to_print (test_input_diagnostics.InputDiagnosticsTests.test_nonfinite_and_nonnumeric_time_metadata_are_safe_to_print) ... ok
+test_ram_guard_does_not_load_file (test_input_diagnostics.InputDiagnosticsTests.test_ram_guard_does_not_load_file) ... ok
+test_standalone_notebook_matches_tested_source (test_input_diagnostics.InputDiagnosticsTests.test_standalone_notebook_matches_tested_source) ... ok
+test_duplicate_caption_candidates_count_as_same_answer (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_duplicate_caption_candidates_count_as_same_answer) ... ok
+test_duplicate_caption_student_loss_finite_with_gradients (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_duplicate_caption_student_loss_finite_with_gradients) ... ok
+test_gallery_row_permutation_invariant (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_gallery_row_permutation_invariant) ... ok
+test_missing_positive_rejected (test_joint_caption_duplicates.DuplicateAwareCaptionTests.test_missing_positive_rejected) ... ok
+test_image_inference_and_refusal_to_overwrite (test_joint_inference.JointInferenceTests.test_image_inference_and_refusal_to_overwrite) ... ok
+test_invalid_gallery_rejected_before_output (test_joint_inference.JointInferenceTests.test_invalid_gallery_rejected_before_output) ... ok
+test_text_inference_never_accesses_image_inputs_or_residualizer (test_joint_inference.JointInferenceTests.test_text_inference_never_accesses_image_inputs_or_residualizer) ... ok
+test_backbone_initialization_and_image_score_preserve_06b (test_joint_model.JointModelTests.test_backbone_initialization_and_image_score_preserve_06b) ... ok
+test_direct_text_inference_accepts_eeg_and_text_only (test_joint_model.JointModelTests.test_direct_text_inference_accepts_eeg_and_text_only) ... ok
+test_distillation_only_trains_readout_and_no_raw_text (test_joint_model.JointModelTests.test_distillation_only_trains_readout_and_no_raw_text) ... ok
+test_identity_loss_handles_duplicate_and_rectangular_matches (test_joint_model.JointModelTests.test_identity_loss_handles_duplicate_and_rectangular_matches) ... ok
+test_invalid_shapes_and_nonfinite_values_fail (test_joint_model.JointModelTests.test_invalid_shapes_and_nonfinite_values_fail) ... ok
+test_joint_has_nonzero_three_way_mixed_difference (test_joint_model.JointModelTests.test_joint_has_nonzero_three_way_mixed_difference) ... ok
+test_joint_objective_reaches_all_three_projections_and_backbone (test_joint_model.JointModelTests.test_joint_objective_reaches_all_three_projections_and_backbone) ... ok
+test_plain_06b_checkpoint_load_preserves_backbone_outputs (test_joint_model.JointModelTests.test_plain_06b_checkpoint_load_preserves_backbone_outputs) ... ok
+test_shuffled_text_changes_joint_but_not_image_inference (test_joint_model.JointModelTests.test_shuffled_text_changes_joint_but_not_image_inference) ... ok
+test_zero_joint_weight_backbone_gradient_equals_baseline_even_with_student (test_joint_model.JointModelTests.test_zero_joint_weight_backbone_gradient_equals_baseline_even_with_student) ... ok
+test_fitted_state_is_independent_of_heldout_values (test_joint_model.ResidualizerTests.test_fitted_state_is_independent_of_heldout_values) ... ok
+test_fitting_indices_and_invalid_inputs_fail (test_joint_model.ResidualizerTests.test_fitting_indices_and_invalid_inputs_fail) ... ok
+test_linear_visual_information_is_removed_on_simple_problem (test_joint_model.ResidualizerTests.test_linear_visual_information_is_removed_on_simple_problem) ... ok
+test_transform_is_pointwise_and_fitted_state_roundtrips (test_joint_model.ResidualizerTests.test_transform_is_pointwise_and_fitted_state_roundtrips) ... ok
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.8560944199562073, "tune_image_top1": 100.0, "seconds": 0.06299999999998818}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 4.128852367401123, "tune_image_top1": 100.0, "seconds": 0.06200000000001182}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 4.123420238494873, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 4.12249493598938, "tune_image_top1": 100.0, "seconds": 0.03100000000000591}
+test_full_four_arm_cpu_pipeline (test_joint_pipeline.PipelineTests.test_full_four_arm_cpu_pipeline) ... ok
+test_hash_and_provenance_fail_closed (test_joint_pipeline.PipelineTests.test_hash_and_provenance_fail_closed) ... ok
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.8560944199562073, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.1965087056159973, "tune_image_top1": 100.0, "seconds": 0.03100000000000591}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 4.128852367401123, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 1.8336055278778076, "tune_image_top1": 100.0, "seconds": 0.03100000000000591}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 4.123420238494873, "tune_image_top1": 100.0, "seconds": 0.04599999999999227}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 1.8309414386749268, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 4.12249493598938, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 1.8316059112548828, "tune_image_top1": 100.0, "seconds": 0.03100000000000591}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.8560944199562073, "tune_image_top1": 100.0, "seconds": 0.04699999999996862}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.1965087056159973, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 4.128852367401123, "tune_image_top1": 100.0, "seconds": 0.07799999999997453}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 1.8336055278778076, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 4.123420238494873, "tune_image_top1": 100.0, "seconds": 0.06200000000001182}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 1.8309414386749268, "tune_image_top1": 100.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 4.12249493598938, "tune_image_top1": 100.0, "seconds": 0.06200000000001182}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 1.8316059112548828, "tune_image_top1": 100.0, "seconds": 0.04699999999996862}
+test_interrupted_pipeline_resumes_from_matching_epoch_checkpoint (test_joint_pipeline.PipelineTests.test_interrupted_pipeline_resumes_from_matching_epoch_checkpoint) ... ok
+test_split_disjoint_and_derangement (test_joint_pipeline.PipelineTests.test_split_disjoint_and_derangement) ... ok
+test_train_loader_never_opens_unused_subject_or_test (test_joint_pipeline.PipelineTests.test_train_loader_never_opens_unused_subject_or_test) ... ok
+test_direct_caption_inference_never_calls_image_encoder (test_lima.LimaModelTests.test_direct_caption_inference_never_calls_image_encoder) ... ok
+test_distillation_is_detached_from_backbone_teacher_and_raw_caption (test_lima.LimaModelTests.test_distillation_is_detached_from_backbone_teacher_and_raw_caption) ... ok
+test_historical_initialization_and_loaded_logits_are_bit_identical (test_lima.LimaModelTests.test_historical_initialization_and_loaded_logits_are_bit_identical) ... ok
+test_loss_is_finite_and_checkpoint_round_trip_preserves_direct_readout (test_lima.LimaModelTests.test_loss_is_finite_and_checkpoint_round_trip_preserves_direct_readout) ... ok
+test_marginal_is_live_to_eeg_and_frozen_to_bank_and_conditional (test_lima.LimaModelTests.test_marginal_is_live_to_eeg_and_frozen_to_bank_and_conditional) ... ok
+test_same_concept_training_mediator_exclusion_and_shuffled_effect (test_lima.LimaModelTests.test_same_concept_training_mediator_exclusion_and_shuffled_effect) ... ok
+test_zero_new_loss_coefficients_preserve_base_value_and_gradient (test_lima.LimaModelTests.test_zero_new_loss_coefficients_preserve_base_value_and_gradient) ... ok
+test_caption_loss_accepts_all_duplicate_positives (test_lima.MarginalMathTests.test_caption_loss_accepts_all_duplicate_positives) ... ok
+test_duplicate_kl_does_not_demand_distinguishing_identical_captions (test_lima.MarginalMathTests.test_duplicate_kl_does_not_demand_distinguishing_identical_captions) ... ok
+test_exact_normalized_marginal_and_block_size_invariance (test_lima.MarginalMathTests.test_exact_normalized_marginal_and_block_size_invariance) ... ok
+test_excluded_blocks_have_zero_mass_and_finite_gradients (test_lima.MarginalMathTests.test_excluded_blocks_have_zero_mass_and_finite_gradients) ... ok
+test_extreme_scores_remain_finite_without_underflow_clamp (test_lima.MarginalMathTests.test_extreme_scores_remain_finite_without_underflow_clamp) ... ok
+test_invalid_mediator_support_or_shapes_fail (test_lima.MarginalMathTests.test_invalid_mediator_support_or_shapes_fail) ... ok
+test_marginal_gradients_match_dense_log_formula_in_both_paths (test_lima.MarginalMathTests.test_marginal_gradients_match_dense_log_formula_in_both_paths) ... ok
+test_chunked_marginal_equals_full_dense_reference (test_lima_feasibility_gate.LIMAGateTests.test_chunked_marginal_equals_full_dense_reference) ... ok
+test_duplicate_caption_positive_and_deterministic_ties (test_lima_feasibility_gate.LIMAGateTests.test_duplicate_caption_positive_and_deterministic_ties) ... ok
+test_exact_split_rejects_leakage_reordering_or_duplicates (test_lima_feasibility_gate.LIMAGateTests.test_exact_split_rejects_leakage_reordering_or_duplicates) ... ok
+test_exclusive_report_preserves_old_artifacts (test_lima_feasibility_gate.LIMAGateTests.test_exclusive_report_preserves_old_artifacts) ... ok
+test_fixed_real_control_fits_never_receive_dev_captions (test_lima_feasibility_gate.LIMAGateTests.test_fixed_real_control_fits_never_receive_dev_captions) ... ok
+test_gate_threshold_and_positive_ci_are_both_required (test_lima_feasibility_gate.LIMAGateTests.test_gate_threshold_and_positive_ci_are_both_required) ... ok
+test_inspection_rejects_official_test_before_reading_tensors (test_lima_feasibility_gate.LIMAGateTests.test_inspection_rejects_official_test_before_reading_tensors) ... ok
+test_invalid_or_nonfinite_inputs_rejected (test_lima_feasibility_gate.LIMAGateTests.test_invalid_or_nonfinite_inputs_rejected) ... ok
+test_missing_private_data_is_not_a_measurement_or_load_attempt (test_lima_feasibility_gate.LIMAGateTests.test_missing_private_data_is_not_a_measurement_or_load_attempt) ... ok
+test_mocked_run_records_schema_and_never_encodes_dev_images (test_lima_feasibility_gate.LIMAGateTests.test_mocked_run_records_schema_and_never_encodes_dev_images) ... ok
+test_provenance_failures_stop_before_tensor_loading (test_lima_feasibility_gate.LIMAGateTests.test_provenance_failures_stop_before_tensor_loading) ... ok
+test_same_concept_mask_matches_dense_reference (test_lima_feasibility_gate.LIMAGateTests.test_same_concept_mask_matches_dense_reference) ... ok
+test_signed_linux_source_hashes_accept_only_line_ending_normalization (test_lima_feasibility_gate.LIMAGateTests.test_signed_linux_source_hashes_accept_only_line_ending_normalization) ... ok
+test_teacher_readonly_and_detached (test_lima_feasibility_gate.LIMAGateTests.test_teacher_readonly_and_detached) ... ok
+test_inventory_full_counts_roots_order_and_late_missing_path (test_observed_inputs.ObservedInputsTests.test_inventory_full_counts_roots_order_and_late_missing_path) ... ok
+test_observed_float64_dictionary_and_scalar_wrapper (test_observed_inputs.ObservedInputsTests.test_observed_float64_dictionary_and_scalar_wrapper) ... ok
+test_rejects_unsupported_time_conventions (test_observed_inputs.ObservedInputsTests.test_rejects_unsupported_time_conventions) ... ok
+test_verification_notebook_is_existing_only_and_cpu_only (test_observed_inputs.ObservedInputsTests.test_verification_notebook_is_existing_only_and_cpu_only) ... ok
+CUDA OOM: retrying adapter chunk=4; contrastive batch unchanged
+CUDA OOM: retrying adapter chunk=2; contrastive batch unchanged
+{"timestamp": 1795321814.5641289, "stage": "synthetic_budget", "session_seconds": 1795321814.5641289, "estimated_cu": 4987005.040455913, "observed_cu_per_hour": 10.0}
+test_budget_and_oom_safeguards (test_patch.PatchTests.test_budget_and_oom_safeguards) ... ok
+test_checkpoint_chunking_preserves_gradients (test_patch.PatchTests.test_checkpoint_chunking_preserves_gradients) ... ok
+{"timestamp": 1795321814.9283898, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.06966972351074219, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.053006, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.12461614608764648, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.04682731628417969, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.1385975, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.21020770072937012, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.06249070167541504, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.3345995, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.40620970726013184, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.04644298553466797, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.396636, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.4682462215423584, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.07820630073547363, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.5529442, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.6245543956756592, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.07825994491577148, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.65696, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.7285702228546143, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321815.7749107, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.08945250511169434, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.90303, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.12811923027038574, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.051578521728515625, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321815.9757864, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.20087575912475586, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.0690758228302002, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.1475465, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.3726358413696289, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.057797908782958984, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.2299645, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.45505380630493164, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.07703161239624023, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.4112167, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.6363060474395752, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.06842470169067383, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.4858494, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.7109386920928955, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321816.6264448, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.09373021125793457, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.7872088, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.16076397895812988, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.046868085861206055, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.860897, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.2344522476196289, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.05336499214172363, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321816.9388754, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.31243062019348145, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321817.1461434, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321817.3805807, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.04686737060546875, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321817.4743454, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.0937647819519043, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.041863441467285156, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321817.6099858, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.22940516471862793, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.06268024444580078, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321817.772504, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.3919234275817871, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321817.8967154, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321817.9435422, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 1, "loss": 1.8166720867156982, "source_val_top1": 0.0, "seconds": 0.03632020950317383, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321818.037772, "stage": "loso_sub-02_s0_baseline_diagonal:epoch1:saved", "session_seconds": 0.09422969818115234, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_diagonal", "epoch": 2, "loss": 1.6338340441385906, "source_val_top1": 0.0, "seconds": 0.046544551849365234, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321818.0999367, "stage": "loso_sub-02_s0_baseline_diagonal:epoch2:saved", "session_seconds": 0.15639448165893555, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 1, "loss": 1.7249329487482707, "source_val_top1": 100.0, "seconds": 0.04471564292907715, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321818.1763196, "stage": "loso_sub-02_s0_mean_diagonal:epoch1:saved", "session_seconds": 0.23277735710144043, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_mean_diagonal", "epoch": 2, "loss": 1.5666701793670654, "source_val_top1": 100.0, "seconds": 0.031760454177856445, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321818.2246635, "stage": "loso_sub-02_s0_mean_diagonal:epoch2:saved", "session_seconds": 0.28112125396728516, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 1, "loss": 1.913774013519287, "source_val_top1": 50.0, "seconds": 0.06312680244445801, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321818.3190672, "stage": "loso_sub-02_s0_patch_diagonal:epoch1:saved", "session_seconds": 0.37552499771118164, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_diagonal", "epoch": 2, "loss": 1.735252579053243, "source_val_top1": 50.0, "seconds": 0.06875300407409668, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321818.4074423, "stage": "loso_sub-02_s0_patch_diagonal:epoch2:saved", "session_seconds": 0.463900089263916, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321818.5826313, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321818.8345504, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321819.131242, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.9619786739349365, "source_val_top1": 100.0, "seconds": 0.17174553871154785, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321819.4122434, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.28100132942199707, "estimated_cu": null, "observed_cu_per_hour": null}
+test_end_to_end_synthetic_pilot_and_cache_guards (test_patch.PatchTests.test_end_to_end_synthetic_pilot_and_cache_guards) ... ok
+test_matched_eeg_initialization (test_patch.PatchTests.test_matched_eeg_initialization) ... ok
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\new (14 files)
+C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\new\dataset.json
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\new (14 files)
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\new (14 files)
+C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\new\dataset.json
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\partial (14 files)
+C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\partial\dataset.json
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\lowram (14 files)
+C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\lowram\dataset.json
+Preparing sub-01 train: loading existing EEG
+Preparing sub-01 test: loading existing EEG
+Verified prepared outputs: C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\direct_dict (14 files)
+test_prepare_authoritative_rows_without_overwriting (test_patch.PatchTests.test_prepare_authoritative_rows_without_overwriting) ... ok
+test_residual_formula_and_gradient (test_patch.PatchTests.test_residual_formula_and_gradient) ... ok
+test_source_moments_and_strict_guard (test_patch.PatchTests.test_source_moments_and_strict_guard) ... ok
+test_ten_fold_schedule (test_patch.PatchTests.test_ten_fold_schedule) ... ok
+test_zero_branch_is_mean_control (test_patch.PatchTests.test_zero_branch_is_mean_control) ... ok
+test_invalid_gallery (test_phase1.MetricTests.test_invalid_gallery) ... ok
+test_known_top1_top5 (test_phase1.MetricTests.test_known_top1_top5) ... ok
+test_ties_are_not_all_correct_and_permutation_safe (test_phase1.MetricTests.test_ties_are_not_all_correct_and_permutation_safe) ... ok
+test_baseline_architecture_and_loss_are_unchanged (test_phase1.ObjectiveTests.test_baseline_architecture_and_loss_are_unchanged) ... ok
+test_duplicate_identity_removes_false_negative_penalty (test_phase1.ObjectiveTests.test_duplicate_identity_removes_false_negative_penalty) ... ok
+test_missing_positive_rejected (test_phase1.ObjectiveTests.test_missing_positive_rejected) ... ok
+test_permutation_invariant (test_phase1.ObjectiveTests.test_permutation_invariant) ... ok
+test_rectangular_reordered_positive_indexing (test_phase1.ObjectiveTests.test_rectangular_reordered_positive_indexing) ... ok
+test_unique_matches_baseline_loss_and_gradient (test_phase1.ObjectiveTests.test_unique_matches_baseline_loss_and_gradient) ... ok
+test_concept_partition (test_phase1.ProtocolTests.test_concept_partition) ... ok
+test_duplicate_content_detected (test_phase1.ProtocolTests.test_duplicate_content_detected) ... ok
+test_normalization_independent_of_other_queries (test_phase1.ProtocolTests.test_normalization_independent_of_other_queries) ... ok
+test_policy_rejects_hidden_transduction (test_phase1.ProtocolTests.test_policy_rejects_hidden_transduction) ... ok
+test_source_selection (test_phase1.ProtocolTests.test_source_selection) ... ok
+test_test_concepts_and_content_cannot_overlap (test_phase1.ProtocolTests.test_test_concepts_and_content_cannot_overlap) ... ok
+test_all_negatives_excluded_cancels_eeg_semantic_gradient (test_phase1.SemanticTests.test_all_negatives_excluded_cancels_eeg_semantic_gradient) ... ok
+test_frozen_inputs_and_nonzero_semantic_gradients (test_phase1.SemanticTests.test_frozen_inputs_and_nonzero_semantic_gradients) ... ok
+test_zero_weight_and_ambiguity (test_phase1.SemanticTests.test_zero_weight_and_ambiguity) ... ok
+test_both_formats_preserve_all_eeg_validation (test_pilot_inputs.PilotInputTests.test_both_formats_preserve_all_eeg_validation) ... ok
+test_dictionary_loader_rejects_other_containers (test_pilot_inputs.PilotInputTests.test_dictionary_loader_rejects_other_containers) ... ok
+test_existing_corrupt_file_is_never_replaced (test_pilot_inputs.PilotInputTests.test_existing_corrupt_file_is_never_replaced) ... ok
+C:\Users\jg\AppData\Local\Temp\tmpklb2x_19\direct_dict\dataset.json
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_training.npy", "bytes": 8, "sha256": "afafb16ac47b9b3da9825787ce354896fce376ae6cb1b5a157fa682a122011a1", "remote_sha256_verified": true, "shape": [16540, 4, 63, 250]}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_test.npy", "bytes": 8, "sha256": "afafb16ac47b9b3da9825787ce354896fce376ae6cb1b5a157fa682a122011a1", "remote_sha256_verified": true, "shape": [200, 80, 63, 250]}
+test_existing_only_mode_cannot_download (test_pilot_inputs.PilotInputTests.test_existing_only_mode_cannot_download) ... ok
+test_inspect_eeg_direct_dict_and_scalar_object_array (test_pilot_inputs.PilotInputTests.test_inspect_eeg_direct_dict_and_scalar_object_array) ... ok
+test_inventory_is_read_only_and_not_ready_with_missing_images (test_pilot_inputs.PilotInputTests.test_inventory_is_read_only_and_not_ready_with_missing_images) ... ok
+test_notebook_cpu_phase_precedes_gpu_gate (test_pilot_inputs.PilotInputTests.test_notebook_cpu_phase_precedes_gpu_gate) ... ok
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_training.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [16540, 4, 63, 250], "finite": true}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_test.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [200, 80, 63, 250], "finite": true}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_training.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [16540, 4, 63, 250], "finite": true}
+{"verified_file": "Preprocessed_data_250Hz/sub-01/preprocessed_eeg_test.npy", "bytes": 18, "sha256": "f047815033b438fea49eb73bc55e589765ac55f64e8354963a2db857b11499b9", "remote_sha256_verified": true, "shape": [200, 80, 63, 250], "finite": true}
+test_resume_download_and_skip_existing_without_other_subjects (test_pilot_inputs.PilotInputTests.test_resume_download_and_skip_existing_without_other_subjects) ... ok
+test_shape_metadata_finiteness_and_ram_guard (test_pilot_inputs.PilotInputTests.test_shape_metadata_finiteness_and_ram_guard) ... ok
+test_subject_allowlist (test_pilot_inputs.PilotInputTests.test_subject_allowlist) ... ok
+test_headers_and_missing_output (test_pilot_preflight.PreflightTests.test_headers_and_missing_output) ... ok
+test_early_failure_is_visible_and_saved_without_token_directory (test_process_log.ProcessLogTests.test_early_failure_is_visible_and_saved_without_token_directory) ... ok
+test_success_and_launch_failure_preserve_distinct_logs (test_process_log.ProcessLogTests.test_success_and_launch_failure_preserve_distinct_logs) ... ok
+test_fresh_gpu_setup_defines_all_paths_without_section_a (test_section_b_workflow.SectionBWorkflowTests.test_fresh_gpu_setup_defines_all_paths_without_section_a) ... ok
+test_setup_includes_validation_and_probe_fails_clearly_if_skipped (test_section_b_workflow.SectionBWorkflowTests.test_setup_includes_validation_and_probe_fails_clearly_if_skipped) ... ok
+{"timestamp": 1795321824.4911304, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.4997523427009583, "source_val_top1": 25.0, "seconds": 0.047939300537109375, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321824.602728, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.11159753799438477, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_multi_positive", "epoch": 1, "loss": 1.5976786613464355, "source_val_top1": 0.0, "seconds": 0.04898691177368164, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321824.683361, "stage": "loso_sub-02_s0_patch_multi_positive:epoch1:saved", "session_seconds": 0.1922307014465332, "estimated_cu": null, "observed_cu_per_hour": null}
+test_resume_rejects_test_hash_before_opening_it (test_train_only_boundary.TrainOnlyBoundaryTests.test_resume_rejects_test_hash_before_opening_it) ... ok
+test_scoped_token_reader_refuses_unloaded_split (test_train_only_boundary.TrainOnlyBoundaryTests.test_scoped_token_reader_refuses_unloaded_split) ... ok
+{"timestamp": 1795321824.8340633, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.4997523427009583, "source_val_top1": 25.0, "seconds": 0.02469325065612793, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321824.8969088, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.06284546852111816, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_multi_positive", "epoch": 1, "loss": 1.5976786613464355, "source_val_top1": 0.0, "seconds": 0.04612922668457031, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321824.9918842, "stage": "loso_sub-02_s0_patch_multi_positive:epoch1:saved", "session_seconds": 0.1578209400177002, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321825.058367, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321825.1932738, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_baseline_multi_positive", "epoch": 1, "loss": 1.4997523427009583, "source_val_top1": 25.0, "seconds": 0.031244277954101562, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321825.2557912, "stage": "loso_sub-02_s0_baseline_multi_positive:epoch1:saved", "session_seconds": 0.06251740455627441, "estimated_cu": null, "observed_cu_per_hour": null}
+{"run": "loso_sub-02_s0_patch_multi_positive", "epoch": 1, "loss": 1.5976786613464355, "source_val_top1": 0.0, "seconds": 0.024691343307495117, "peak_gpu_allocated_bytes": 0}
+{"timestamp": 1795321825.334532, "stage": "loso_sub-02_s0_patch_multi_positive:epoch1:saved", "session_seconds": 0.14125823974609375, "estimated_cu": null, "observed_cu_per_hour": null}
+{"timestamp": 1795321825.3874333, "stage": "training_start", "session_seconds": 0.0, "estimated_cu": null, "observed_cu_per_hour": null}
+test_training_and_profile_never_open_or_hash_test_artifacts (test_train_only_boundary.TrainOnlyBoundaryTests.test_training_and_profile_never_open_or_hash_test_artifacts) ... ok
+test_completed_tokens_and_disk_guards (test_training_entry.TrainingEntryTests.test_completed_tokens_and_disk_guards) ... ok
+test_notebook_has_no_extraction_or_full_training_command (test_training_entry.TrainingEntryTests.test_notebook_has_no_extraction_or_full_training_command) ... ok
+test_resource_setup_imports_budget_meter_in_fresh_namespace (test_training_runtime.TrainingRuntimeTests.test_resource_setup_imports_budget_meter_in_fresh_namespace) ... ok
+test_skipped_predecessors_fail_before_work (test_training_runtime.TrainingRuntimeTests.test_skipped_predecessors_fail_before_work) ... ok
+test_bfloat16_backbone_outputs_train_all_float32_heads (test_trimodal_06b.Historical06BTrimodalTests.test_bfloat16_backbone_outputs_train_all_float32_heads)
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.4091863632202148, "validation_top1": 100.0, "seconds": 0.016000000000019554}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.2602349519729614, "validation_top1": 100.0, "seconds": 0.016000000000019554}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 1.9474995136260986, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.06299999999998818, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.09399999999999409, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 2.0184648036956787, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.7461724281311035, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.06299999999998818, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.09399999999999409, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.792752981185913, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.7453107833862305, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.7909114360809326, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.04699999999996862, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.07799999999997453, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.7465591430664062, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.06299999999998818, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.09399999999999409, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.7928290367126465, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.04699999999996862, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+Exercise the real runner's AMP boundary without requiring a GPU. ... ok
+test_caption_preflight_requires_train_only_provenance (test_trimodal_06b.Historical06BTrimodalTests.test_caption_preflight_requires_train_only_provenance) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.5496172904968262, "validation_top1": 50.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.388307809829712, "validation_top1": 50.0, "seconds": 0.0}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.1305806636810303, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 2.0822741985321045, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 3.05314564704895, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.014999999999986358, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.950950860977173, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.031999999999982265, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 3.053614616394043, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.953749656677246, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 3.054938554763794, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.954643487930298, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_fresh_resume_saves_reconstructable_preprocessing_and_checks_artifacts (test_trimodal_06b.Historical06BTrimodalTests.test_fresh_resume_saves_reconstructable_preprocessing_and_checks_artifacts) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.4251272678375244, "validation_top1": 0.0, "seconds": 0.047000000000025466}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.3139948844909668, "validation_top1": 0.0, "seconds": 0.014999999999986358}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.034125804901123, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 2.0473523139953613, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.04699999999996862, "seconds": 0.07799999999997453, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.8828816413879395, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.843613862991333, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.031999999999982265, "validation_seconds": 0.015000000000043201, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.07900000000000773, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.8816606998443604, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.014999999999986358, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.840925455093384, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.8815646171569824, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.841603994369507, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.034125804901123, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04599999999999227, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 2.0473523139953613, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.015000000000043201, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.8828816413879395, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.843613862991333, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.8816606998443604, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.840925455093384, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.8815646171569824, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.841603994369507, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_interrupted_abcd_resumes_identically (test_trimodal_06b.Historical06BTrimodalTests.test_interrupted_abcd_resumes_identically) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.238897442817688, "validation_top1": 50.0, "seconds": 0.04699999999996862}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.1761640310287476, "validation_top1": 50.0, "seconds": 0.047000000000025466}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 1.9133691787719727, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.9485783576965332, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.6967577934265137, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.04699999999996862, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.09399999999999409, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.7343485355377197, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.031999999999982265, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.6952335834503174, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.7328667640686035, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.697087049484253, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.735067844390869, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_matched_arms_warmstart_and_direct_text_evaluation (test_trimodal_06b.Historical06BTrimodalTests.test_matched_arms_warmstart_and_direct_text_evaluation) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.238897442817688, "validation_top1": 50.0, "seconds": 0.015000000000043201}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.1761640310287476, "validation_top1": 50.0, "seconds": 0.014999999999986358}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 0.8820197880268097, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.2717193365097046, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.031999999999982265, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 1.201636403799057, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 1.5807560086250305, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.01599999999996271, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.07900000000000773, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 1.2025102078914642, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 1.5830684900283813, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.06200000000001182, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.07799999999997453, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 1.2067871689796448, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.06299999999998818, "validation_seconds": 0.0, "checkpoint_seconds": 0.015000000000043201, "seconds": 0.07800000000003138, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 1.5810811519622803, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.04699999999996862, "validation_seconds": 0.0, "checkpoint_seconds": 0.015000000000043201, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 0.8820197880268097, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.2717193365097046, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 1.201636403799057, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.04599999999999227, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 1.5807560086250305, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.01599999999996271, "checkpoint_seconds": 0.0, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 1.2025102078914642, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.07800000000003138, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 1.5830684900283813, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.014999999999986358, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.07800000000003138, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 1.2067871689796448, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.07800000000003138, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 1.5810811519622803, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.047000000000025466, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.07800000000003138, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_budget_expiry_finishes_epoch_and_resumes_bit_exactly (test_trimodal_execution.ExecutionTests.test_budget_expiry_finishes_epoch_and_resumes_bit_exactly) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.238897442817688, "validation_top1": 50.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.1761640310287476, "validation_top1": 50.0, "seconds": 0.014999999999986358}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 1.9133691787719727, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.9485783576965332, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.0, "validation_seconds": 0.01599999999996271, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.031999999999982265, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.6967577934265137, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.7343485355377197, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.6952335834503174, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.7328667640686035, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.697087049484253, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.031999999999982265, "validation_seconds": 0.014999999999986358, "checkpoint_seconds": 0.0, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.735067844390869, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 1.9133691787719727, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.6967577934265137, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.014999999999986358, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.6952335834503174, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.0, "validation_seconds": 0.014999999999986358, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.697087049484253, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.9485783576965332, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.7343485355377197, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.015000000000043201, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.7328667640686035, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.735067844390869, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_epoch_ceiling_is_idempotent_and_resume_keeps_full_schedule (test_trimodal_execution.ExecutionTests.test_epoch_ceiling_is_idempotent_and_resume_keeps_full_schedule) ... ok
+test_invalid_execution_options_are_rejected_before_reading_inputs (test_trimodal_execution.ExecutionTests.test_invalid_execution_options_are_rejected_before_reading_inputs) ... ok
+test_live_caption_gradient_passes_from_text_to_eeg (test_trimodal_execution.ExecutionTests.test_live_caption_gradient_passes_from_text_to_eeg) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.2010622024536133, "validation_top1": 100.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.128008246421814, "validation_top1": 100.0, "seconds": 0.016000000000019554}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.7164621353149414, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.015000000000043201, "validation_seconds": 0.01599999999996271, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.660614252090454, "tune_image_top1": 100.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_live_caption_runs_only_on_new_bd_output_and_resumes (test_trimodal_execution.ExecutionTests.test_live_caption_runs_only_on_new_bd_output_and_resumes) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.4251272678375244, "validation_top1": 0.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.3139948844909668, "validation_top1": 0.0, "seconds": 0.015000000000043201}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.034125804901123, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 2.0473523139953613, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.8828816413879395, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.031999999999982265, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.843613862991333, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.015000000000043201, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.8816606998443604, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.01599999999996271, "checkpoint_seconds": 0.015000000000043201, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.840925455093384, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.8815646171569824, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.047000000000025466, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.841603994369507, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.8828816413879395, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.0, "validation_seconds": 0.01599999999996271, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.843613862991333, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.047000000000025466, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.034125804901123, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.04599999999999227, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 2.0473523139953613, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04599999999999227, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 1, "loss": 2.8816606998443604, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.014999999999986358, "validation_seconds": 0.016000000000019554, "checkpoint_seconds": 0.0, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_C", "epoch": 2, "loss": 2.840925455093384, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.8815646171569824, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.06200000000001182, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.841603994369507, "tune_image_top1": 0.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.015000000000043201, "validation_seconds": 0.0, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_selected_arm_then_other_arms_match_all_at_once (test_trimodal_execution.ExecutionTests.test_selected_arm_then_other_arms_match_all_at_once) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.238897442817688, "validation_top1": 50.0, "seconds": 0.015000000000043201}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.1761640310287476, "validation_top1": 50.0, "seconds": 0.016000000000019554}
+{"run": "sub-01_s0_B", "epoch": 1, "loss": 2.7108569145202637, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.015000000000043201, "checkpoint_seconds": 0.031999999999982265, "seconds": 0.06299999999998818, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 1, "loss": 2.7093844413757324, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.015000000000043201, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_B", "epoch": 2, "loss": 2.7059366703033447, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.01599999999996271, "validation_seconds": 0.0, "checkpoint_seconds": 0.03100000000000591, "seconds": 0.04699999999996862, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_D", "epoch": 2, "loss": 2.722658634185791, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.01599999999996271, "seconds": 0.031999999999982265, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_semantic_correction_bd_resume_and_artifact_identity (test_trimodal_execution.ExecutionTests.test_semantic_correction_bd_resume_and_artifact_identity) ... ok
+test_semantic_correction_requires_fresh_bd_only_output (test_trimodal_execution.ExecutionTests.test_semantic_correction_requires_fresh_bd_only_output) ... ok
+test_tri_residual_teacher_gradient_has_no_image_base_path (test_trimodal_execution.ExecutionTests.test_tri_residual_teacher_gradient_has_no_image_base_path) ... ok
+{"run": "within_route_c_sub-01_s0", "epoch": 1, "loss": 1.4161080121994019, "validation_top1": 50.0, "seconds": 0.03100000000000591}
+{"run": "within_route_c_sub-01_s0", "epoch": 2, "loss": 1.3412165641784668, "validation_top1": 50.0, "seconds": 0.016000000000019554}
+{"run": "sub-01_s0_A", "epoch": 1, "loss": 2.025712490081787, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.016000000000019554, "validation_seconds": 0.0, "checkpoint_seconds": 0.014999999999986358, "seconds": 0.03100000000000591, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+{"run": "sub-01_s0_A", "epoch": 2, "loss": 1.989447832107544, "tune_image_top1": 50.0, "tune_text_top1": 50.0, "validation_evaluated": true, "train_seconds": 0.03100000000000591, "validation_seconds": 0.0, "checkpoint_seconds": 0.016000000000019554, "seconds": 0.047000000000025466, "device_type": "cpu", "peak_cuda_allocated_bytes": null, "peak_cuda_reserved_bytes": null}
+test_zero_budget_stops_without_updates_and_can_resume (test_trimodal_execution.ExecutionTests.test_zero_budget_stops_without_updates_and_can_resume) ... ok
+test_ablation_configs_change_one_factor (test_v7_controls.V7Tests.test_ablation_configs_change_one_factor) ... ok
+test_augmentation_is_explicit_and_does_not_mutate (test_v7_controls.V7Tests.test_augmentation_is_explicit_and_does_not_mutate) ... ok
+test_conv_shape_gradient_and_inductive_batch_independence (test_v7_controls.V7Tests.test_conv_shape_gradient_and_inductive_batch_independence) ... ok
+test_ensemble_uses_only_complete_source_validation_and_ids (test_v7_controls.V7Tests.test_ensemble_uses_only_complete_source_validation_and_ids) ... ok
+test_global_stratified_rows_exclude_validation (test_v7_controls.V7Tests.test_global_stratified_rows_exclude_validation) ... ok
+test_margin_all_positives_and_permutation (test_v7_controls.V7Tests.test_margin_all_positives_and_permutation) ... ok
+test_text_cannot_switch_on_from_configuration (test_v7_controls.V7Tests.test_text_cannot_switch_on_from_configuration) ... ok
+test_actual_pool_and_normalization_do_not_fit_validation (test_validation_root_audit.RootAuditTests.test_actual_pool_and_normalization_do_not_fit_validation) ... ok
+test_image_retrieval_not_concept_classification (test_validation_root_audit.RootAuditTests.test_image_retrieval_not_concept_classification) ... ok
+test_mean_affine_commutes_and_scale_can_lower_loss_without_new_rank (test_validation_root_audit.RootAuditTests.test_mean_affine_commutes_and_scale_can_lower_loss_without_new_rank) ... ok
+test_prefix_nested_mapping_and_fail_closed (test_validation_root_audit.RootAuditTests.test_prefix_nested_mapping_and_fail_closed) ... ok
+test_stats_audit_opens_training_arrays_only_and_preserves_inputs (test_validation_root_audit.RootAuditTests.test_stats_audit_opens_training_arrays_only_and_preserves_inputs) ... ok
+test_training_prefix_does_not_consume_test_values (test_validation_root_audit.RootAuditTests.test_training_prefix_does_not_consume_test_values) ... ok
+test_uncertainty_and_effective_batch_counts (test_validation_root_audit.RootAuditTests.test_uncertainty_and_effective_batch_counts) ... ok
+test_unique_stimuli_have_no_duplicate_false_negatives (test_validation_root_audit.RootAuditTests.test_unique_stimuli_have_no_duplicate_false_negatives) ... ok
+test_gate_and_no_training_or_final_test_entry_points (test_validation_root_notebook.RootNotebookTests.test_gate_and_no_training_or_final_test_entry_points) ... ok
+
+----------------------------------------------------------------------
+Ran 175 tests in 54.814s
+
+OK

@@ -31,8 +31,10 @@ class Notebook06CBootstrapTests(unittest.TestCase):
         self.checkout = Path(self.temp.name) / 'checkout'
         shutil.copytree(ROOT / 'phase1', self.checkout / 'phase1',
                         ignore=shutil.ignore_patterns('__pycache__'))
+        shutil.copytree(ROOT / 'diagnostics', self.checkout / 'diagnostics',
+                        ignore=shutil.ignore_patterns('__pycache__'))
 
-    def execute(self, branch='research/live-caption-grad-bd-20261121', dirty='', stale_phase1=False):
+    def execute(self, branch='research/issue-5-lima-gate-20261122', dirty='', stale_phase1=False):
         def git_output(command, **kwargs):
             if command[-2:] == ['branch', '--show-current']:
                 return branch
@@ -63,9 +65,10 @@ class Notebook06CBootstrapTests(unittest.TestCase):
         self.assertEqual(namespace['REPO'], self.checkout)
         self.assertEqual(namespace['EXPECTED_SOURCE_SHA256'], {
             p.relative_to(ROOT).as_posix(): hashlib.sha256(p.read_bytes().replace(b'\r\n', b'\n')).hexdigest()
-            for p in sorted((ROOT / 'phase1').rglob('*.py'))})
+            for folder in ('phase1', 'diagnostics')
+            for p in sorted((ROOT / folder).rglob('*.py'))})
         self.assertEqual(commands[0].args[0][-3:],
-                         ['--ff-only', 'origin', 'research/live-caption-grad-bd-20261121'])
+                         ['--ff-only', 'origin', 'research/issue-5-lima-gate-20261122'])
         self.assertIn("os.environ.get('EEG_CACHE'", ''.join(self.notebook['cells'][3]['source']))
         self.assertIn("os.environ.get('EEG_06C_RUN_ROOT'", ''.join(self.notebook['cells'][3]['source']))
 
@@ -75,8 +78,24 @@ class Notebook06CBootstrapTests(unittest.TestCase):
         with self.assertRaisesRegex(RuntimeError, 'source hash mismatch'):
             self.execute()
 
+    def test_issue5_first_cell_runs_one_cpu_gate_and_pins_diagnostics(self):
+        namespace, commands = self.execute()
+        gate_commands = [call.args[0] for call in commands
+                         if 'lima_feasibility_gate.py' in ' '.join(map(str, call.args[0]))]
+        self.assertEqual(len(gate_commands), 1)
+        command = gate_commands[0]
+        self.assertEqual(command[:2], [sys.executable, str(self.checkout / 'diagnostics/lima_feasibility_gate.py')])
+        self.assertIn('--root', command)
+        self.assertIn('--cache', command)
+        self.assertIn('--output', command)
+        self.assertTrue(namespace['RUN_LIMA_GATE'])
+        with (self.checkout / 'diagnostics/lima_feasibility_gate.py').open('a') as handle:
+            handle.write('\n# changed gate\n')
+        with self.assertRaisesRegex(RuntimeError, 'source hash mismatch'):
+            self.execute()
+
     def test_reused_wrong_branch_or_dirty_checkout_is_preserved(self):
-        for branch, dirty in [('main', ''), ('research/live-caption-grad-bd-20261121', ' M local.py')]:
+        for branch, dirty in [('main', ''), ('research/issue-5-lima-gate-20261122', ' M local.py')]:
             with self.subTest(branch=branch, dirty=dirty):
                 with self.assertRaisesRegex(RuntimeError, 'another branch or has local changes'):
                     self.execute(branch, dirty)

@@ -1,0 +1,37 @@
+{
+  "tests": {
+    "command": "python -X utf8 -m unittest discover -s tests -v",
+    "environment": {
+      "OMP_NUM_THREADS": "1",
+      "MKL_NUM_THREADS": "1"
+    },
+    "passed": 175,
+    "seconds": 54.814,
+    "exit_code": 0,
+    "scope": "Synthetic CPU regression suite; its fixture accuracies are not research measurements"
+  },
+  "runtime": {
+    "python": "3.12.5",
+    "torch": "2.9.1+cpu",
+    "numpy": "2.3.5",
+    "cuda_available": false
+  },
+  "input_check": {
+    "command": "python -X utf8 diagnostics/lima_feasibility_gate.py --root ../semantic-evidence --cache ../cache --check-inputs --output validation/issue5/local_input_check.json",
+    "status": "NOT_MEASURED",
+    "missing_files": 7
+  },
+  "real_data_lima_metrics": null,
+  "gpu_training_executed": false,
+  "official_test_opened": false,
+  "decision": "NO_GO",
+  "review": "Targeted final code review found no confirmed blocking defect; historical signed source files unchanged",
+  "source_sha256_lf": {
+    "phase1/lima.py": "acaf53876ae067e72302e2f789e8a49046b853cc4c7234b6782557f836ead166",
+    "diagnostics/lima_feasibility_gate.py": "ceead1d026a2bb6b2febe5eac4527ed412ee675db794ec284be59c38aee5b5cb",
+    "tests/test_lima.py": "bd3e7eb034c35ce5a9ac75f789e0b5dfdf1b5802908b6b387728e72b666cf377",
+    "tests/test_lima_feasibility_gate.py": "8f3f93d8bb1843e3ac066b27cff662b98e6c15e0ab4a0b2a9668c8ccfbcae88c",
+    "tests/test_06c_notebook_audit.py": "124a75d9b96be947cf2b1f1e037f6d5481d21599077c58125c0a726b30792af7",
+    "notebooks/06c_checkpointed_06b_and_trimodal.ipynb": "99e2f1b2f15a0774989be7269ac3fbd7412bd555d787a24bed9829ed6fff97c6"
+  }
+}
