@@ -1,0 +1,19 @@
+{
+  "status": "NOT_MEASURED",
+  "mode": "input_existence_check",
+  "official_test_opened": false,
+  "gpu_decision": "NO_GO",
+  "all_required_files_present": false,
+  "missing_inputs": [
+    "<workspace>\\work\\semantic-evidence\\train_only_manifest.json",
+    "<workspace>\\work\\semantic-evidence\\baseline\\run.json",
+    "<workspace>\\work\\semantic-evidence\\baseline\\within_route_c_sub-01_s0_best.pt",
+    "<workspace>\\work\\cache\\captions_train_only.npy",
+    "<workspace>\\work\\cache\\caption_ids_train_only.json",
+    "<workspace>\\work\\cache\\caption_provenance_train_only.json",
+    "<workspace>\\work\\cache\\sub-01_train_z16.npy"
+  ],
+  "stimulus_row_identity": "NOT_VERIFIED",
+  "reason": "Private artifacts absent",
+  "path_redaction": "Absolute workspace prefix replaced for publication; existence results unchanged."
+}
